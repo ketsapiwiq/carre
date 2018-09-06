@@ -1,0 +1,136 @@
+body
+{
+	margin: 0;
+	font-family: sans-serif;
+	background: #eee;
+	display: flex;
+	max-width: 1600px;
+	margin: auto;
+}
+
+#wiki, #pad, #irc
+{
+	height: 100vh;
+	border: none;
+}	
+
+#pad
+{
+	flex: 10 1 800px;
+}
+
+#irc
+{
+	flex: 1 10 550px;
+	padding-left: 10px;
+}
+
+#menu
+{
+	flex: 1 1 250px;
+	padding-top: 40px;
+	padding-left: 30px;
+	.box-sizing: border-box;
+}
+
+#menu li
+{
+	font-size: .9em;
+	color: #444;
+	font-weight: normal;
+	cursor: pointer;
+	padding: .3em 0em;
+	list-style-position: inside;
+}
+
+#menu li:hover
+{
+	text-decoration: underline;
+}
+
+#menu ul
+{
+	margin-bottom: .5em;
+	padding-left: .8em;
+	margin-left: .3em;
+	border-left: 1px #aaa solid;
+}
+
+#menu .folder_title
+{
+	list-style-type: "▶ ";
+}
+
+#menu .folder_title.open
+{
+	list-style-type: "▼ ";
+}
+
+#menu .page_title
+{
+	list-style-type: "◇ ";
+}
+
+#menu .page_title.selected
+{
+	list-style-type: "◆ ";
+	color: #3399dd;
+}
+
+#menu .folder_title + .folder_content
+{
+	display: none;
+}
+
+#menu .folder_title.open + .folder_content
+{
+	display: block;
+}
+
+.hidden
+{
+  display: none;
+}
+
+#option
+{
+	position: absolute;
+	cursor: pointer;
+	background: #ddd;
+	font-size: .8em;
+	color: #444;
+}
+
+#option div
+{
+	padding: .4em 1em;
+}
+
+#option div:hover
+{
+	background: #ccc;
+}
+
+#option a
+{
+	text-decoration: none;
+}
+
+#option a:visited
+{
+	color: #444;
+}
+
+#option div:before
+{
+	content: "⚐";
+	margin-right: .6em;
+	font-weight: bold;
+	
+}
+
+#option div:first-child:before
+{
+	content: "";
+	margin-right: 0;
+}
