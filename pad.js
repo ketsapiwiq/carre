@@ -1,7 +1,7 @@
 // Iframe du pad
 var 	pad = document.createElement("iframe");
-		pad.id = "pad";
 		pad.adress = "https://pad.lqdn.fr/p/test_padwikirc";
+		pad.id = "pad";
 		pad.current = null;
 		pad.def = null;
 		
