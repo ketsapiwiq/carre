@@ -16,7 +16,7 @@
 4- Rendre Apache propriétarie du dossier "server" et lui donner tous les droits
 
 	sudo chown www-data server
-	sudo chmod 770
+	sudo chmod 770 server
 	
 5- Définir dans pad.js le début de l'URL des etherpad à créer/utiliser. Exemple :
 
