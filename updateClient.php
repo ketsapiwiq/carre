@@ -23,10 +23,19 @@ if (isset($_POST['updateClient']))
 		$main->content = array();
 	
 		// Créé un premier élément
-		$newElement = createElement("Home", "newPage");
+		$element = new stdClass;
+	
+		// Donne au nouvel élément le titre celui indiquée par la demande
+		$element->title = "Home";
+	
+		// Donne au nouvel élément un ID aléatoire
+		$element->id = rand(10000000, 99999999);
+	
+		// Donne à l'élément le type "page"
+		$element->type = "page";
 		
 		// Met le nouvel élément dans le tableau de l'objet principal
-		array_push($main->content, $newElement);
+		array_push($main->content, $element);
 		
 		// Convertit l'objet principal en JSON
 		$content = json_encode($main);
