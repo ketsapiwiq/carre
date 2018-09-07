@@ -29,6 +29,9 @@ function update (type, info, path)
 	
 			// Récupère le menu envoyé par le serveur et le parse dans un tableau
 			var response = JSON.parse(server.responseText);
+			
+			// Remet le titre du menu
+			menu.appendChild(menu.tag);
 
 			// Construit le menu à partir de chacun de ses éléments de premier niveau
 			response.forEach(construct, menu);

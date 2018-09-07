@@ -1,3 +1,17 @@
+@font-face {
+  font-family: "aileronregular";
+  font-style: normal;
+  font-weight: normal;
+  src: url("fonts/aileron-regular-webfont.woff2") format("woff2"), url("webfonts/aileron-regular-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "aileronheavy";
+  font-style: normal;
+  font-weight: normal;
+  src: url("fonts/aileron-heavy-webfont.woff2") format("woff2"), url("webfonts/aileron-heavy-webfont.woff") format("woff");
+}
+
 body
 {
 	margin: 0;
@@ -6,6 +20,7 @@ body
 	display: flex;
 	max-width: 1600px;
 	margin: auto;
+	font-family: "aileronregular";
 }
 
 #wiki, #pad, #irc
@@ -27,10 +42,25 @@ body
 
 #menu
 {
-	flex: 1 1 250px;
-	padding-top: 40px;
+	flex: 1 2 250px;
+	padding-top: 0px;
 	padding-left: 30px;
-	.box-sizing: border-box;
+}
+
+#menu .main_title img
+{
+	width: 3.7em;
+	margin-right: 10px;
+}
+
+#menu .main_title h1
+{
+	width: 10%;
+	font-weight: normal;
+	font-family: "aileronheavy";
+	margin: 0;
+	display: inline-block;
+	margin-bottom: .4em;
 }
 
 #menu li
@@ -50,31 +80,54 @@ body
 
 #menu ul
 {
+	margin: 0;
+	padding: 0;
 	margin-bottom: .5em;
-	padding-left: .8em;
 	margin-left: .3em;
+	padding-left: .8em;
 	border-left: 1px #aaa solid;
 }
 
 #menu .folder_title
 {
-	list-style-type: "▶ ";
+	list-style-type: none;
+	font-family: "aileronheavy";
+}
+
+#menu .folder_title:before
+{
+	content: "\25B6  ";
 }
 
 #menu .folder_title.open
 {
-	list-style-type: "▼ ";
+	list-style-type: none;
+}
+
+#menu .folder_title.open:before
+{
+	list-style-type: "\25BC  ";
 }
 
 #menu .page_title
 {
-	list-style-type: "◇ ";
+	list-style-type: none;
+}
+
+#menu .page_title:before
+{
+	content: "\25C7  ";
 }
 
 #menu .page_title.selected
 {
-	list-style-type: "◆ ";
+	list-style-type: none;
 	color: #3399dd;
+}
+
+#menu .page_title.selected:before
+{
+	content: "\25C6  ";
 }
 
 #menu .folder_title + .folder_content
@@ -98,7 +151,7 @@ body
 	cursor: pointer;
 	background: #ddd;
 	font-size: .8em;
-	color: #444;
+	color: #888;
 }
 
 #option div
@@ -121,16 +174,7 @@ body
 	color: #444;
 }
 
-#option div:before
+#option div:first-child
 {
-	content: "⚐";
-	margin-right: .6em;
-	font-weight: bold;
-	
-}
-
-#option div:first-child:before
-{
-	content: "";
-	margin-right: 0;
+	color: #444;
 }

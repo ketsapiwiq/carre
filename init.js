@@ -6,6 +6,21 @@ onload = function ()
 	menu = document.createElement("menu");
 	menu.id = "menu";
 	menu.path= "";
+	
+	// Crée le titre du menu
+	menu.tag = document.createElement("div");
+	menu.tag.classList.add("main_title");
+	
+	menu.img = document.createElement("img");	
+	menu.img.src = "lqdn.svg";
+	menu.tag.appendChild(menu.img);
+	
+	menu.h1 = document.createElement("h1");
+	menu.h1.innerHTML = "La Gare";
+	menu.tag.appendChild(menu.h1);
+	
+	menu.appendChild(menu.tag);
+	
 	document.body.appendChild(menu);
 	
 	// Établie une connexion avec le serveur
