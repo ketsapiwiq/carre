@@ -16,7 +16,7 @@ onload = function ()
 	menu.tag.appendChild(menu.img);
 	
 	menu.h1 = document.createElement("h1");
-	menu.h1.innerHTML = "La Gare";
+	menu.h1.innerHTML = "Le carré";
 	menu.tag.appendChild(menu.h1);
 	
 	menu.appendChild(menu.tag);
