@@ -93,31 +93,32 @@ body
 {
 	list-style-type: none;
 	font-family: "aileronheavy";
+	margin-left: 1.1em;
 }
 
 #menu .folder_title:before
 {
-	content: "\25B6  ";
-}
-
-#menu .folder_title.open
-{
-	list-style-type: none;
+	content: "\25B6";
+	position: absolute;
+	margin-left: -1.1em;
 }
 
 #menu .folder_title.open:before
 {
-	list-style-type: "\25BC  ";
+	content: "\25BC";
 }
 
 #menu .page_title
 {
 	list-style-type: none;
+	margin-left: 1.1em;
 }
 
 #menu .page_title:before
 {
-	content: "\25C7  ";
+	content: "\25C7";
+	position: absolute;
+	margin-left: -1.1em;
 }
 
 #menu .page_title.selected
