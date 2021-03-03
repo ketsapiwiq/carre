@@ -1,18 +1,54 @@
-# Installation
+# Carre
 
-1- Récupérer le code 
+> Un système de classement de pad, basé sur une hiérarchie de fichiers, écrit en Javascript et PHP
 
-	git clone gitlab@git.laquadrature.net:Oncela5eva/PadWikIRC.git
-	cd PadWikIRC
+## Usage
 
-2- Créer un dossier "server" et permettre à Apache d'écrire dedans
+Il suffit d'un serveur HTTP + PHP basique pour faire tourner ce service. Vous aurez aussi besoin d'une connexion vers un serveur Ehterpad pouvant créer des pads depuis n'importe quel URL. 
 
-	mkdir server
-	sudo chown www-data server
-	sudo chmod 770 server
+## Installation
+
+1 - Récupérer le code 
+
+`$ git clone gitlab@git.laquadrature.net:Oncela5eva/carre.git`
+`$ cd carre`
+
+2 - Créer un dossier "server" et donnez les droits au serveur ou à php d'écrire dedans.
+
+`$ mkdir server`
 	
-3- Définir dans pad.js le début de l'URL des etherpad à créer/utiliser. Exemple :
+2.1 - Pour faire du développement, vous pouvez utilisez PHP sur votre machine de développement avec la commande suivante ;
 
-	pad.adress = "https://pad.lqdn.fr/p/test_padwikirc";
+`$ php7 -S localhost:8080`
+
+3 - Définir dans pad.js le début de l'URL des etherpad à créer/utiliser. Exemple :
+
+`pad.adress = "https://pad.lqdn.fr/p/test_padwikirc";`
+
+Merci de définir une autre URL quand vous faites vos tests et l'éventuelle mise en production. Des services de pad sont disponibles ici : [entraide.chatons.org](https://entraide.chatons.org) 
 	
-4- Facultatif : protéger l'accès au dossier "admin" via htaccess (pour protéger la modification du menu)
+4 - Facultatif : protéger l'accès au dossier "admin" via htaccess (pour protéger la modification du menu)
+
+## Développement 
+
+Toute aide est la bienvenue ! Pour le moment, le but est de garder le code et les fonctionnalitées aussi simples que possible. Il serait donc bienvenue d'avoir des retours, afin de simplifier encore les usages que l'on peut avoir de ce service.
+
+Si vous avez des propositions, n'hésitez pas à le faire savoir, par mail ou en ouvrant un ticket.
+
+## Licence
+
+```
+ DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
+                    Version 2, December 2004 
+
+ Copyright (C) 2004 Sam Hocevar <sam@hocevar.net> 
+
+ Everyone is permitted to copy and distribute verbatim or modified 
+ copies of this license document, and changing it is allowed as long 
+ as the name is changed. 
+
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION 
+
+  0. You just DO WHAT THE FUCK YOU WANT TO.
+```
