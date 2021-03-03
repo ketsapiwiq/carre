@@ -9,7 +9,7 @@ function click (e)
 			// Active le déplacement à partir de l'élément cliqué
 			option.move.from(this);
 		}
-		
+
 		// Autre
 		else
 		{
@@ -27,7 +27,7 @@ function click (e)
 			// Ouvre la page dans l'iframe du pad
 			pad.open(this);
 		}
-		
+
 		// Si l'élément cliqué est le titre d'un dossier
 		else if (this.classList.contains("folder_title"))
 		{
@@ -48,8 +48,9 @@ function click (e)
 	{
 		// Empêche l'option du navigateur de s'ouvrir (le clic droit par défaut)
 		e.preventDefault();
-		
+
 		// Ouvre l'option, en lui passant l'élément cliqué et la position de la sourie
 		option.open(this, e.clientX, e.clientY);
+		// TODO : Remplacer le clientX par MouseX pour correspondre à la position du curseur.
 	}
 }
