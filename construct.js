@@ -12,6 +12,8 @@ function construct ( element , index )
 		// possède le même chemin l'élément 10.
 		item.path = this.path + "/" + index;
 
+		console.log('creation' + item.path);	
+
 		// Associe le clic (gauche ou droite) à la fonction appropriée (définie dans < clickMenu.js >)
 		item.onclick = item.oncontextmenu = click;
 
