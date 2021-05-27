@@ -23,8 +23,11 @@ if (isset($_POST['updateServer']))
 	$info = $_POST['info'];
 
 	// Recupère la position de l'élément du menu à partir duquel faire la modification, spécifiée par la demande
-	$path = explode($_POST['path'], "/");
-	echo(var_dump($path));
+	$path = explode("/", $_POST['path']);
+
+	// On supprime le premier élément, parce que l'array de explode
+	// contiendra un élément vide si le séparateur est position initiale.
+	array_splice($path, 0, 1);
 
 	// Renomme
 	if ($type == "newName")
@@ -45,8 +48,9 @@ if (isset($_POST['updateServer']))
 	// Met à jour l'objet principal du fichier
 	file_put_contents ($file, json_encode($content));
 
-	// Envoie au client le contenu du tableau de l'objet principal
-	echo json_encode($content->content);
+	// Envoie au client le contenu du tableau de l'objet principal 🤞
+	// TODO : Renvoie au client de la réponse avec le JSON.
+	// echo json_encode($content->content);
 }
 
 /* ----------------------
@@ -140,16 +144,44 @@ function newName($content, $info, $path)
 }
 
 /* ----------------------
+Ajouter un nouvel élément
+---------------------- */
+
+// $content : stdClass object
+// $info : Nom du nouvel élement
+// $path : Array()
+// $type: "newPage" | "newFolder"
+
+function addElement($content, $info, $path, $type) {
+
+	// Crée un nouvel élément
+	// Qui sera un object du style
+	// stdClass->title 	(string)
+	// stdClass->id 	(int)
+	// stdClass->type 	(string)
+	// stdClass->content (Array) only for folder
+	$newElement = createElement($info, $type);
+
+	return insertElement($content, $path, $newElement);
+}
+
+/* ----------------------
 Insérer
 ---------------------- */
 
-function insertElement($content, $path, $element)
-{
+// $content : stdClass
+// $path : String
+// $element : new stdClass
+
+function insertElement($content, $path, $element){
+
+
 	// Recupère l'élément cliqué (en fonction duquel le nouvel élément doit être ajouté)
+	// Element de référence à partir duquel on insère le nouvel élement
 	$syb = getElement($content, $path);
 
 	// On vérifie que l'on as bien affaire à un $syb valide
-	if (property_exists('stdClass','type')) {
+	if (property_exists($syb,'type')) {
 
 		// Si l'élément cliqué est un dossier
 		if ($syb->type == "folder") {
@@ -174,19 +206,6 @@ function insertElement($content, $path, $element)
 	} else {
 		throw new \Exception("L'élement n'a pas de types.", 1);
 	}
-}
-
-
-/* ----------------------
-Ajouter un nouvel élément
----------------------- */
-
-function addElement($content, $info, $path, $type)
-{
-	// Crée un nouvel élément
-	$newElement = createElement($info, $type);
-
-	return insertElement($content, $path, $newElement);
 }
 
 /* ----------------------
@@ -256,7 +275,7 @@ function deleteElement($content, $path)
 	$parent = getParent($content, $path);
 
 	// Met l'élément dans le fichier des éléments supprimés
-	file_put_contents ("server/deleted.json", json_encode( $element ), FILE_APPEND );
+	file_put_contents ("../server/deleted.json", json_encode( $element ), FILE_APPEND );
 
 	// Supprime l'élément de son parent
 	array_splice( $parent->content, $path[ count($path) -1 ] , 1 );
