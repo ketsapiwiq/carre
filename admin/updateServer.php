@@ -24,6 +24,7 @@ if (isset($_POST['updateServer']))
 
 	// Recupère la position de l'élément du menu à partir duquel faire la modification, spécifiée par la demande
 	$path = explode($_POST['path'], "/");
+	echo(var_dump($path));
 
 	// Renomme
 	if ($type == "newName")
@@ -68,8 +69,8 @@ function createElement($title, $type)
 	{
 		// Donne à l'élément le type "page"
 		$element->type = "page";
+		return $element;
 	}
-
 	// Si la demande concerne l'ajout d'un dossier
 	else if ($type == "newFolder")
 	{
@@ -78,9 +79,11 @@ function createElement($title, $type)
 
 		// Donne à l'élément un tableau qui contiendra ses sous-éléments
 		$element->content = [];
+		return $element;
+	} else {
+		// On nous demande la création d'un nouvel élément qui n'existe pas
+		throw new \Exception("Création d'un élément avec un type inconnu impossible.", 1);
 	}
-
-	return $element;
 }
 
 /* ----------------------
@@ -89,12 +92,21 @@ Récupérer un élément
 
 function getElement($content, $path)
 {
-	$element = $content;
-	for ($i = 0; $i < count($path); $i++)
-	{
-		$element = $element->content[$path[$i]];
+	if(!empty($content) && !empty($path)){
+		$element = $content;
+		print_r($path);
+
+		for ($i = 0; $i < count($path); $i++)
+		{
+			if ($path[$i] != "/") {
+				$element = $element->content[$path[$i]];
+			}
+		}
+		return $element;
+	} else {
+		 throw new Exception('Récupération d\'élements ou de chemin vide');
 	}
-	return $element;
+
 }
 
 /* ----------------------
@@ -136,24 +148,32 @@ function insertElement($content, $path, $element)
 	// Recupère l'élément cliqué (en fonction duquel le nouvel élément doit être ajouté)
 	$syb = getElement($content, $path);
 
-	// Si l'élément cliqué est un dossier
-	if ($syb->type == "folder")
-	{
-		// Ajoute le nouvel élément au début du dossier
-		array_unshift($syb->content, $element);
+	// On vérifie que l'on as bien affaire à un $syb valide
+	if (property_exists('stdClass','type')) {
+
+		// Si l'élément cliqué est un dossier
+		if ($syb->type == "folder") {
+
+			// Ajoute le nouvel élément au début du dossier
+			array_unshift($syb->content, $element);
+		}
+
+		// Si l'élément cliqué est une page
+		else if ($syb->type == "page"){
+			// Recupère le dossier parent de la page cliquée
+			$parent = getParent($content, $path);
+
+			// Ajoute le nouvel élément dans le dossier parent, après la page cliquée
+			array_splice( $parent->content, $path[ count($path) -1 ] +1 , 0, array ( $element ) );
+		} else {
+			// On n'a ni une page, ni un dossier, donc on retourne une erreur
+			throw new \Exception("Une erreur est survenue en voulant insérer un élément : le type n'est ni un dossier, ni une page...", 1);
+		}
+		return $content;
+
+	} else {
+		throw new \Exception("L'élement n'a pas de types.", 1);
 	}
-
-	// Si l'élément cliqué est une page
-	else if ($syb->type == "page")
-	{
-		// Recupère le dossier parent de la page cliquée
-		$parent = getParent($content, $path);
-
-		// Ajoute le nouvel élément dans le dossier parent, après la page cliquée
-		array_splice( $parent->content, $path[ count($path) -1 ] +1 , 0, array ( $element ) );
-	}
-
-	return $content;
 }
 
 
