@@ -48,10 +48,35 @@ if (isset($_POST['updateServer']))
 	// Met à jour l'objet principal du fichier
 	file_put_contents ($file, json_encode($content));
 
-	// Envoie au client le contenu du tableau de l'objet principal 🤞
-	// TODO : Renvoie au client de la réponse avec le JSON.
-	// echo json_encode($content->content);
+	// Envoie au client le contenu du tableau de l'objet principal
+       returnJsonHttpResponse(true, $content->content);
 }
+
+/* --------------------
+  Fonction auxiliaire pour retourner un objet JSON
+  en réponse HTTP.
+  @param $success: Boolean
+  @param $data: Object or Array
+-----------------------*/
+
+function returnJsonHttpResponse($success, $data)
+{
+
+  //  Vide le contenu du buffer d'output et
+  //  les headers précédemment configurés.
+  ob_clean();
+  header_remove();
+
+  header("Content-type: application/json");
+  if ($success) {
+        http_response_code(200);
+    } else {
+        http_response_code(500);
+    }
+  echo json_encode($data);
+  exit();
+}
+
 
 /* ----------------------
 Créer un élément
