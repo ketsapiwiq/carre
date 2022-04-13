@@ -18,3 +18,11 @@ iframe{
 #test{
     float : left;
 }
+
+li{
+    list-style: none;
+}
+
+#menu ul{
+    background-color: indigo;
+}
