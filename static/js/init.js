@@ -47,8 +47,8 @@ function init(){
             $("ul.child").hover(function(){
                 $(this).css('cursor','pointer');
             });
-            $("ul.parent").contextmenu(function(){
-                displayDirectoryMenu();
+            $("ul.parent").contextmenu(function(event){
+                displayDirectoryMenu(event, $(this));
             });
         })
         .fail(function(){
@@ -77,13 +77,69 @@ function findAdress(text){
     }
 }
 
-function displayDirectoryMenu(){
+function displayDirectoryMenu(event, parent){
     //Créer les options
-    var op1 = new Option("Ajouter un pad");
+    event.preventDefault();
+    // Recupérer le nom du parent
+    var op1 = new Option("Ajouter un pad", addPad, parent.text());
+    var op2 = new Option("Supprimer le dossier", deleteDirectory);
+    var op3 = new Option("Renommer le dossier", renameDirectory);
+    var op4 = new Option("Ajouter un dossier", addDirectory);
     var tabOp = new Array();
     tabOp.push(op1);
-    alert(op1.getName());
+    tabOp.push(op2);
+    tabOp.push(op3);
+    tabOp.push(op4);
     var menuOp = new menuOptions(tabOp);
-    menuOp.afficherMenu();
+    let posX = event.clientX + window.pageXOffset;
+    let posY = event.clientY + window.pageYOffset;
+    menuOp.afficherMenu(posX, posY, tabOp);
     return false;
+}
+
+function addPad(parent){
+    let namePad = prompt("Entrez le nom du nouveau pad : ", "");
+    if (namePad == null || namePad == "") {
+        return 1;
+    }
+
+    // Création du formulaire caché
+    let form = document.createElement("form");
+    form.setAttribute("method","POST");
+    form.setAttribute("action", "/ajouterPad");
+
+    let inputName = document.createElement("input");
+    inputName.setAttribute("type","hidden");
+    inputName.setAttribute("name","name");
+    inputName.setAttribute("value",namePad);
+
+    let inputParent = document.createElement("input");
+    inputParent.setAttribute("type","hidden");
+    inputParent.setAttribute("name","parent");
+    inputParent.setAttribute("value",parent);
+
+    form.appendChild(inputName);
+    form.appendChild(inputParent);
+    document.body.append(form)
+    form.submit();
+
+    alert("Formulaire envoyé");
+    $get('ajouterPad')
+        .fail(function(){
+            alert("Il y a eu un problème lors de l'ajout");
+        })
+}
+
+// A faire plus tard : fonctions pour les options
+
+function deleteDirectory(){
+    alert("Fonctionnalité non développée, c'est pour bientôt ;)");
+}
+
+function renameDirectory(){
+    alert("Fonctionnalité non développée, c'est pour bientôt ;)");
+}
+
+function addDirectory(){
+    alert("Fonctionnalité non développée, c'est pour bientôt ;)");
 }

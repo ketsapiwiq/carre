@@ -22,3 +22,14 @@ iframe{
 li{
     list-style: none;
 }
+
+#options{
+    position: absolute;
+    border: 1px black solid;
+    border-radius: 20px;
+    background-color: #cccccc;
+}
+
+#options p:hover{
+    background-color : #aaaaaa;
+}
