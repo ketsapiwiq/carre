@@ -1,60 +1,33 @@
 # Carre
 
-![Logo du Carré](carre-logo.png)
-
-
-Carré est un système de fichiers en temps-réel servant de plateforme à la collaboration et au regroupement d'information.
-
-Carré est codé en Python ( et PHP par le passé), HTML5+CSS3 et Javascript.
-
-## Fonctionnalitées
-
-Carré est utilisé par navigateur, et affiche une hiérarchie de documents en temps-réel, comme Etherpad ou Hedgedocs. Cette hiérarchie est composée de dossier et de fichiers.
-
-Il intègre également un système d'utilisateurices, permmettant de restraindre la création, suppression, réorganisation et affichage des documents. Il permet aussi l'accès et l'édition anonyme.
-
-Il possède également un système de thèmes, permettant d'être rapidement adapté.
-
-## Installation
-
-Carré est pensé pour être installé sur un serveur Linux, et utilisé avec un proxy web inverse, tel que Nginx.
-
-La procédure complète d'installation est décrire dans [Installation.md](). Rapidement ;
-
-`git clone https://git.laquadrature.net/lqdn/carre.git`
-
-`cd carre`
-
-Éditez le fichier `config.json`, et remplissez les valeurs suivantes :
-
-```
-pad_server = "https://exemple.com"
-```
-
-avec l'adresse de votre serveur de pad.
-
-Puis, faites ;
-
-`nohup ./run.sh > carre.log`
-
-Carré se lancera un serveur web sur l'adresse http://localhost:3553 .
-
-Par défaut, Carré n'a pas d'utilisateurices. Vous pouvez en ajouter en créant un fichier `users.json`. Au lancement, Carré créera les utilisateurices trouvé dans ce fichier, et supprimera le fichier. Voir [Configuration.md]() pour toutes les options de configuration.
+> Un système de classement de pad, basé sur une hiérarchie de fichiers, écrit en Javascript et PHP
 
 ## Usage
 
-<!-- Des photos d'illustration seraient les bienvenues -->
+Il suffit d'un serveur HTTP + PHP basique pour faire tourner ce service. Vous aurez aussi besoin d'une connexion vers un serveur Ehterpad pouvant créer des pads depuis n'importe quel URL.
 
-Une fois installé, carré commencera par afficher une hiérarchie vide, et une page d'aide.
+## Installation
 
+1 - Récupérer le code
 
-Vous pouvez commencer à ajouter des fichiers ou des dossiers en cliquant une le symbole "+", ou en faisant un clique-droit.
+`$ git clone gitlab@git.laquadrature.net:Oncela5eva/carre.git`
+`$ cd carre`
 
-Vous pouvez réorganiser la place des fichiers en les glissants.
+2 - Créer un dossier "server" et donnez les droits au serveur ou à php d'écrire dedans.
 
-Vous pouvez faire des suppressions en faisant un clique droit, ou bien en faisant une sélection et en appuyant sur la touche "Suppr" ou "Fn"+"⌫ Arrière"
+`$ mkdir server`
 
-Vous pouvez aussi effectuer des modifications directement dans le fichier `filesystem.json`.
+2.1 - Pour faire du développement, vous pouvez utilisez PHP sur votre machine de développement avec la commande suivante ;
+
+`$ php7 -S localhost:8080`
+
+3 - Définir dans pad.js le début de l'URL des etherpad à créer/utiliser. Exemple :
+
+`pad.adress = "https://pad.lqdn.fr/p/test_padwikirc";`
+
+Merci de définir une autre URL quand vous faites vos tests et l'éventuelle mise en production. Des services de pad sont disponibles ici : [entraide.chatons.org](https://entraide.chatons.org)
+
+4 - Facultatif : protéger l'accès au dossier "admin" via htaccess (pour protéger la modification du menu)
 
 ## Développement
 
@@ -62,9 +35,22 @@ Toute aide est la bienvenue ! Pour le moment, le but est de garder le code et le
 
 Si vous avez des propositions, n'hésitez pas à le faire savoir, par mail ou en ouvrant un ticket.
 
-## Crédits
+### Organisation du code source
 
-La première version du carré, et l'inspiration pour la création de cette version à été faite par Oncela . Vous pouvez voir cette version dans la branche `archive` du dépôt git.
+Le carré est construit autour des fichiers suivants ;
+
+- `index.html` contient la vue du client, et charge le code Javascript
+	- `init.js` Initialise la page
+	- `construct.js` construit le menu
+  - `click.js` répond aux cliques de l'utilisateurice.
+	- `option.js` actions modifiants le menu
+	- `update.js` mise à jour du serveur
+	- `pad.js` affiche les pages dans le pad
+- `updateClient.php`
+- `server/` va contenir les fichiers JSON décrivant l'état actuel du carré.
+- `fonts/` contient les polices de caractères.
+- `admin/` contient les fichiers PHP du serveur.
+	- `updateServer.php` se charge de faire la mise à jour des fichiers du côté serveur en réponse aux requêtes des clients.
 
 ## Licence
 
@@ -72,7 +58,7 @@ La première version du carré, et l'inspiration pour la création de cette vers
  DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
                     Version 2, December 2004
 
- Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+ Copyright (C) 2004 Oncela <am@laquadrature.net>
 
  Everyone is permitted to copy and distribute verbatim or modified
  copies of this license document, and changing it is allowed as long

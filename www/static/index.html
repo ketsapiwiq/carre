@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Le carré</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"/>
+    <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/init.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/options/Option.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/options/menuOptions.js') }}"></script>
+   <!-- <script src="pad.js"></script>
+    <script src="option.js"></script>
+    <script src="click.js"></script>
+    <script src="construct.js"></script>
+    <script src="init.js"></script> -->
+</head>
+<body>
+    <div id="menu">
+        <img src="{{ url_for('static', filename='images/lqdn.svg') }}">
+        <h1> Le carré </h1>
+    </div>
+
+    <div id="pad">
+
+    </div>
+
+    <div id="options">
+
+    </div>
+
+    <!-- <iframe src='https://pad.lqdn.fr/p/9tixtest' width=600 height=400> </iframe> -->
+    <div id="test">
+        <form method="POST" action="/addPad">
+            <button>+</button>
+        </form>
+
+        <form method="POST" action="/testMenu">
+            <button> Menu </button>
+        </form>
+    </div>
+
+</body>
+</html>
