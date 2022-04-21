@@ -1,6 +1,5 @@
-from flask import Flask, render_template, jsonify, request
-from Controller import fonctionnalities
-from Controller import pad
+from flask import Flask, render_template, jsonify, request, redirect, url_for
+from src import fonctionnalities, pad
 import json
 
 app = Flask(__name__, template_folder='static')
@@ -8,7 +7,7 @@ app = Flask(__name__, template_folder='static')
 ##
 #   fonction d'entrée redirige vers la page d'accueil
 ##
-@app.route("/")
+@app.route("/", methods=['POST','GET'])
 def index():
     ## Redirection vers fonction permettant de récupérer les infos (controller)
     ## Affiche la page du pad
@@ -21,13 +20,19 @@ def initMenu():
     menu = fonctionnalities.recupMenu()
     return json.dumps(menu)
 
-@app.route("/ajouterPad",  methods=['POST'])
+@app.route("/ajouterPad",  methods=['POST','GET'])
 def ajouterPad():
-    # Besoin du pad donc du nom et du parent
-    # R2cupération des paramètres avec la méthode GET <= Pas terrible, POST c'est mieux
-    #request.args.get()
-    #padAjout = pad.Pad("","","")
-    #fonctionnalities.ajoutPadFunc()
     print("La redirection marche !")
-    return render_template('index.html')
+    # Besoin du pad donc du nom et du parent
+    name = request.form.get('name')
+    parent = request.form.get('parent')
+    adress = "p/9tm8" + name
+    padAjout = pad.Pad(name, parent, adress)
+    fonctionnalities.ajoutPadFunc(padAjout)
+
+    
+    print(url_for('index'))
+    return redirect(url_for('index'))
+    #return render_template('index.html')
+
 app.run(debug = True)
