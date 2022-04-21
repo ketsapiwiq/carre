@@ -23,16 +23,13 @@ def initMenu():
 @app.route("/ajouterPad",  methods=['POST','GET'])
 def ajouterPad():
     print("La redirection marche !")
-    # Besoin du pad donc du nom et du parent
     name = request.form.get('name')
     parent = request.form.get('parent')
     adress = "p/9tm8" + name
     padAjout = pad.Pad(name, parent, adress)
     fonctionnalities.ajoutPadFunc(padAjout)
 
-    
     print(url_for('index'))
     return redirect(url_for('index'))
-    #return render_template('index.html')
 
 app.run(debug = True)
