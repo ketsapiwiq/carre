@@ -35,10 +35,9 @@ class Menu:
         for i in range (0, len(menu)):
             if(pad.getParent() == menu[i]['parent']):
                 #Modifier la variable menu
-                trhowAway = {'Nom' : pad.getName(), 'Adresse' : pad.getAdress()}
-                data = json.dumps(trhowAway)
+                data = {'Nom' : pad.getName(), 'Adresse' : pad.getAdress()}
                 menu[i]["pads"].append(data)
-
+                print(menu);
                 # Tout renvoyer dans le fichier Json
                 try:
                     fileWrite = open(self.path, "w")

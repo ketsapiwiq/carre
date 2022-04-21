@@ -65,7 +65,6 @@ function updateIFrame(e){
     $("ul").css('background-color','white');
     e.css('background-color','red');
     let adress = findAdress(text);
-    alert(adress);
     pad.append("<iframe id='iPad' src='https://pad.lqdn.fr/" + adress + "'> </iframe>")
 }
 
@@ -129,8 +128,6 @@ function addPad(parent){
     form.appendChild(inputParent);
     document.body.append(form)
     form.submit();
-
-    alert("Formulaire envoyé");
 }
 
 // A faire plus tard : fonctions pour les options
