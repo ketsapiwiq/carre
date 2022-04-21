@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Le carré</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"/>
     <!-- Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -15,30 +16,32 @@
     <script src="construct.js"></script>
     <script src="init.js"></script> -->
 </head>
-<body>
-    <div id="menu">
-        <img src="{{ url_for('static', filename='images/lqdn.svg') }}">
+
+<body class="container-fluid d-flex flex-row align-items-stretch  align-content-stretch">
+  <div class="row p-2 flex-fill bd-highlight">
+
+    <header class="col-4 bg-primary">
+        <img class="img-thumbnail" src="{{ url_for('static', filename='images/lqdn.svg') }}">
         <h1> Le carré </h1>
-    </div>
-
-    <div id="pad">
-
-    </div>
-
-    <div id="options">
-
-    </div>
-
-    <!-- <iframe src='https://pad.lqdn.fr/p/9tixtest' width=600 height=400> </iframe> -->
-    <div id="test">
+    <nav class="">
+      <div>
         <form method="POST" action="/addPad">
-            <button>+</button>
+          <button>+</button>
         </form>
 
         <form method="POST" action="/testMenu">
-            <button> Menu </button>
+          <button> Menu </button>
         </form>
-    </div>
+      </div>
+    </nav>
+    </header>
 
+    <section id="pad" class="col-4 flex-grow-1 bg-success flex-fill">
+      <noscript>
+        Le Carré nécessite l'activation du JavaScript dans votre navigateur. Nous l'utilison pour rendre interactif cette page, et nous nous basons sur des systèmes d'éiditon en temps réel qui nécessitent également le Javascript. Si vous ne savez pas comment faire, vous pouvez consulter les pages d'aide de votre navigateur.
+      </noscript>
+    </section>
+
+  </div>
 </body>
 </html>
