@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Le carré</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"/>
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/lib/jquery/jquery_min.js')}}"></script>
@@ -19,6 +20,7 @@
 <body class="container-fluid d-flex flex-row align-items-stretch  align-content-stretch">
   <div class="row p-2 flex-fill bd-highlight">
 
+<<<<<<< HEAD
     <header class="col-4 bg-primary">
       <img class="img-thumbnail" src="{{ url_for('static', filename='images/lqdn.svg') }}">
       <h1> Le carré </h1>
@@ -29,6 +31,87 @@
 
       <div id="liste">
         <ul>
+=======
+    <header class="col-2 bg-secondary ">
+        <img class="img-thumbnail" src="{{ url_for('static', filename='images/lqdn.svg') }}">
+        <h1> Le carré </h1>
+        <hr>
+        <br>
+
+    <nav class="">
+      <div class="btn-group">
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <form method="POST" action="/addPad">
+            <button type="button" class="btn btn-primary"><i class="bi bi-clipboard-plus"></i></button>
+          </form>
+
+          <form method="POST" action="/testMenu">
+             <button type="button" class="btn btn-primary"><i class="bi bi-folder-plus"></i></button>
+          </form>
+        </div>
+
+      </div>
+      <div class="overflow-scroll">
+        <ul>
+          <li>gzrgerg</li>
+          <li>zefzefze</li>
+          <li>zfzefzef</li>
+          <li>
+            <ul>
+              <li>fezfz</li>
+              <li>hrthrtzh</li>
+              <li>a"rfar</li>
+              <li>etjhryh</li>
+            </ul>
+          </li><li>
+            <ul>
+              <li>fezfz</li>
+              <li>hrthrtzh</li>
+              <li>a"rfar</li>
+              <li>etjhryh</li>
+            </ul>
+          </li><li>
+            <ul>
+              <li>fezfz</li>
+              <li>hrthrtzh</li>
+              <li>a"rfar</li>
+              <li>etjhryh</li>
+            </ul>
+          </li><li>
+            <ul>
+              <li>fezfz</li>
+              <li>hrthrtzh</li>
+              <li>a"rfar</li>
+              <li>etjhryh</li>
+            </ul>
+          </li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li>
+            <ul>
+              <li></li>
+              <li></li>
+              <li>
+                <ul>
+                  <li></li>
+                  <li></li>
+                  <li>
+                    <ul>
+                      <li></li>
+                      <li></li>
+                      <li></li>
+                      <li></li>
+                    </ul>
+                  </li>
+                  <li></li>
+                </ul>
+              </li>
+              <li></li>
+            </ul>
+          </li>
+          <li></li>
+>>>>>>> b025ca8 (Ajout des icones Bootstrap)
         </ul>
       </div>
 
@@ -38,7 +121,7 @@
     </nav>
     </header>
 
-    <section id="pad" class="col-4 flex-grow-1 bg-success flex-fill">
+    <section id="pad" class="col-10 flex-grow-1 bg-success flex-fill">
       <noscript>
         Le Carré nécessite l'activation du JavaScript dans votre navigateur. Nous l'utilison pour rendre interactif cette page, et nous nous basons sur des systèmes d'éiditon en temps réel qui nécessitent également le Javascript. Si vous ne savez pas comment faire, vous pouvez consulter les pages d'aide de votre navigateur.
       </noscript>
