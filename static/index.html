@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Le carré</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"/>
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/lib/jquery/jquery_min.js')}}"></script>
@@ -15,48 +16,36 @@
     <script src="{{ url_for('static', filename='js/options/Option.js')  }}"></script>
     <script src="{{ url_for('static', filename='js/options/menuOptions.js')}}"></script>
 </head>
-<body>
+<body class="container-fluid d-flex flex-row align-items-stretch  align-content-stretch">
+  <div class="row p-2 flex-fill bd-highlight">
 
-    <div id="menu">
-        <img src="{{ url_for('static', filename='images/lqdn.svg') }}">
-        <h1> Le carré </h1>
-        <div id="liste">
-            <ul>
-            </ul>
-        </div>
-    </div>
+    <header class="col-4 bg-primary">
+      <img class="img-thumbnail" src="{{ url_for('static', filename='images/lqdn.svg') }}">
+      <h1> Le carré </h1>
+      <nav class="">
 
-    <div id="pad">
+      <div id="options"></div>
+      <div id="test"></div>
 
-    </div>
+      <div id="liste">
+        <ul>
+        </ul>
+      </div>
 
-    <div id="options">
+      <div id="dialog"></div>
 
-    </div>
+    
+    </nav>
+    </header>
 
-    <div id="dialog">
+    <section id="pad" class="col-4 flex-grow-1 bg-success flex-fill">
+      <noscript>
+        Le Carré nécessite l'activation du JavaScript dans votre navigateur. Nous l'utilison pour rendre interactif cette page, et nous nous basons sur des systèmes d'éiditon en temps réel qui nécessitent également le Javascript. Si vous ne savez pas comment faire, vous pouvez consulter les pages d'aide de votre navigateur.
+      </noscript>
+    </section>
 
-    </div>
+    <div id="pad"></div>
 
-    <div id="test">
-        <!--{% if idConnexion == -1 %}
-            <form method="POST" action="" onSubmit="return logInOrSignUp('Inscription', '/api/signup')">
-                <button> InscriptionHTML </button>
-            </form>
-
-            <form method="POST" action="" onsubmit="return logInOrSignUp('Connexion', '/api/login')">
-                <button> ConnexionHTML </button>
-            </form>
-        {% else %}
-            <form method="POST" action="/api/deconnect">
-                <button> Déconnexion </button>
-            </form>
-
-            <form method="POST" action="/api/deleteAccount">
-                <button> Supprimer mon compte </button>
-            </form>
-        {% endif %}-->
-    </div>
-
+  </div>
 </body>
 </html>
