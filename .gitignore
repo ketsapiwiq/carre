@@ -1,6 +1,8 @@
 # Ne pas commit les fichiers utilisé pour stocker les hiérarchies
 server/*.json
 
+# Fichier de logs
+nohup.out 
 
 # Fichiers Python à ignorer 
 # Tiré de https://github.com/github/gitignore/blob/main/Python.gitignore
