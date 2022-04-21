@@ -1,0 +1,182 @@
+@font-face {
+  font-family: "aileronregular";
+  font-style: normal;
+  font-weight: normal;
+  src: url("fonts/aileron-regular-webfont.woff2") format("woff2"), url("webfonts/aileron-regular-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "aileronheavy";
+  font-style: normal;
+  font-weight: normal;
+  src: url("fonts/aileron-heavy-webfont.woff2") format("woff2"), url("webfonts/aileron-heavy-webfont.woff") format("woff");
+}
+
+body
+{
+	margin: 0;
+	font-family: sans-serif;
+	background: #eee;
+	display: flex;
+	max-width: 1600px;
+	margin: auto;
+	font-family: "aileronregular";
+}
+
+#wiki, #pad, #irc
+{
+	height: 100vh;
+	border: none;
+}	
+
+#pad
+{
+	flex: 10 1 800px;
+}
+
+#irc
+{
+	flex: 1 10 550px;
+	padding-left: 10px;
+	opacity: 0;
+}
+
+#menu
+{
+	flex: 1 2 250px;
+	padding-top: 0px;
+	padding-left: 30px;
+}
+
+#menu .main_title img
+{
+	width: 3em;
+	margin-right: 10px;
+}
+
+#menu .main_title h1
+{
+	width: 65%;
+	font-weight: normal;
+	font-family: "aileronheavy";
+	margin: 0;
+	display: inline-block;
+	margin-bottom: .4em;
+}
+
+#menu li
+{
+	font-size: .9em;
+	color: #444;
+	font-weight: normal;
+	cursor: pointer;
+	padding: .3em 0em;
+	list-style-position: inside;
+}
+
+#menu li:hover
+{
+	text-decoration: underline;
+}
+
+#menu ul
+{
+	margin: 0;
+	padding: 0;
+	margin-bottom: .5em;
+	margin-left: .3em;
+	padding-left: .8em;
+	border-left: 1px #aaa solid;
+}
+
+#menu .folder_title
+{
+	list-style-type: none;
+	font-family: "aileronheavy";
+	margin-left: 1.1em;
+}
+
+#menu .folder_title:before
+{
+	content: "\25B6";
+	position: absolute;
+	margin-left: -1.1em;
+}
+
+#menu .folder_title.open:before
+{
+	content: "\25BC";
+}
+
+#menu .page_title
+{
+	list-style-type: none;
+	margin-left: 1.1em;
+}
+
+#menu .page_title:before
+{
+	content: "\25C7";
+	position: absolute;
+	margin-left: -1.1em;
+}
+
+#menu .page_title.selected
+{
+	list-style-type: none;
+	color: #3399dd;
+}
+
+#menu .page_title.selected:before
+{
+	content: "\25C6  ";
+}
+
+#menu .folder_title + .folder_content
+{
+	display: none;
+}
+
+#menu .folder_title.open + .folder_content
+{
+	display: block;
+}
+
+.hidden
+{
+  display: none;
+}
+
+#option
+{
+	position: absolute;
+	cursor: pointer;
+	background: #ddd;
+	font-size: .8em;
+	color: #888;
+}
+
+#option div
+{
+	padding: .4em 1em;
+}
+
+#option div:hover
+{
+	background: #ccc;
+}
+
+#option a
+{
+	text-decoration: none;
+}
+
+#option a:visited
+{
+	color: #444;
+}
+
+#option div:first-child
+{
+	color: #444;
+}
