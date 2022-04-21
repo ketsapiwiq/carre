@@ -1,0 +1,40 @@
+img{
+    width : 20%;
+    height : 20%;
+}
+
+#menu{
+    float: left;
+    width : 20%;
+    height : 20%;
+}
+
+iframe{
+    float : right;
+    width : 70%;
+    height: 1000px;
+}
+
+#test{
+    float : left;
+}
+
+li{
+    list-style: none;
+}
+
+#options{
+    position: absolute;
+    border: 1px black solid;
+    border-radius: 20px;
+    background-color: #cccccc;
+}
+
+/*#options:not(:hover){
+    display: none;
+}*/
+
+
+#options p:hover{
+    background-color : #aaaaaa;
+}
