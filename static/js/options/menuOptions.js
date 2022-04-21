@@ -5,7 +5,6 @@ class menuOptions{
         this.options = options;
     }
 
-    // A voir plus tard
     afficherMenu(posx, posy, options) {
         let m = $("#options");
         // Possible de factoriser les lignes liées au style

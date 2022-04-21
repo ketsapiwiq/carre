@@ -50,6 +50,9 @@ function init(){
             $("ul.parent").contextmenu(function(event){
                 displayDirectoryMenu(event, $(this));
             });
+            $("#options").mouseleave(function(){
+                deleteOptions();
+            })
         })
         .fail(function(){
             alert("le callback s'est mal passé");
@@ -97,6 +100,10 @@ function displayDirectoryMenu(event, parent){
     return false;
 }
 
+function deleteOptions(){
+    $("#options").children().slice().remove();
+}
+
 function addPad(parent){
     let namePad = prompt("Entrez le nom du nouveau pad : ", "");
     if (namePad == null || namePad == "") {
@@ -124,10 +131,6 @@ function addPad(parent){
     form.submit();
 
     alert("Formulaire envoyé");
-    $get('ajouterPad')
-        .fail(function(){
-            alert("Il y a eu un problème lors de l'ajout");
-        })
 }
 
 // A faire plus tard : fonctions pour les options

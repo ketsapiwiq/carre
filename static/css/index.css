@@ -30,6 +30,11 @@ li{
     background-color: #cccccc;
 }
 
+/*#options:not(:hover){
+    display: none;
+}*/
+
+
 #options p:hover{
     background-color : #aaaaaa;
 }
