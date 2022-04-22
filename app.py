@@ -14,13 +14,13 @@ def index():
     return render_template('index.html')
 
 
-@app.route("api/init/menu")
+@app.route("/api/init/menu")
 def initMenu():
     # !Vérifier qu'il n'y ait rien dans le fichier
     menu = fonctionnalities.recupMenu()
     return json.dumps(menu)
 
-@app.route("api/add/pad",  methods=['POST','GET'])
+@app.route("/api/add/pad",  methods=['POST','GET'])
 def ajouterPad():
     print("La redirection marche !")
     name = request.form.get('name')
@@ -30,23 +30,23 @@ def ajouterPad():
     fonctionnalities.ajoutPadFunc(padAjout)
     return redirect(url_for('index'))
 
-@app.route("api/remove/pad")
+@app.route("/api/remove/pad")
 def removePad():
     print("Remove pad")
 
-@app.route("api/rename/pad")
+@app.route("/api/rename/pad")
 def renamePad():
     print("Rename pad")
 
-@app.route("api/remove/dir")
+@app.route("/api/remove/dir")
 def removeDir():
     print("Remove directory")
 
-@app.route("api/add/dir")
+@app.route("/api/add/dir")
 def addDir():
     print("Add directory")
 
-@app.route("api/rename/dir")
+@app.route("/api/rename/dir")
 def renameDir():
     print("Rename directory")
 
