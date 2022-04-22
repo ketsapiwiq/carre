@@ -112,7 +112,7 @@ function addPad(parent){
     // Création du formulaire caché
     let form = document.createElement("form");
     form.setAttribute("method","POST");
-    form.setAttribute("action", "/ajouterPad");
+    form.setAttribute("action", "/add/pad");
 
     let inputName = document.createElement("input");
     inputName.setAttribute("type","hidden");
