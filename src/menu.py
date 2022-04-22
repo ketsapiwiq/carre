@@ -1,21 +1,27 @@
 import json
+from src import fonctionnalities, pad
+
+objMenu = []
+
 
 class Menu:
-    ##
-    # Référence sur le fichier json
-    # Si possible, faire une classe statique
-    # Faire les méthodes pour récup les infos ou pour les ajouter
 
-    ## path not defined
-    path = "static/Modele/menu.json"
+    path = "../static/Modele/menu.json"
 
-    #def __init__(self):
-    #    self.path = "/Modele/menu.json"
+    #Variable globale du menu --> Dico de pads 
+    
 
     def recuperationMenu(self):
         file = open(self.path,"r")
         menu = json.loads(file.read())
         file.close()
+        for i in range(0, len(menu)):
+            parent = menu[i]["parent"]
+            for j in range(0, len(menu[i]["pads"])):
+                newPad = pad.Pad(menu[i]["pads"][j]["Nom"], parent, menu[i]["pads"][j]["Adresse"])
+                objMenu.append(pad)
+
+        print(objMenu)
         return menu
 
     ##
@@ -47,3 +53,8 @@ class Menu:
                 fileWrite.close()
                 return 0
         raise Exception("Pad invalide, nom du dossier parent inexistant")
+
+
+    def add(pad):
+        
+        return 0

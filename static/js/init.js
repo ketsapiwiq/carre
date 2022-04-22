@@ -24,7 +24,7 @@ function init(){
     pad.append("<iframe id='iPad' src='https://pad.lqdn.fr/p/9tlotestDev'> </iframe>")
     // Initialisation du menu
     // Doit récupérer le tableau contenant le menu et l'afficher sur la page
-    $.get('initMenu')
+    $.get('/api/init/menu')
         .done(function(data){
             // Traitement et affichage du menu
             menu = JSON.parse(data)
@@ -112,7 +112,7 @@ function addPad(parent){
     // Création du formulaire caché
     let form = document.createElement("form");
     form.setAttribute("method","POST");
-    form.setAttribute("action", "/add/pad");
+    form.setAttribute("action", "/api/add/pad");
 
     let inputName = document.createElement("input");
     inputName.setAttribute("type","hidden");
