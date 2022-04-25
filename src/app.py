@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for
-from src import fonctionnalities, pad
-import json
+from src import pad, threads
+import json,time
 
 app = Flask(__name__, template_folder='../static', static_folder='../static')
 
@@ -9,22 +9,30 @@ app = Flask(__name__, template_folder='../static', static_folder='../static')
 ##
 @app.route("/", methods=['POST','GET'])
 def index():
+    #fonctionnalities.creaPad(10000)
     return render_template('index.html')
 
 
 @app.route("/api/init/menu")
 def initMenu():
-    menu = fonctionnalities.recupMenu()
+    menu = None
+    threadMenu = threads.ThreadFunctionalities("recupMenu", menu)
+    threadMenu.start()
+    threadMenu.join()
+    menu = threadMenu.getStock()
     return json.dumps(menu)
 
 @app.route("/api/add/pad",  methods=['POST','GET'])
 def ajouterPad():
-    print("La redirection marche !")
+    start = time.time()
     name = request.form.get('name')
     parent = request.form.get('parent')
     adress = "p/9tm8" + name
     padAjout = pad.Pad(name, parent, adress)
-    fonctionnalities.ajoutPadFunc(padAjout)
+    threadAjoutPad = threads.ThreadFunctionalities("ajoutPadFunc", padAjout)
+    threadAjoutPad.start()
+    threadAjoutPad.join()
+    print(str(time.time() - start) + " seconds to add a pad")
     return redirect(url_for('index'))
 
 @app.route("/api/remove/pad")
