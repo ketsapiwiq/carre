@@ -27,9 +27,5 @@ class menuOptions{
                 }
             }
         });
-
     }
-
-
-
 }
