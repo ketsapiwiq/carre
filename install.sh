@@ -9,7 +9,7 @@ source bin/activate && echo ">> environnement virtuel activé."
 pip install -r requirements.txt && echo ">> Dépendances installées"
 
 # Configuration et lancement de Flask
-export FLASK_APP=app.py
+export FLASK_APP=src/app.py
 export FLASK_ENV=development
 nohup flask run &!
 xdg-open http://127.0.0.1:5000
