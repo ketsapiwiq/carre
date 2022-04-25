@@ -14,10 +14,8 @@ class menuOptions{
         m.onmouseover = function () {
             this.style.cursor = 'pointer';
         }
-        //console.log(options[0].getName());
+
         for (var i = 0; i < options.length; ++i) {
-            //mettre un event listener sur les p et récupérer le texte et lancer la fonction associée
-            //m.append("<p onclick='" + options[i].action() + "'>" + options[i].getName() + "</p>");
             m.append("<p>" + options[i].getName() + "</p>");
         }
         // Pas optimisé

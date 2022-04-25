@@ -18,12 +18,10 @@ $(document).ready(function(){
  * Afficher le pad par défaut
  **/
 function init(){
-    //S'il y a un click droit --> Lancer la fenêtre modale
     // Initialisation du pad
     pad = $("#pad");
     pad.append("<iframe id='iPad' src='https://pad.lqdn.fr/p/9tlotestDev'> </iframe>")
     // Initialisation du menu
-    // Doit récupérer le tableau contenant le menu et l'afficher sur la page
     $.get('/api/init/menu')
         .done(function(data){
             // Traitement et affichage du menu
@@ -59,6 +57,10 @@ function init(){
         })
 }
 
+/**
+* Met à jour le pad lorque
+* @param e : élément du menu cliqué
+*/
 function updateIFrame(e){
     document.getElementById("iPad").remove();
     let text = e.html();
@@ -68,6 +70,11 @@ function updateIFrame(e){
     pad.append("<iframe id='iPad' src='https://pad.lqdn.fr/" + adress + "'> </iframe>")
 }
 
+
+/**
+* Renvoie l'adresse d'un pad
+* @param text : Le nom du pad pour lequel on veut récupérer l'adresse
+*/
 function findAdress(text){
     // Possibilité d'améliorer la boucle avec un foreach ?
     for (var i = 0; i < menu.length; i++){
@@ -79,6 +86,12 @@ function findAdress(text){
     }
 }
 
+
+/**
+* Création du menu d'options pour les dossiers
+* @param event :
+* @param parent : élément cliqué
+*/
 function displayDirectoryMenu(event, parent){
     //Créer les options
     event.preventDefault();
@@ -99,10 +112,17 @@ function displayDirectoryMenu(event, parent){
     return false;
 }
 
+/**
+* Supprime le menu d'options
+*/
 function deleteOptions(){
     $("#options").children().slice().remove();
 }
 
+/**
+* Création d'un nouveau pad
+* @param parent : le parent du nouveau pad
+*/
 function addPad(parent){
     let namePad = prompt("Entrez le nom du nouveau pad : ", "");
     if (namePad == null || namePad == "") {
@@ -130,8 +150,8 @@ function addPad(parent){
     form.submit();
 }
 
-// A faire plus tard : fonctions pour les options
 
+// A faire plus tard : fonctions pour les options
 function deleteDirectory(){
     alert("Fonctionnalité non développée, c'est pour bientôt ;)");
 }

@@ -8,9 +8,9 @@ class Menu:
 
     path = "../static/Modele/menu.json"
 
-    #Variable globale du menu --> Dico de pads 
-    
-
+    ##
+    # Récupère le menu dans un tableau
+    ##
     def recuperationMenu(self):
         file = open(self.path,"r")
         menu = json.loads(file.read())
@@ -53,8 +53,3 @@ class Menu:
                 fileWrite.close()
                 return 0
         raise Exception("Pad invalide, nom du dossier parent inexistant")
-
-
-    def add(pad):
-        
-        return 0

@@ -9,14 +9,11 @@ app = Flask(__name__, template_folder='../static', static_folder='../static')
 ##
 @app.route("/", methods=['POST','GET'])
 def index():
-    ## Redirection vers fonction permettant de récupérer les infos (controller)
-    ## Affiche la page du pad
     return render_template('index.html')
 
 
 @app.route("/api/init/menu")
 def initMenu():
-    # !Vérifier qu'il n'y ait rien dans le fichier
     menu = fonctionnalities.recupMenu()
     return json.dumps(menu)
 

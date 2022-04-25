@@ -1,3 +1,7 @@
+/**
+* Lie une fonction d'action et un nom
+*/
+
 class Option{
     constructor(name, fnct, paramFnct){
         this.name = name;
