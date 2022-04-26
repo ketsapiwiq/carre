@@ -1,5 +1,5 @@
 import json
-from src import fonctionnalities, pad
+from src import functionalities, pad
 
 objMenu = []
 
@@ -21,7 +21,7 @@ class Menu:
                 newPad = pad.Pad(menu[i]["pads"][j]["Nom"], parent, menu[i]["pads"][j]["Adresse"])
                 objMenu.append(pad)
 
-        print(objMenu)
+        #print(objMenu)
         return menu
 
     ##
@@ -43,7 +43,7 @@ class Menu:
                 #Modifier la variable menu
                 data = {'Nom' : pad.getName(), 'Adresse' : pad.getAdress()}
                 menu[i]["pads"].append(data)
-                print(menu);
+                #print(menu);
                 # Tout renvoyer dans le fichier Json
                 try:
                     fileWrite = open(self.path, "w")
