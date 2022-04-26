@@ -8,6 +8,7 @@
 
 var menu;
 var pad;
+var optionDisplay = false;
 
 $(document).ready(function(){
     init();
@@ -46,7 +47,9 @@ function init(){
                 $(this).css('cursor','pointer');
             });
             $("ul.parent").contextmenu(function(event){
-                displayDirectoryMenu(event, $(this));
+                if(!optionDisplay){
+                    displayDirectoryMenu(event, $(this));
+                }
             });
             $("#options").mouseleave(function(){
                 deleteOptions();
@@ -93,9 +96,7 @@ function findAdress(text){
 * @param parent : élément cliqué
 */
 function displayDirectoryMenu(event, parent){
-    //Créer les options
     event.preventDefault();
-    // Recupérer le nom du parent
     var op1 = new Option("Ajouter un pad", addPad, parent.text());
     var op2 = new Option("Supprimer le dossier", deleteDirectory);
     var op3 = new Option("Renommer le dossier", renameDirectory);
@@ -109,6 +110,7 @@ function displayDirectoryMenu(event, parent){
     let posX = event.clientX + window.pageXOffset;
     let posY = event.clientY + window.pageYOffset;
     menuOp.afficherMenu(posX, posY, tabOp);
+    optionDisplay = true;
     return false;
 }
 
@@ -117,6 +119,7 @@ function displayDirectoryMenu(event, parent){
 */
 function deleteOptions(){
     $("#options").children().slice().remove();
+    optionDisplay = false;
 }
 
 /**
