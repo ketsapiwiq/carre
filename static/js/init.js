@@ -37,23 +37,37 @@ function init(){
             }
             menuHtml.append("</li>")
 
-            //Ajout des EventListener
-
+            //------Ajout des EventListener--------//
+            //Click sur le nom d'un pad
             $("ul.child").click(function(){
                 updateIFrame($(this));
-
             });
+
+            //Click droit sur le nom d'un pad
+            $("ul.child").contextmenu(function(event){
+              if(!optionDisplay){
+                displayPadMenu(event, $(this));
+              }
+            });
+
+            //Passage de la souris sur le nom d'un pad
             $("ul.child").hover(function(){
                 $(this).css('cursor','pointer');
             });
+
+            //Click droit sur le nom d'un dossier
             $("ul.parent").contextmenu(function(event){
                 if(!optionDisplay){
                     displayDirectoryMenu(event, $(this));
                 }
             });
+
+            //La souris n'est plus sur le menu d'options
             $("#options").mouseleave(function(){
                 deleteOptions();
-            })
+            });
+
+
         })
         .fail(function(){
             alert("le callback s'est mal passé");
@@ -61,7 +75,7 @@ function init(){
 }
 
 /**
-* Met à jour le pad lorque
+* Changement de pad
 * @param e : élément du menu cliqué
 */
 function updateIFrame(e){
@@ -111,7 +125,6 @@ function displayDirectoryMenu(event, parent){
     let posY = event.clientY + window.pageYOffset;
     menuOp.afficherMenu(posX, posY, tabOp);
     optionDisplay = true;
-    return false;
 }
 
 /**
@@ -165,4 +178,27 @@ function renameDirectory(){
 
 function addDirectory(){
     alert("Fonctionnalité non développée, c'est pour bientôt ;)");
+}
+
+
+function displayPadMenu(event, pad){
+    event.preventDefault();
+    var op1 = new Option("Renommer", renamePad);
+    var op2 = new Option("Supprimer", deletePad);
+    var tabOp = new Array();
+    tabOp.push(op1);
+    tabOp.push(op2);
+    var menuOp = new menuOptions(tabOp)
+    let posX = event.clientX + window.pageXOffset;
+    let posY = event.clientY + window.pageYOffset;
+    menuOp.afficherMenu(posX, posY, tabOp);
+    optionDisplay = true;
+}
+
+function renamePad(){
+
+}
+
+function deletePad(){
+
 }
