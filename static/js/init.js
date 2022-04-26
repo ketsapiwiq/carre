@@ -84,6 +84,8 @@ function updateIFrame(e){
     $("ul").css('background-color','white');
     e.css('background-color','red');
     let adress = findAdress(text);
+    // @nono: Attention à l'adresse du serveur de pad : il doit pouvoir être changé dans la
+    // configuration du serveur sans éditer le source code.
     pad.append("<iframe id='iPad' src='https://pad.lqdn.fr/" + adress + "'> </iframe>")
 }
 
@@ -92,6 +94,8 @@ function updateIFrame(e){
 * Renvoie l'adresse d'un pad
 * @param text : Le nom du pad pour lequel on veut récupérer l'adresse
 */
+// @nono : Y'a sûrement une meilleur manière de faire, ici c'est une compléxité
+// n*m, ça va devenir très lent quand y'aura bcp de pads.
 function findAdress(text){
     // Possibilité d'améliorer la boucle avec un foreach ?
     for (var i = 0; i < menu.length; i++){
@@ -144,7 +148,15 @@ function addPad(parent){
     if (namePad == null || namePad == "") {
         return 1;
     }
+    // @nono : une meilleur validation des noms des pads serait chouette ;
+    // on boucle tant qu'on n'a pas un nom valable, ou une action d'annulation ?
+    // Faire attention si le nom du pad permet l'introduction d'une faille XSS !
 
+
+    // @nono : À la place d'un formulaire caché, on devrait plutôt faire une
+    // requête AJAX directement vers le serveur sans éditer l'HTML.
+    // Voir les API REST et leurs implémentations en JS.
+    
     // Création du formulaire caché
     let form = document.createElement("form");
     form.setAttribute("method","POST");

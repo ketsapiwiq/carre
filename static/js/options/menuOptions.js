@@ -19,6 +19,7 @@ class menuOptions{
             m.append("<p>" + options[i].getName() + "</p>");
         }
         // Pas optimisé
+        // @nono : À optimiser alors ;)
         $("#options p").click(function() {
             let optionName = $(this).html();
             for(let i = 0; i < options.length;++i){

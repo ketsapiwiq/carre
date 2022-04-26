@@ -7,6 +7,9 @@ objMenu = []
 class Menu:
 
     path = "../static/Modele/menu.json"
+    # @nono : Attention aux chemins relatifs codé en dur dans le code,
+    # voir les variables globales et les fichiers de configurations
+    # voir le TOML comme format de configuration
 
     ##
     # Récupère le menu dans un tableau
@@ -34,8 +37,12 @@ class Menu:
             menu = json.loads(fileRead.read())
         except IOError:
             print("Il y a un problème avec le fichier")
+            # @nono: ça serait bien d'afficher l'erreur au client et de
+            # ne pas continuer l'éxécution de la fonction, ici on va itéré sur un
+            # menu de taille 0 ou NULL, c'est dommage.
         fileRead = open(self.path,"r")
         menu = json.loads(fileRead.read())
+        # @nono : la gestion d'exception ici ne sert pas ?
         fileRead.close()
 
         for i in range (0, len(menu)):
@@ -51,5 +58,8 @@ class Menu:
                     print("Il y a un problème avec l'ouverture du fichier")
                 json.dump(menu, fileWrite)
                 fileWrite.close()
+                # @nono : pareil, ici on va dump dans un fichier qui est possiblement
+                # pas ouvert, et si on dump dedans on perds toutes nos données, c'est
+                # dangereux comme comportement :/
                 return 0
         raise Exception("Pad invalide, nom du dossier parent inexistant")

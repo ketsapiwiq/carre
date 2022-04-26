@@ -2,6 +2,8 @@ from flask import Flask, render_template, jsonify, request, redirect, url_for
 from src import pad, threads
 import json,time
 
+## @nono : Attention aux chemins relatifs
+## À changer par une variable d'environnement ou une clé de configuration ?
 app = Flask(__name__, template_folder='../static', static_folder='../static')
 
 ##
@@ -33,6 +35,11 @@ def ajouterPad():
     threadAjoutPad.start()
     threadAjoutPad.join()
     print(str(time.time() - start) + " seconds to add a pad")
+
+    # En fait ici l'idée c'est que le serveur retourne directement du json
+    # et n'ai pas besoin de faire de redirection du tout : le client
+    # reste sur la page d'index, et c'est le Javascript qui se charge de faire
+    # la "navigation"
     return redirect(url_for('index'))
 
 @app.route("/api/remove/pad")
