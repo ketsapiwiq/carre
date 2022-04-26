@@ -23,11 +23,11 @@ class ThreadFunctionalities(threading.Thread):
                 return self.stock
             case "ajoutPadFunc" :
                 functionalities.ajoutPadFunc(self.stock)
-                return 0;
+                return 0
             case "testPerf" :
                 functionalities.creaPad(self.stock)
-                return 0;
-            return -1
+                return 0
+        return -1
 
         #try:
         #    self.stock = fonctionnalities.self.fonction()
