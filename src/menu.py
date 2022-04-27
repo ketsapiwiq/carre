@@ -1,21 +1,28 @@
-import json
-from src import functionalities, pad, config
+import json, configparser
+from src import functionalities, pad
 
 objMenu = []
-path = config.pathMenu
+
 
 class Menu:
 
+    path = None
     # @nono : Attention aux chemins relatifs codé en dur dans le code,
     # voir les variables globales et les fichiers de configurations
     # voir le TOML comme format de configuration
+
+    def __init__(self):
+        conf = configparser.ConfigParser()
+        conf.read('config.ini')
+        self.path = conf['python']['pathMenu']
+
 
     ##
     # Récupère le menu dans un tableau
     ##
     def recuperationMenu(self):
         try:
-            file = open(path,"r")
+            file = open(self.path,"r")
             menu = json.loads(file.read())
             file.close()
         except IOError as err:
@@ -34,7 +41,7 @@ class Menu:
     ##
     def addPadToMenu(self, pad):
         try:
-            fileRead = open(path,"r")
+            fileRead = open(self.path,"r")
             menu = json.loads(fileRead.read())
             fileRead.close()
         except IOError as err:
@@ -49,7 +56,7 @@ class Menu:
                 #print(menu);
                 # Tout renvoyer dans le fichier Json
                 try:
-                    fileWrite = open(path, "w")
+                    fileWrite = open(self.path, "w")
                     json.dump(menu, fileWrite)
                     fileWrite.close()
                 except IOError as err:

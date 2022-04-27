@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 from src import pad, threads
-import json,time
+import json,time, configparser
 
 ## @nono : Attention aux chemins relatifs
 ## À changer par une variable d'environnement ou une clé de configuration ?
@@ -23,6 +23,19 @@ def initMenu():
     threadMenu.join()
     menu = threadMenu.getStock()
     return json.dumps(menu)
+
+@app.route("/api/init/var")
+def initVariables():
+    variables = dict()
+    conf = configparser.ConfigParser()
+    conf.read('config.ini')
+    for key in conf['js']:
+        #print(key + " " + conf['js'])
+        #variables.append(conf['js'][key])
+        variables[key] = conf['js'][key]
+        print(variables)
+    #return json.dumps(variables)
+    return variables
 
 @app.route("/api/add/pad",  methods=['POST','GET'])
 def ajouterPad():

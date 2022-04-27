@@ -8,6 +8,7 @@
 
 var menu;
 var pad;
+var adrServ;
 var optionDisplay = false;
 
 $(document).ready(function(){
@@ -19,14 +20,22 @@ $(document).ready(function(){
  * Afficher le pad par défaut
  **/
 function init(){
-    // Initialisation du pad
-    pad = $("#pad");
-    pad.append("<iframe id='iPad' src='https://pad.lqdn.fr/p/9tlotestDev'> </iframe>")
+    $.get('/api/init/var')
+      .done(function(data){
+        adrServ = data["adrserv"];
+        // Initialisation du pad
+        pad = $("#pad");
+        pad.append("<iframe id='iPad' src='" + adrServ + "p/9tlotestDev'> </iframe>");
+      })
+      .fail(function(){
+        throw new Error("Variables de config non initialisées");
+      })
+
     // Initialisation du menu
     $.get('/api/init/menu')
         .done(function(data){
             // Traitement et affichage du menu
-            menu = JSON.parse(data)
+            menu = JSON.parse(data);
             var menuHtml = $("#menu");
             menuHtml.append("<li>");
             for (var i in menu){
@@ -69,7 +78,7 @@ function init(){
 
         })
         .fail(function(){
-            alert("le callback s'est mal passé");
+            throw new Error("Récupération du menu impossible");
         })
 }
 
@@ -85,7 +94,7 @@ function updateIFrame(e){
     let adress = findAdress(text);
     // @nono: Attention à l'adresse du serveur de pad : il doit pouvoir être changé dans la
     // configuration du serveur sans éditer le source code.
-    pad.append("<iframe id='iPad' src='https://pad.lqdn.fr/" + adress + "'> </iframe>")
+    pad.append("<iframe id='iPad' src='" + adrServ + adress + "'> </iframe>")
 }
 
 
