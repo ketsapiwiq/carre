@@ -67,7 +67,6 @@ function init(){
                 deleteOptions();
             });
 
-
         })
         .fail(function(){
             alert("le callback s'est mal passé");
@@ -156,7 +155,7 @@ function addPad(parent){
     // @nono : À la place d'un formulaire caché, on devrait plutôt faire une
     // requête AJAX directement vers le serveur sans éditer l'HTML.
     // Voir les API REST et leurs implémentations en JS.
-    
+
     // Création du formulaire caché
     let form = document.createElement("form");
     form.setAttribute("method","POST");
