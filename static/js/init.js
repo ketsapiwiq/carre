@@ -35,16 +35,7 @@ function init(){
     $.get('/api/init/menu')
         .done(function(data){
             // Traitement et affichage du menu
-            menu = JSON.parse(data);
-            var menuHtml = $("#menu");
-            menuHtml.append("<li>");
-            for (var i in menu){
-                menuHtml.append("<ul class='parent'><h2>" + menu[i]["parent"] + "</h2></ul>");
-                for(var j in menu[i]["pads"]){
-                    menuHtml.append("<ul class='child'>" + menu[i]["pads"][j]["Nom"] + "</ul>");
-                }
-            }
-            menuHtml.append("</li>")
+            updateMenu(data);
 
             //------Ajout des EventListener--------//
             //Click sur le nom d'un pad
@@ -82,6 +73,20 @@ function init(){
         })
 }
 
+function updateMenu(data){
+    $("#liste").children().slice().remove();
+    menu = JSON.parse(data);
+    var menuHtml = $("#liste");
+    menuHtml.append("<li>");
+    for (var i in menu){
+        menuHtml.append("<ul class='parent'><h2>" + menu[i]["parent"] + "</h2></ul>");
+        for(var j in menu[i]["pads"]){
+            menuHtml.append("<ul class='child'>" + menu[i]["pads"][j]["Nom"] + "</ul>");
+        }
+    }
+    menuHtml.append("</li>")
+}
+
 /**
 * Changement de pad
 * @param e : élément du menu cliqué
@@ -92,8 +97,7 @@ function updateIFrame(e){
     $("ul").css('background-color','white');
     e.css('background-color','red');
     let adress = findAdress(text);
-    // @nono: Attention à l'adresse du serveur de pad : il doit pouvoir être changé dans la
-    // configuration du serveur sans éditer le source code.
+
     pad.append("<iframe id='iPad' src='" + adrServ + adress + "'> </iframe>")
 }
 
@@ -160,30 +164,21 @@ function addPad(parent){
     // on boucle tant qu'on n'a pas un nom valable, ou une action d'annulation ?
     // Faire attention si le nom du pad permet l'introduction d'une faille XSS !
 
-
-    // @nono : À la place d'un formulaire caché, on devrait plutôt faire une
-    // requête AJAX directement vers le serveur sans éditer l'HTML.
     // Voir les API REST et leurs implémentations en JS.
 
-    // Création du formulaire caché
-    let form = document.createElement("form");
-    form.setAttribute("method","POST");
-    form.setAttribute("action", "/api/add/pad");
+    //Requête AJAX
+    $.ajax({
+      url: "/api/add/pad",
+      method: "POST",
+      data: {name: namePad, parent: parent}
+    })
+    .done(function(response){
+      updateMenu(response);
 
-    let inputName = document.createElement("input");
-    inputName.setAttribute("type","hidden");
-    inputName.setAttribute("name","name");
-    inputName.setAttribute("value",namePad);
-
-    let inputParent = document.createElement("input");
-    inputParent.setAttribute("type","hidden");
-    inputParent.setAttribute("name","parent");
-    inputParent.setAttribute("value",parent);
-
-    form.appendChild(inputName);
-    form.appendChild(inputParent);
-    document.body.append(form)
-    form.submit();
+    })
+    .fail(function(){
+      throw Exception ("Ajout du pad impossible");
+    })
 }
 
 

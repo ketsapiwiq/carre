@@ -59,6 +59,7 @@ class Menu:
                     fileWrite = open(self.path, "w")
                     json.dump(menu, fileWrite)
                     fileWrite.close()
+                    return 0
                 except IOError as err:
                     print("Erreur fichier : {0}"  .format(err))
                     return -1

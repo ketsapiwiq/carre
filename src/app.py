@@ -30,30 +30,29 @@ def initVariables():
     conf = configparser.ConfigParser()
     conf.read('config.ini')
     for key in conf['js']:
-        #print(key + " " + conf['js'])
-        #variables.append(conf['js'][key])
         variables[key] = conf['js'][key]
-        print(variables)
-    #return json.dumps(variables)
     return variables
 
 @app.route("/api/add/pad",  methods=['POST','GET'])
 def ajouterPad():
-    start = time.time()
     name = request.form.get('name')
+    print("Nom du pad " + name)
     parent = request.form.get('parent')
+    print("Nom du parent " + parent)
     adress = "p/9tm8" + name
     padAjout = pad.Pad(name, parent, adress)
     threadAjoutPad = threads.ThreadFunctionalities("ajoutPadFunc", padAjout)
     threadAjoutPad.start()
     threadAjoutPad.join()
-    print(str(time.time() - start) + " seconds to add a pad")
-
+    print("fin de l'ajout")
     # En fait ici l'idée c'est que le serveur retourne directement du json
     # et n'ai pas besoin de faire de redirection du tout : le client
     # reste sur la page d'index, et c'est le Javascript qui se charge de faire
     # la "navigation"
-    return redirect(url_for('index'))
+
+    #Renvoyer le nouveau menu à init.js
+
+    return initMenu()
 
 @app.route("/api/remove/pad")
 def removePad():
