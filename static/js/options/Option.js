@@ -16,4 +16,8 @@ class Option{
     getName(){
         return this.name;
     }
+
+    afficherForm(){
+        
+    }
 }

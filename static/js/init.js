@@ -64,7 +64,7 @@ function init(){
 
             //La souris n'est plus sur le menu d'options
             $("#options").mouseleave(function(){
-                deleteOptions();
+                deleteDialog("#options");
             });
 
         })
@@ -144,10 +144,11 @@ function displayDirectoryMenu(event, parent){
 }
 
 /**
-* Supprime le menu d'options
+* Supprime les boîtes de dialogues et les menus
 */
-function deleteOptions(){
-    $("#options").children().slice().remove();
+function deleteDialog(element){
+    $(element).children().slice().remove();
+    $(element).removeAttr("style");
     optionDisplay = false;
 }
 
@@ -156,10 +157,31 @@ function deleteOptions(){
 * @param parent : le parent du nouveau pad
 */
 function addPad(parent){
-    let namePad = prompt("Entrez le nom du nouveau pad : ", "");
-    if (namePad == null || namePad == "") {
-        return 1;
-    }
+
+    let d = $("#dialog");
+    // Possible de factoriser les lignes liées au style
+    d.css("position", "absolute");
+    d.css("margin-left", "50%");
+    d.css("margin-top", "10%");
+    d.css("width", "40%");
+    d.css("height", "15%");
+
+    d.append("<h2>Entrez le nom du nouveau pad : </h2>");
+
+    //'formAddPad(this," + parent + ")'
+    d.append("<form method='GET' onsubmit='return formAddPad(this,\"" + parent + "\")'><input type='text' name='padName'><button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
+
+    $("#cancel").click(function(){
+        deleteDialog("#dialog");
+    });
+
+    // -- REGEX -- //
+    // [^&+<+>+\?+!+]
+    // ^[a-z0-9]+$/i
+    // \d+|[A-Z]+|[a-z]+)+/g"
+
+
+
     // @nono : une meilleur validation des noms des pads serait chouette ;
     // on boucle tant qu'on n'a pas un nom valable, ou une action d'annulation ?
     // Faire attention si le nom du pad permet l'introduction d'une faille XSS !
@@ -167,6 +189,21 @@ function addPad(parent){
     // Voir les API REST et leurs implémentations en JS.
 
     //Requête AJAX
+}
+
+// Faire en sorte que la fenêtre de dialogue se ré-ouvre si le nom du pad est invalide
+
+function formAddPad(form, parent){
+    namePad = form.padName.value;
+    // Regex qui ne fonctionne pas
+    /*let regex = "[><?;!&\/=]+";
+    let matching = regex.match(namePad);
+    if(matching != null){
+        alert("Pas Valide");
+        // Si le pad n'est pas valide, on relance la fonction addPad (Pour ça, il faudrait que la regex marche :c )
+    }else{
+        alert("Valide");
+    }*/
     $.ajax({
       url: "/api/add/pad",
       method: "POST",
@@ -174,11 +211,13 @@ function addPad(parent){
     })
     .done(function(response){
       updateMenu(response);
-
+      return true;
     })
     .fail(function(){
       throw Exception ("Ajout du pad impossible");
-    })
+      addPad(parent);
+      return false;
+  })
 }
 
 
