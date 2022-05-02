@@ -27,6 +27,8 @@ class ThreadFunctionalities(threading.Thread):
             case "testPerf" :
                 functionalities.creaPad(self.stock)
                 return 0
+            case "renameDirectory":
+                functionalities.renameDir(self.stock)
         return -1
 
         #try:

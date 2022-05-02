@@ -2,7 +2,7 @@ import json, configparser
 from src import functionalities, pad
 
 objMenu = []
-
+ficIni = 'config.ini'
 
 class Menu:
 
@@ -13,7 +13,7 @@ class Menu:
 
     def __init__(self):
         conf = configparser.ConfigParser()
-        conf.read('config.ini')
+        conf.read(ficIni)
         self.path = conf['python']['pathMenu']
 
 
@@ -31,7 +31,7 @@ class Menu:
             parent = menu[i]["parent"]
             for j in range(0, len(menu[i]["pads"])):
                 newPad = pad.Pad(menu[i]["pads"][j]["Nom"], parent, menu[i]["pads"][j]["Adresse"])
-                objMenu.append(pad)
+                objMenu.append(newPad)
 
         return menu
 
@@ -64,3 +64,22 @@ class Menu:
                     print("Erreur fichier : {0}"  .format(err))
                     return -1
         raise Exception("Pad invalide, nom du dossier parent inexistant")
+
+    def renameDirectory(self, oldName, newName):
+        for pad in objMenu:
+            if(pad.getParent() == oldName):
+                pad.setParent(newName)
+        try:
+            fileMenu = open(self.path,"r")
+            menu = json.loads(fileMenu.read())
+            fileMenu.close()
+            for i in range(0, len(menu)):
+                if(oldName == menu[i]['parent']):
+                    fileMenu = open(self.path, "w")
+                    menu[i]["parent"] = newName
+                    json.dump(menu, fileMenu)
+                    fileMenu.close()
+                    return 0
+        except IOError as err:
+            print("Erreur fichier : {0}" .format(err))
+            return -1

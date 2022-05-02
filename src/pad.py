@@ -5,6 +5,8 @@ class Pad:
         self.parent = parent
         self.adress = adress
 
+##### GETTERS #####
+
     def getName(self):
         return self.name
 
@@ -14,4 +16,7 @@ class Pad:
     def getAdress(self):
         return self.adress
 
+##### SETTERS #####
 
+    def setParent(self, newName):
+        self.parent = newName
