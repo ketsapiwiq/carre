@@ -29,6 +29,8 @@ class ThreadFunctionalities(threading.Thread):
                 return 0
             case "renameDirectory":
                 functionalities.renameDir(self.stock)
+            case "removePad":
+                functionalities.removePad(self.stock)
         return -1
 
         #try:

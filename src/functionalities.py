@@ -23,3 +23,7 @@ def renameDir(names):
     newName = names[1]
     newMenu = menu.Menu()
     newMenu.renameDirectory(oldName, newName)
+
+def removePad(name):
+    newMenu = menu.Menu()
+    newMenu.removePad(name)

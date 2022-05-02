@@ -37,36 +37,6 @@ function init(){
             // Traitement et affichage du menu
             updateMenu(data);
 
-            //------Ajout des EventListener--------//
-            //Click sur le nom d'un pad
-            $("ul.child").click(function(){
-                updateIFrame($(this));
-            });
-
-            //Click droit sur le nom d'un pad
-            $("ul.child").contextmenu(function(event){
-              if(!optionDisplay){
-                displayPadMenu(event, $(this));
-              }
-            });
-
-            //Passage de la souris sur le nom d'un pad
-            $("ul.child").hover(function(){
-                $(this).css('cursor','pointer');
-            });
-
-            //Click droit sur le nom d'un dossier
-            $("ul.parent").contextmenu(function(event){
-                if(!optionDisplay){
-                    displayDirectoryMenu(event, $(this));
-                }
-            });
-
-            //La souris n'est plus sur le menu d'options
-            $("#options").mouseleave(function(){
-                deleteDialog("#options");
-            });
-
         })
         .fail(function(){
             throw new Error("Récupération du menu impossible");
@@ -84,7 +54,37 @@ function updateMenu(data){
             menuHtml.append("<ul class='child'>" + menu[i]["pads"][j]["Nom"] + "</ul>");
         }
     }
-    menuHtml.append("</li>")
+    menuHtml.append("</li>");
+
+    //------Ajout des EventListener--------//
+    //Click sur le nom d'un pad
+    $("ul.child").click(function(){
+        updateIFrame($(this));
+    });
+
+    //Click droit sur le nom d'un pad
+    $("ul.child").contextmenu(function(event){
+        if(!optionDisplay){
+            displayPadMenu(event, $(this));
+        }
+    });
+
+    //Passage de la souris sur le nom d'un pad
+    $("ul.child").hover(function(){
+        $(this).css('cursor','pointer');
+    });
+
+    //Click droit sur le nom d'un dossier
+    $("ul.parent").contextmenu(function(event){
+        if(!optionDisplay){
+            displayDirectoryMenu(event, $(this));
+        }
+    });
+
+    //La souris n'est plus sur le menu d'options
+    $("#options").mouseleave(function(){
+        deleteDialog("#options");
+    });
 }
 
 /**
@@ -214,7 +214,7 @@ function formAddPad(form, parent){
       return true;
     })
     .fail(function(){
-      throw Exception ("Ajout du pad impossible");
+      throw "Ajout du pad impossible";
       addPad(parent);
       return false;
   })
@@ -257,7 +257,7 @@ function formRenameDirectory(form, oldName){
       return true;
     })
     .fail(function(){
-      throw Exception ("Renommage du dossier impossible");
+      throw "Renommage du dossier impossible";
       addPad(parent);
       return false;
   })
@@ -271,7 +271,7 @@ function addDirectory(){
 function displayPadMenu(event, pad){
     event.preventDefault();
     var op1 = new Option("Renommer", renamePad);
-    var op2 = new Option("Supprimer", deletePad);
+    var op2 = new Option("Supprimer", deletePad, pad.text());
     var tabOp = new Array();
     tabOp.push(op1);
     tabOp.push(op2);
@@ -282,10 +282,23 @@ function displayPadMenu(event, pad){
     optionDisplay = true;
 }
 
-function renamePad(){
-
+function deletePad(namePad){
+    $.ajax({
+      url: "/api/remove/pad",
+      method: "POST",
+      data: {name: namePad}
+    })
+    .done(function(response){
+      updateMenu(response);
+      optionDisplay = false;
+      return true;
+    })
+    .fail(function(){
+      throw "Impossible de supprimer ce pad";
+      return false;
+  })
 }
 
-function deletePad(){
+function renamePad(){
 
 }
