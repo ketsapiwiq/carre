@@ -24,16 +24,12 @@ li{
     list-style: none;
 }
 
-#options{
+#options, #dialog{
     position: absolute;
     border: 1px black solid;
     border-radius: 20px;
     background-color: #cccccc;
 }
-
-/*#options:not(:hover){
-    display: none;
-}*/
 
 
 #options p:hover{
