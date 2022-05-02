@@ -39,7 +39,6 @@ def initVariables():
 @app.route("/api/add/pad",  methods=['POST','GET'])
 def ajouterPad():
     name = request.form.get('name')
-    print(name);
     #Faire la vérification
     #Prions la sainte regex pour que ça marche
     #\d+|[A-Z]+|[a-z]+)+/g
@@ -62,7 +61,6 @@ def ajouterPad():
     # reste sur la page d'index, et c'est le Javascript qui se charge de faire
     # la "navigation"
 
-    #Pas forcément la meilleure des solutions
     return initMenu()
 
 @app.route("/api/remove/pad")
@@ -81,9 +79,18 @@ def removeDir():
 def addDir():
     print("Add directory")
 
-@app.route("/api/rename/dir")
+@app.route("/api/rename/dir", methods=['POST'])
 def renameDir():
-    print("Rename directory")
+    oldName = request.form.get('oldName')
+    newName = request.form.get('newName')
+    match = re.search("[><?;!&]+", newName)
+    if match != None:
+        raise NameError ("Nom du dossier non valide");
+    param = [oldName, newName]
+    threadRenameDir = threads.ThreadFunctionalities("renameDirectory", param)
+    threadRenameDir.start()
+    threadRenameDir.join()
+    return initMenu()
 
 
 app.run(debug = True)

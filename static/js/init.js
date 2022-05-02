@@ -129,7 +129,7 @@ function displayDirectoryMenu(event, parent){
     event.preventDefault();
     var op1 = new Option("Ajouter un pad", addPad, parent.text());
     var op2 = new Option("Supprimer le dossier", deleteDirectory);
-    var op3 = new Option("Renommer le dossier", renameDirectory);
+    var op3 = new Option("Renommer le dossier", renameDirectory, parent.text());
     var op4 = new Option("Ajouter un dossier", addDirectory);
     var tabOp = new Array();
     tabOp.push(op1);
@@ -226,8 +226,41 @@ function deleteDirectory(){
     alert("Fonctionnalité non développée, c'est pour bientôt ;)");
 }
 
-function renameDirectory(){
-    alert("Fonctionnalité non développée, c'est pour bientôt ;)");
+function renameDirectory(elementName){
+    let d = $("#dialog");
+
+    d.css("position", "absolute");
+    d.css("margin-left", "50%");
+    d.css("margin-top", "10%");
+    d.css("width", "25%");
+    d.css("height", "15%");
+
+    d.append("<h2>Nouveau nom du dossier : </h2>");
+
+    d.append("<form method='GET' onsubmit='return formRenameDirectory(this,\"" + elementName + "\")'><input type='text' name='directoryName'><button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
+    $("form").css("margin-left","25%");
+
+    $("#cancel").click(function(){
+        deleteDialog("#dialog");
+    });
+}
+
+function formRenameDirectory(form, oldName){
+    newName = form.directoryName.value;
+    $.ajax({
+      url: "/api/rename/dir",
+      method: "POST",
+      data: {oldName: oldName, newName: newName}
+    })
+    .done(function(response){
+      updateMenu(response);
+      return true;
+    })
+    .fail(function(){
+      throw Exception ("Renommage du dossier impossible");
+      addPad(parent);
+      return false;
+  })
 }
 
 function addDirectory(){
