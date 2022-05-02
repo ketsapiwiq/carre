@@ -18,5 +18,8 @@ class Pad:
 
 ##### SETTERS #####
 
-    def setParent(self, newName):
-        self.parent = newName
+    def setParent(self, newParent):
+        self.parent = newParent
+
+    def setName(self, newName):
+        self.name = newName
