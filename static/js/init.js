@@ -270,7 +270,7 @@ function addDirectory(){
 
 function displayPadMenu(event, pad){
     event.preventDefault();
-    var op1 = new Option("Renommer", renamePad);
+    var op1 = new Option("Renommer", renamePad, pad.text());
     var op2 = new Option("Supprimer", deletePad, pad.text());
     var tabOp = new Array();
     tabOp.push(op1);
@@ -299,6 +299,38 @@ function deletePad(namePad){
   })
 }
 
-function renamePad(){
+function renamePad(oldName){
+    let d = $("#dialog");
 
+    d.css("position", "absolute");
+    d.css("margin-left", "50%");
+    d.css("margin-top", "10%");
+    d.css("width", "25%");
+    d.css("height", "15%");
+
+    d.append("<h2>Nouveau nom du pad : </h2>");
+
+    d.append("<form method='GET' onsubmit='return formRenamePad(this,\"" + oldName + "\")'><input type='text' name='padName'><button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
+    $("form").css("margin-left","25%");
+
+    $("#cancel").click(function(){
+        deleteDialog("#dialog");
+    });
+}
+
+function formRenamePad(form, oldName){
+    newName = form.padName.value;
+    $.ajax({
+      url: "/api/rename/pad",
+      method: "POST",
+      data: {oldName: oldName, newName: newName}
+    })
+    .done(function(response){
+      updateMenu(response);
+      return true;
+    })
+    .fail(function(){
+      throw "Renommage du pad impossible";
+      return false;
+  })
 }

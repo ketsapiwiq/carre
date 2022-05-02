@@ -104,3 +104,24 @@ class Menu:
         except IOError as err:
             print("Erreur fichier : {0}" .format(err))
             return -1
+
+    def renamePad(self, oldName, newName):
+        for i in range(0, len(objMenu)):
+            if(objMenu[i].getName() == oldName):
+                objMenu[i].setName(newName)
+                break
+        try:
+            fileMenu = open(self.path, "r")
+            menu = json.loads(fileMenu.read())
+            fileMenu.close()
+            for i in range(0, len(menu)):
+                for j in range (0, len(menu[i]["pads"])):
+                    if(menu[i]["pads"][j]["Nom"] == oldName):
+                        fileMenu = open(self.path,"w")
+                        menu[i]["pads"][j]["Nom"] = newName
+                        json.dump(menu, fileMenu)
+                        fileMenu.close()
+                        return 0
+        except IOError as err:
+            print("Erreur fichier : {0}" .format(err))
+            return -1

@@ -47,7 +47,7 @@ def ajouterPad():
     match = re.search("[><?;!&]+", name)
     if match != None:
         raise NameError ("Nom du pad non valide");
-        #print("Tentative d'attaque détectée, le FBI est à vos trousses");
+
 
     parent = request.form.get('parent')
 
@@ -72,9 +72,19 @@ def removePad():
     threadRemovePad.join()
     return initMenu()
 
-@app.route("/api/rename/pad")
+@app.route("/api/rename/pad", methods=['POST', 'GET'])
 def renamePad():
-    print("Rename pad")
+    oldName = request.form.get('oldName')
+    newName = request.form.get('newName')
+    match = re.search("[><?;!&]+", newName)
+    if match != None:
+        raise NameError ("Nom du pad non valide");
+
+    names = [oldName, newName]
+    threadRenamePad = threads.ThreadFunctionalities("renamePad", names)
+    threadRenamePad.start()
+    threadRenamePad.join()
+    return initMenu()
 
 @app.route("/api/remove/dir")
 def removeDir():
