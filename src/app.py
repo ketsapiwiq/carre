@@ -9,12 +9,13 @@ app = Flask(__name__, template_folder='../static', static_folder='../static')
 # Fichier de configuration
 ficIni = "config.ini"
 
+
 ##
 #   fonction d'entrée redirige vers la page d'accueil
 ##
 @app.route("/", methods=['POST','GET'])
 def index():
-    #fonctionnalities.creaPad(10000)
+    #fonctionnalities.creaNbPad(10000)
     return render_template('index.html')
 
 
@@ -63,9 +64,13 @@ def ajouterPad():
 
     return initMenu()
 
-@app.route("/api/remove/pad")
+@app.route("/api/remove/pad", methods=['POST', 'GET'])
 def removePad():
-    print("Remove pad")
+    name = request.form.get('name')
+    threadRemovePad = threads.ThreadFunctionalities("removePad", name)
+    threadRemovePad.start()
+    threadRemovePad.join()
+    return initMenu()
 
 @app.route("/api/rename/pad")
 def renamePad():
@@ -96,4 +101,4 @@ def renameDir():
 app.run(debug = True)
 
 
-#voir log falsk
+#voir log flask
