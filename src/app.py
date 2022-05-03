@@ -11,7 +11,7 @@ ficIni = "config.ini"
 
 
 ##
-#   fonction d'entrée redirige vers la page d'accueil
+#   fonction d'entrée : redirige vers la page d'accueil
 ##
 @app.route("/", methods=['POST','GET'])
 def index():
@@ -40,14 +40,9 @@ def initVariables():
 @app.route("/api/add/pad",  methods=['POST','GET'])
 def ajouterPad():
     name = request.form.get('name')
-    #Faire la vérification
-    #Prions la sainte regex pour que ça marche
-    #\d+|[A-Z]+|[a-z]+)+/g
-    #[><?;!]+
-    match = re.search("[><?;!&]+", name)
-    if match != None:
-        raise NameError ("Nom du pad non valide");
 
+    if not inputValidation(name):
+        raise NameError ("Nom du pad non valide");
 
     parent = request.form.get('parent')
 
@@ -64,7 +59,7 @@ def ajouterPad():
 
     return initMenu()
 
-@app.route("/api/remove/pad", methods=['POST', 'GET'])
+@app.route("/api/remove/pad", methods=['POST'])
 def removePad():
     name = request.form.get('name')
     threadRemovePad = threads.ThreadFunctionalities("removePad", name)
@@ -72,12 +67,11 @@ def removePad():
     threadRemovePad.join()
     return initMenu()
 
-@app.route("/api/rename/pad", methods=['POST', 'GET'])
+@app.route("/api/rename/pad", methods=['POST'])
 def renamePad():
     oldName = request.form.get('oldName')
     newName = request.form.get('newName')
-    match = re.search("[><?;!&]+", newName)
-    if match != None:
+    if not inputValidation(newName):
         raise NameError ("Nom du pad non valide");
 
     names = [oldName, newName]
@@ -98,14 +92,20 @@ def addDir():
 def renameDir():
     oldName = request.form.get('oldName')
     newName = request.form.get('newName')
-    match = re.search("[><?;!&]+", newName)
-    if match != None:
+    if not inputValidation(newName):
         raise NameError ("Nom du dossier non valide");
     param = [oldName, newName]
     threadRenameDir = threads.ThreadFunctionalities("renameDirectory", param)
     threadRenameDir.start()
     threadRenameDir.join()
     return initMenu()
+
+def inputValidation(input):
+    match = re.search("[><?;!&]+", input)
+    if match != None:
+        return False
+    else:
+        return True
 
 
 app.run(debug = True)
