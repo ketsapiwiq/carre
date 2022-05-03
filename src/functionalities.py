@@ -4,13 +4,10 @@ import time
 menuPads = menu.Menu()
 
 def ajoutPadFunc(pad):
-    #newMenu = menu.Menu()
-    #newMenu.addPadToMenu(pad)
     menuPads.addPadToMenu(pad)
 
 def recupMenu():
-    newMenu = menu.Menu()
-    return newMenu.recuperationMenu()
+    return menuPads.recuperationMenu()
 
 def creaNbPad(nb):
     start = time.time()
@@ -22,15 +19,16 @@ def creaNbPad(nb):
 def renameDir(names):
     oldName = names[0]
     newName = names[1]
-    newMenu = menu.Menu()
-    newMenu.renameDirectory(oldName, newName)
+    menuPads.renameDirectory(oldName, newName)
+
 
 def removePad(name):
-    newMenu = menu.Menu()
-    newMenu.removePad(name)
+    menuPads.removePad(name)
 
 def renamePad(names):
     oldName = names[0]
     newName = names[1]
-    newMenu = menu.Menu()
-    newMenu.renamePad(oldName, newName)
+    menuPads.renamePad(oldName, newName)
+
+def addDirectory(name):
+    menuPads.addDirectory(name)

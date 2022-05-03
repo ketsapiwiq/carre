@@ -112,6 +112,19 @@ class Menu:
                         print("Erreur fichier : {0}" .format(err))
                         return -1
 
+    def addDirectory(self, name):
+        #Pas de modifications dans l'objet menu car le nouveau dossier ne contient pas encore de menuPads
+        menu = loadJSON(self)
+        print(menu[-1])
+        menu.append({'parent' : name, 'pads' : []})
+        #menu[-1].append({'parent' : name, 'pads' : []})
+        try:
+            fileMenu = open(self.path,"w")
+            json.dump(menu, fileMenu)
+            fileMenu.close()
+        except IOError as err:
+            print("Erreur fichier : {0}" .format(err))
+
 def loadJSON(self):
     try:
         file = open(self.path,"r")

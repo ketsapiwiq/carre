@@ -35,11 +35,9 @@ class ThreadFunctionalities(threading.Thread):
                 return 0
             case "renamePad":
                 functionalities.renamePad(self.stock)
+                return 0
+            case "addDirectory":
+                functionalities.addDirectory(self.stock)
+                return 0
 
         return -1
-
-        #try:
-        #    self.stock = fonctionnalities.self.fonction()
-        #    return self.stock
-        #except NameError:
-        #    print("La fonction n'existe pas")
