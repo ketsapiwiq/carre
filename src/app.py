@@ -72,7 +72,7 @@ def renamePad():
     oldName = request.form.get('oldName')
     newName = request.form.get('newName')
     if not inputValidation(newName):
-        raise NameError ("Nom du pad non valide");
+        raise NameError ("Nom du pad non valide")
 
     names = [oldName, newName]
     threadRenamePad = threads.ThreadFunctionalities("renamePad", names)
@@ -84,9 +84,15 @@ def renamePad():
 def removeDir():
     print("Remove directory")
 
-@app.route("/api/add/dir")
+@app.route("/api/add/dir", methods=['POST','GET'])
 def addDir():
-    print("Add directory")
+    name = request.form.get('name')
+    if not inputValidation(name):
+        raise NameError("Nom du dossier non valide")
+    threadAddDirectory = threads.ThreadFunctionalities("addDirectory",name)
+    threadAddDirectory.start()
+    threadAddDirectory.join()
+    return initMenu()
 
 @app.route("/api/rename/dir", methods=['POST'])
 def renameDir():

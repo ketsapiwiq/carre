@@ -10,6 +10,7 @@ var menu;
 var pad;
 var adrServ;
 var optionDisplay = false;
+var clickMenu = false;
 
 $(document).ready(function(){
     init();
@@ -57,6 +58,13 @@ function updateMenu(data){
     menuHtml.append("</li>");
 
     //------Ajout des EventListener--------//
+
+    $("body").contextmenu(function(){
+        console.log($(this));
+        if(! clickMenu){
+            displayDefaultMenu(event);
+        }
+    })
     //Click sur le nom d'un pad
     $("ul.child").click(function(){
         updateIFrame($(this));
@@ -65,6 +73,7 @@ function updateMenu(data){
     //Click droit sur le nom d'un pad
     $("ul.child").contextmenu(function(event){
         if(!optionDisplay){
+            clickMenu = true;
             displayPadMenu(event, $(this));
         }
     });
@@ -76,7 +85,9 @@ function updateMenu(data){
 
     //Click droit sur le nom d'un dossier
     $("ul.parent").contextmenu(function(event){
+        console.log($(this));
         if(!optionDisplay){
+            clickMenu = true;
             displayDirectoryMenu(event, $(this));
         }
     });
@@ -131,6 +142,15 @@ function displayMenu(tabOptions){
     optionDisplay = true;
 }
 
+function displayDefaultMenu(event){
+    event.preventDefault();
+    let paramCreaDirectory = ["Nom du nouveau dossier : ", null, "addDirectory"];
+    var op1 = new Option("Créer un dossier", createDialog, paramCreaDirectory);
+    var tabOp = new Array();
+    tabOp.push(op1);
+    displayMenu(tabOp);
+}
+
 
 /**
 * Création du menu d'options pour les dossiers
@@ -162,6 +182,7 @@ function deleteDialog(element){
     $(element).children().slice().remove();
     $(element).removeAttr("style");
     optionDisplay = false;
+    clickMenu = false;
 }
 
 /**
@@ -256,13 +277,26 @@ function renameDirectory(form, oldName){
     })
     .fail(function(){
       throw "Renommage du dossier impossible";
-      addPad(parent);
       return false;
   })
 }
 
-function addDirectory(){
-    alert("Fonctionnalité non développée, c'est pour bientôt ;)");
+function addDirectory(form){
+    name = form.name.value;
+    $.ajax({
+        url:"/api/add/dir",
+        method: "POST",
+        data : {name: name}
+    })
+    .done(function(reponse){
+        updateMenu(response);
+        optionDisplay = false;
+        return true;
+    })
+    .fail(function(){
+        throw "Ajout du dossier impossible"
+        return false;
+    })
 }
 
 
@@ -312,20 +346,3 @@ function renamePad(form, oldName){
       return false;
   })
 }
-
-/*function formRenamePad(form, oldName){
-    newName = form.padName.value;
-    $.ajax({
-      url: "/api/rename/pad",
-      method: "POST",
-      data: {oldName: oldName, newName: newName}
-    })
-    .done(function(response){
-      updateMenu(response);
-      return true;
-    })
-    .fail(function(){
-      throw "Renommage du pad impossible";
-      return false;
-  })
-}*/
