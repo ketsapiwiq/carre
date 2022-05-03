@@ -1,10 +1,12 @@
 from src import menu, pad
 import time
 
-def ajoutPadFunc(pad):
-    newMenu = menu.Menu()
-    newMenu.addPadToMenu(pad)
+menuPads = menu.Menu()
 
+def ajoutPadFunc(pad):
+    #newMenu = menu.Menu()
+    #newMenu.addPadToMenu(pad)
+    menuPads.addPadToMenu(pad)
 
 def recupMenu():
     newMenu = menu.Menu()

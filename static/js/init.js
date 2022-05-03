@@ -119,6 +119,18 @@ function findAdress(text){
     }
 }
 
+/**
+* Crée le menu contextuel d'options
+* @param tabOptions : tableau contenant toutes les options que le menu doit contenir
+**/
+function displayMenu(tabOptions){
+    var menuOp = new menuOptions(tabOptions);
+    let posX = event.clientX + window.pageXOffset;
+    let posY = event.clientY + window.pageYOffset;
+    menuOp.afficherMenu(posX, posY, tabOptions);
+    optionDisplay = true;
+}
+
 
 /**
 * Création du menu d'options pour les dossiers
@@ -127,20 +139,20 @@ function findAdress(text){
 */
 function displayDirectoryMenu(event, parent){
     event.preventDefault();
-    var op1 = new Option("Ajouter un pad", addPad, parent.text());
+
+    let paramAjoutPad = ["Entrez le nom du nouveau pad : ", parent.text(), "addPad"];
+    let paramRenameDirectory = ["Nouveau nom du dossier :", parent.text(), "renameDirectory"];
+
+    var op1 = new Option("Ajouter un pad", createDialog, paramAjoutPad);
     var op2 = new Option("Supprimer le dossier", deleteDirectory);
-    var op3 = new Option("Renommer le dossier", renameDirectory, parent.text());
+    var op3 = new Option("Renommer le dossier", createDialog, paramRenameDirectory);
     var op4 = new Option("Ajouter un dossier", addDirectory);
     var tabOp = new Array();
     tabOp.push(op1);
     tabOp.push(op2);
     tabOp.push(op3);
     tabOp.push(op4);
-    var menuOp = new menuOptions(tabOp);
-    let posX = event.clientX + window.pageXOffset;
-    let posY = event.clientY + window.pageYOffset;
-    menuOp.afficherMenu(posX, posY, tabOp);
-    optionDisplay = true;
+    displayMenu(tabOp);
 }
 
 /**
@@ -153,48 +165,36 @@ function deleteDialog(element){
 }
 
 /**
-* Création d'un nouveau pad
-* @param parent : le parent du nouveau pad
-*/
-function addPad(parent){
-
+* Crée une boîte de dialogue avec un seul champ de contextmenu
+* @param param : tableau de 3 paramètres
+*         param[0] : titre de la boîte de dialogue --> résume l'action
+*         param[1] : paramètre pour la bonne exécution de "param[2]"
+*         param[2] : nom de la fonction à exécuter à la soumission du formulaire
+**/
+function createDialog(param){
     let d = $("#dialog");
-    // Possible de factoriser les lignes liées au style
     d.css("position", "absolute");
     d.css("margin-left", "50%");
     d.css("margin-top", "10%");
     d.css("width", "40%");
     d.css("height", "15%");
 
-    d.append("<h2>Entrez le nom du nouveau pad : </h2>");
+    d.append("<h2>"+param[0]+"</h2>");
 
-    //'formAddPad(this," + parent + ")'
-    d.append("<form method='GET' onsubmit='return formAddPad(this,\"" + parent + "\")'><input type='text' name='padName'><button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
+    d.append("<form method='GET' onsubmit='" + param[2] + "(this,\"" + param[1] + "\")'><input type='text'name='name'><button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
 
     $("#cancel").click(function(){
         deleteDialog("#dialog");
     });
-
-    // -- REGEX -- //
-    // [^&+<+>+\?+!+]
-    // ^[a-z0-9]+$/i
-    // \d+|[A-Z]+|[a-z]+)+/g"
-
-
-
-    // @nono : une meilleur validation des noms des pads serait chouette ;
-    // on boucle tant qu'on n'a pas un nom valable, ou une action d'annulation ?
-    // Faire attention si le nom du pad permet l'introduction d'une faille XSS !
-
-    // Voir les API REST et leurs implémentations en JS.
-
-    //Requête AJAX
 }
 
-// Faire en sorte que la fenêtre de dialogue se ré-ouvre si le nom du pad est invalide
-
-function formAddPad(form, parent){
-    namePad = form.padName.value;
+/**
+* Création d'un nouveau pad
+* @param form : le formulaire d'ajout du pad
+* @param parent : le parent du nouveau pad
+*/
+function addPad(form, parent){
+    namePad = form.name.value;
     // Regex qui ne fonctionne pas
     /*let regex = "[><?;!&\/=]+";
     let matching = regex.match(namePad);
@@ -218,7 +218,24 @@ function formAddPad(form, parent){
       addPad(parent);
       return false;
   })
+
+
+    // -- REGEX -- //
+    // [^&+<+>+\?+!+]
+    // ^[a-z0-9]+$/i
+    // \d+|[A-Z]+|[a-z]+)+/g"
+
+    // @nono : une meilleur validation des noms des pads serait chouette ;
+    // on boucle tant qu'on n'a pas un nom valable, ou une action d'annulation ?
+    // Faire attention si le nom du pad permet l'introduction d'une faille XSS !
+
+    // Voir les API REST et leurs implémentations en JS.
+
+
 }
+
+// Faire en sorte que la fenêtre de dialogue se ré-ouvre si le nom du pad est invalide
+
 
 
 // A faire plus tard : fonctions pour les options
@@ -226,27 +243,8 @@ function deleteDirectory(){
     alert("Fonctionnalité non développée, c'est pour bientôt ;)");
 }
 
-function renameDirectory(elementName){
-    let d = $("#dialog");
-
-    d.css("position", "absolute");
-    d.css("margin-left", "50%");
-    d.css("margin-top", "10%");
-    d.css("width", "25%");
-    d.css("height", "15%");
-
-    d.append("<h2>Nouveau nom du dossier : </h2>");
-
-    d.append("<form method='GET' onsubmit='return formRenameDirectory(this,\"" + elementName + "\")'><input type='text' name='directoryName'><button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
-    $("form").css("margin-left","25%");
-
-    $("#cancel").click(function(){
-        deleteDialog("#dialog");
-    });
-}
-
-function formRenameDirectory(form, oldName){
-    newName = form.directoryName.value;
+function renameDirectory(form, oldName){
+    newName = form.name.value;
     $.ajax({
       url: "/api/rename/dir",
       method: "POST",
@@ -270,16 +268,15 @@ function addDirectory(){
 
 function displayPadMenu(event, pad){
     event.preventDefault();
-    var op1 = new Option("Renommer", renamePad, pad.text());
+
+    let paramRenamePad = ["Nouveau nom du pad :", pad.text(), "renamePad"];
+
+    var op1 = new Option("Renommer", createDialog, paramRenamePad);
     var op2 = new Option("Supprimer", deletePad, pad.text());
     var tabOp = new Array();
     tabOp.push(op1);
     tabOp.push(op2);
-    var menuOp = new menuOptions(tabOp)
-    let posX = event.clientX + window.pageXOffset;
-    let posY = event.clientY + window.pageYOffset;
-    menuOp.afficherMenu(posX, posY, tabOp);
-    optionDisplay = true;
+    displayMenu(tabOp);
 }
 
 function deletePad(namePad){
@@ -299,27 +296,8 @@ function deletePad(namePad){
   })
 }
 
-function renamePad(oldName){
-    let d = $("#dialog");
-
-    d.css("position", "absolute");
-    d.css("margin-left", "50%");
-    d.css("margin-top", "10%");
-    d.css("width", "25%");
-    d.css("height", "15%");
-
-    d.append("<h2>Nouveau nom du pad : </h2>");
-
-    d.append("<form method='GET' onsubmit='return formRenamePad(this,\"" + oldName + "\")'><input type='text' name='padName'><button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
-    $("form").css("margin-left","25%");
-
-    $("#cancel").click(function(){
-        deleteDialog("#dialog");
-    });
-}
-
-function formRenamePad(form, oldName){
-    newName = form.padName.value;
+function renamePad(form, oldName){
+    newName = form.name.value;
     $.ajax({
       url: "/api/rename/pad",
       method: "POST",
@@ -334,3 +312,20 @@ function formRenamePad(form, oldName){
       return false;
   })
 }
+
+/*function formRenamePad(form, oldName){
+    newName = form.padName.value;
+    $.ajax({
+      url: "/api/rename/pad",
+      method: "POST",
+      data: {oldName: oldName, newName: newName}
+    })
+    .done(function(response){
+      updateMenu(response);
+      return true;
+    })
+    .fail(function(){
+      throw "Renommage du pad impossible";
+      return false;
+  })
+}*/
