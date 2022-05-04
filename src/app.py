@@ -13,7 +13,7 @@ ficIni = "config.ini"
 ##
 #   fonction d'entrée : redirige vers la page d'accueil
 ##
-@app.route("/", methods=['POST','GET'])
+@app.route("/", methods=['POST', 'GET'])
 def index():
     #fonctionnalities.creaNbPad(10000)
     return render_template('index.html')
@@ -37,7 +37,7 @@ def initVariables():
         variables[key] = conf['js'][key]
     return variables
 
-@app.route("/api/add/pad",  methods=['POST','GET'])
+@app.route("/api/add/pad",  methods=['POST'])
 def ajouterPad():
     name = request.form.get('name')
 
@@ -84,7 +84,7 @@ def renamePad():
 def removeDir():
     print("Remove directory")
 
-@app.route("/api/add/dir", methods=['POST','GET'])
+@app.route("/api/add/dir", methods=['POST'])
 def addDir():
     name = request.form.get('name')
     if not inputValidation(name):

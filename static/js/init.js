@@ -10,6 +10,7 @@ var menu;
 var pad;
 var adrServ;
 var optionDisplay = false;
+var dialogDisplay = false;
 var clickMenu = false;
 
 $(document).ready(function(){
@@ -60,8 +61,7 @@ function updateMenu(data){
     //------Ajout des EventListener--------//
 
     $("body").contextmenu(function(){
-        console.log($(this));
-        if(! clickMenu){
+        if(!clickMenu && !optionDisplay){
             displayDefaultMenu(event);
         }
     })
@@ -85,7 +85,6 @@ function updateMenu(data){
 
     //Click droit sur le nom d'un dossier
     $("ul.parent").contextmenu(function(event){
-        console.log($(this));
         if(!optionDisplay){
             clickMenu = true;
             displayDirectoryMenu(event, $(this));
@@ -183,6 +182,7 @@ function deleteDialog(element){
     $(element).removeAttr("style");
     optionDisplay = false;
     clickMenu = false;
+    dialogDisplay = false;
 }
 
 /**
@@ -193,20 +193,24 @@ function deleteDialog(element){
 *         param[2] : nom de la fonction à exécuter à la soumission du formulaire
 **/
 function createDialog(param){
-    let d = $("#dialog");
-    d.css("position", "absolute");
-    d.css("margin-left", "50%");
-    d.css("margin-top", "10%");
-    d.css("width", "40%");
-    d.css("height", "15%");
+    if(!dialogDisplay){
+        dialogDisplay = true;
+        let d = $("#dialog");
+        d.css("position", "absolute");
+        d.css("margin-left", "50%");
+        d.css("margin-top", "10%");
+        d.css("width", "40%");
+        d.css("height", "15%");
 
-    d.append("<h2>"+param[0]+"</h2>");
+        d.append("<h2>"+param[0]+"</h2>");
 
-    d.append("<form method='GET' onsubmit='" + param[2] + "(this,\"" + param[1] + "\")'><input type='text'name='name'><button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
+        d.append("<form method='GET' onsubmit='" + param[2] + "(this,\"" + param[1] + "\")'><input type='text'name='name'><button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
 
-    $("#cancel").click(function(){
-        deleteDialog("#dialog");
-    });
+        $("#cancel").click(function(){
+            deleteDialog("#dialog");
+        });
+    }
+
 }
 
 /**
