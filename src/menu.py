@@ -23,7 +23,7 @@ class Menu:
         menu = loadJSON(self)
         if menu != -1 :
             for i in range(0, len(menu)):
-                parent = menu[i]["parent"]
+                parent = menu[i]['parent']
                 for j in range(0, len(menu[i]["pads"])):
                     newPad = pad.Pad(menu[i]["pads"][j]["Nom"], parent, menu[i]["pads"][j]["Adresse"])
                     objMenu.append(newPad)
@@ -111,6 +111,25 @@ class Menu:
                     except IOError as err:
                         print("Erreur fichier : {0}" .format(err))
                         return -1
+
+    def deleteDirectory(self, name):
+        # Dans l'objet, supprimer tous ceux qui ont "name" en tant que parent
+        for elem in objMenu[:] :
+            if(elem.getParent() == name):
+                objMenu.remove(elem)
+
+        menu = loadJSON(self)
+        for i in range(0,len(menu)):
+            if(menu[i]["parent"] == name):
+                del menu[i]
+                try:
+                    fileMenu = open(self.path,"w")
+                    json.dump(menu, fileMenu)
+                    fileMenu.close()
+                except IOError as err:
+                    print("Erreur fichier : {0}" .format(err))
+                    return -1
+
 
 def loadJSON(self):
     try:

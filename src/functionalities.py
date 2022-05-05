@@ -34,3 +34,6 @@ def renamePad(names):
     newName = names[1]
     newMenu = menu.Menu()
     newMenu.renamePad(oldName, newName)
+
+def deleteDirectory(name):
+    menuPads.deleteDirectory(name)
