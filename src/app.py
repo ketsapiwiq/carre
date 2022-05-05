@@ -40,7 +40,6 @@ def initVariables():
 @app.route("/api/add/pad",  methods=['POST'])
 def ajouterPad():
     name = request.form.get('name')
-
     if not inputValidation(name):
         raise NameError ("Nom du pad non valide");
 

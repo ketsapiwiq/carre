@@ -159,7 +159,7 @@ function displayDefaultMenu(event){
 function displayDirectoryMenu(event, parent){
     event.preventDefault();
 
-    let paramAjoutPad = ["Entrez le nom du nouveau pad : ", parent.text(), "addPad"];
+    let paramAjoutPad = ["Entrez le nom du nouveau pad : ", parent.text(), "syncAddPad"];
     let paramRenameDirectory = ["Nouveau nom du dossier :", parent.text(), "renameDirectory"];
 
     var op1 = new Option("Ajouter un pad", createDialog, paramAjoutPad);
@@ -175,7 +175,8 @@ function displayDirectoryMenu(event, parent){
 }
 
 /**
-* Supprime les boîtes de dialogues et les menus
+* Suppression des boîtes de dialogues et les menus
+* @param element : la classe ou l'id dans le DOM pour lequel il faut supprimer les enfants
 */
 function deleteDialog(element){
     $(element).children().slice().remove();
@@ -204,13 +205,29 @@ function createDialog(param){
 
         d.append("<h2>"+param[0]+"</h2>");
 
-        d.append("<form method='GET' onsubmit='" + param[2] + "(this,\"" + param[1] + "\")'><input type='text'name='name'><button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
+        d.append("<form onsubmit='return " + param[2] + "(this,\"" + param[1] + "\")'><input type='text'name='name'><button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
 
         $("#cancel").click(function(){
             deleteDialog("#dialog");
         });
     }
 
+}
+
+async function syncAddPad(form, parent){
+    let data = {name : form.name.value, parent : parent};
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST','/api/add/pad');
+    xhr.responseType = 'json';
+    xhr.send(JSON.stringify(data));
+
+    xhr.onload = function(){
+        alert("la requête AJAX fonctionne");
+    }
+
+    xhr.onerror = function(){
+        alert("Erreur : requête AJAX");
+    }
 }
 
 /**
@@ -236,13 +253,13 @@ function addPad(form, parent){
     })
     .done(function(response){
       updateMenu(response);
-      return true;
     })
     .fail(function(){
       throw "Ajout du pad impossible";
       addPad(parent);
-      return false;
   })
+  deleteDialog("#dialog");
+  return false;
 
 
     // -- REGEX -- //
@@ -277,13 +294,15 @@ function renameDirectory(form, oldName){
     })
     .done(function(response){
       updateMenu(response);
-      return true;
     })
     .fail(function(){
       throw "Renommage du dossier impossible";
       return false;
   })
+  deleteDialog("#dialog");
+  return false;
 }
+
 
 function addDirectory(form){
     name = form.name.value;
@@ -295,12 +314,13 @@ function addDirectory(form){
     .done(function(reponse){
         updateMenu(response);
         optionDisplay = false;
-        return true;
     })
     .fail(function(){
         throw "Ajout du dossier impossible"
         return false;
     })
+    deleteDialog("#dialog");
+    return false;
 }
 
 
@@ -343,10 +363,11 @@ function renamePad(form, oldName){
     })
     .done(function(response){
       updateMenu(response);
-      return true;
     })
     .fail(function(){
       throw "Renommage du pad impossible";
       return false;
   })
+  deleteDialog("#dialog");
+  return false;
 }
