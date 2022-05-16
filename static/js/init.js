@@ -48,21 +48,50 @@ function init(){
 function updateMenu(data){
     $("#liste").children().slice().remove();
     menu = JSON.parse(data);
+    console.log(menu);
+    let directory = [];
     var menuHtml = $("#liste");
     menuHtml.append("<li>");
-    for (var i in menu){
-        menuHtml.append("<ul class='parent'><h2>" + menu[i]["parent"] + "</h2></ul>");
+
+    // Initialise le tableau des dossiers
+    for (let i = 0; i < menu.length; ++i){
+        if(directory.indexOf(menu[i]['parent']) == -1){
+            directory.push(menu[i]['parent']);
+        }
+    }
+
+
+    /*for (let i = 0; i < menu.length; ++i){
+        if(menu[i]['isDirectory']){
+            directory.push(menu[i]['name']);
+        }
+    }*/
+    //console.log(menu[9]["parent"]);
+    console.log(directory);
+    for (let i = 0; i < directory.length; ++i){
+        // Afficher les dossiers
+        menuHtml.append("<ul class='parent'><h2>" + directory[i] + "</h2></ul>");
+        for (let j = 0; j < menu.length; ++j){
+            // Afficher les pads
+            if(directory.indexOf(menu[j]['name']) == -1 && menu[j]['parent'] == directory[i]){
+                menuHtml.append("<ul class='child'>" + menu[j]['name'] + "</ul>");
+            }
+        }
+    }
+
+    /*for (var i = 0; i < menu["Root"]["children"].length; ++i){
+        menuHtml.append("<ul class='parent'><h2>" + menu["Root"]["children"][i]["children"][0] + "</h2></ul>");
         for(var j in menu[i]["pads"]){
             menuHtml.append("<ul class='child'>" + menu[i]["pads"][j]["Nom"] + "</ul>");
         }
-    }
+    }*/
     menuHtml.append("</li>");
 
     //------Ajout des EventListener--------//
 
     $("body").contextmenu(function(){
         if(!clickMenu && !optionDisplay){
-            displayDefaultMenu(event);
+        defaultMenu(event);
         }
     })
     //Click sur le nom d'un pad
@@ -74,7 +103,7 @@ function updateMenu(data){
     $("ul.child").contextmenu(function(event){
         if(!optionDisplay){
             clickMenu = true;
-            displayPadMenu(event, $(this));
+            padMenu(event, $(this));
         }
     });
 
@@ -87,7 +116,7 @@ function updateMenu(data){
     $("ul.parent").contextmenu(function(event){
         if(!optionDisplay){
             clickMenu = true;
-            displayDirectoryMenu(event, $(this));
+            directoryMenu(event, $(this));
         }
     });
 
@@ -141,7 +170,7 @@ function displayMenu(tabOptions){
     optionDisplay = true;
 }
 
-function displayDefaultMenu(event){
+function defaultMenu(event){
     event.preventDefault();
     let paramCreaDirectory = ["Nom du nouveau dossier : ", null, "addDirectory"];
     var op1 = new Option("Créer un dossier", createDialog, paramCreaDirectory);
@@ -156,21 +185,35 @@ function displayDefaultMenu(event){
 * @param event :
 * @param parent : élément cliqué
 */
-function displayDirectoryMenu(event, parent){
+function directoryMenu(event, parent){
     event.preventDefault();
 
-    let paramAjoutPad = ["Entrez le nom du nouveau pad : ", parent.text(), "syncAddPad"];
+    let paramAjoutPad = ["Entrez le nom du nouveau pad : ", parent.text(), "addPad"];
     let paramRenameDirectory = ["Nouveau nom du dossier :", parent.text(), "renameDirectory"];
 
     var op1 = new Option("Ajouter un pad", createDialog, paramAjoutPad);
-    var op2 = new Option("Supprimer le dossier", deleteDirectory);
+    var op2 = new Option("Supprimer le dossier", deleteDirectory, parent.text());
     var op3 = new Option("Renommer le dossier", createDialog, paramRenameDirectory);
+    // Dernière option : création d'un sous-dossier
     var op4 = new Option("Ajouter un dossier", addDirectory);
     var tabOp = new Array();
     tabOp.push(op1);
     tabOp.push(op2);
     tabOp.push(op3);
     tabOp.push(op4);
+    displayMenu(tabOp);
+}
+
+function padMenu(event, pad){
+    event.preventDefault();
+
+    let paramRenamePad = ["Nouveau nom du pad :", pad.text(), "renamePad"];
+
+    var op1 = new Option("Renommer", createDialog, paramRenamePad);
+    var op2 = new Option("Supprimer", deletePad, pad.text());
+    var tabOp = new Array();
+    tabOp.push(op1);
+    tabOp.push(op2);
     displayMenu(tabOp);
 }
 
@@ -205,7 +248,7 @@ function createDialog(param){
 
         d.append("<h2>"+param[0]+"</h2>");
 
-        d.append("<form onsubmit='return " + param[2] + "(this,\"" + param[1] + "\")'><input type='text'name='name'><button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
+        d.append("<form method='POST' onsubmit='return " + param[2] + "(this,\"" + param[1] + "\")'><input type='text'name='name'><button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
 
         $("#cancel").click(function(){
             deleteDialog("#dialog");
@@ -214,53 +257,37 @@ function createDialog(param){
 
 }
 
-async function syncAddPad(form, parent){
-    let data = {name : form.name.value, parent : parent};
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST','/api/add/pad');
-    xhr.responseType = 'json';
-    xhr.send(JSON.stringify(data));
-
-    xhr.onload = function(){
-        alert("la requête AJAX fonctionne");
-    }
-
-    xhr.onerror = function(){
-        alert("Erreur : requête AJAX");
-    }
-}
-
 /**
 * Création d'un nouveau pad
 * @param form : le formulaire d'ajout du pad
 * @param parent : le parent du nouveau pad
 */
 function addPad(form, parent){
-    namePad = form.name.value;
-    // Regex qui ne fonctionne pas
-    /*let regex = "[><?;!&\/=]+";
-    let matching = regex.match(namePad);
-    if(matching != null){
-        alert("Pas Valide");
-        // Si le pad n'est pas valide, on relance la fonction addPad (Pour ça, il faudrait que la regex marche :c )
-    }else{
-        alert("Valide");
-    }*/
-    $.ajax({
-      url: "/api/add/pad",
-      method: "POST",
-      data: {name: namePad, parent: parent}
-    })
-    .done(function(response){
-      updateMenu(response);
-    })
-    .fail(function(){
-      throw "Ajout du pad impossible";
-      addPad(parent);
-  })
-  deleteDialog("#dialog");
-  return false;
+    event.preventDefault();
+    let data = {name : form.name.value, parent : parent};
+    var url = "/api/add/pad";
 
+    fetch(url, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(data),
+        cache: "no-cache",
+        headers: new Headers({
+          "content-type": "application/json"
+      })
+    })
+    .then(function(res){
+        return res.json();
+    })
+    .then(function(data){
+        updateMenu(JSON.stringify(data));
+        deleteDialog("#dialog");
+    })
+    .catch(function(error) {
+        console.error("Catch : " + error);
+    })
+
+}
 
     // -- REGEX -- //
     // [^&+<+>+\?+!+]
@@ -274,30 +301,57 @@ function addPad(form, parent){
     // Voir les API REST et leurs implémentations en JS.
 
 
-}
 
 // Faire en sorte que la fenêtre de dialogue se ré-ouvre si le nom du pad est invalide
 
 
+function deleteDirectory(nameDir){
+    let data = {nameDir : nameDir};
+    let url = 'api/remove/dir';
 
-// A faire plus tard : fonctions pour les options
-function deleteDirectory(){
-    alert("Fonctionnalité non développée, c'est pour bientôt ;)");
+    fetch(url,{
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(data),
+        cache: "no-cache",
+        headers: new Headers({
+          "content-type": "application/json"
+      })
+    })
+    .then(function(res){
+        return res.json();
+    })
+    .then(function(data){
+        updateMenu(JSON.stringify(data));
+        deleteDialog("#dialog");
+    })
+    .catch(function(error){
+        console.error("Catch : " + error);
+    })
 }
 
 function renameDirectory(form, oldName){
-    newName = form.name.value;
-    $.ajax({
-      url: "/api/rename/dir",
-      method: "POST",
-      data: {oldName: oldName, newName: newName}
+    data = {oldName: oldName, newName: form.name.value};
+    url = '/api/rename/dir';
+
+    fetch(url,{
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(data),
+        cache: "no-cache",
+        headers: new Headers({
+          "content-type": "application/json"
+      })
     })
-    .done(function(response){
-      updateMenu(response);
+    .then(function(res){
+        return res.json();
     })
-    .fail(function(){
-      throw "Renommage du dossier impossible";
-      return false;
+    .then(function(data){
+        updateMenu(JSON.stringify(data));
+    })
+    .catch(function(error){
+      console.error("Catch : " + error);
+      deleteDialog("#dialog");
   })
   deleteDialog("#dialog");
   return false;
@@ -305,68 +359,81 @@ function renameDirectory(form, oldName){
 
 
 function addDirectory(form){
-    name = form.name.value;
-    $.ajax({
-        url:"/api/add/dir",
+    event.preventDefault();
+    let data = {name : form.name.value, parent : "Root"};
+    let url = "/api/add/dir";
+
+    fetch(url,{
         method: "POST",
-        data : {name: name}
+        credentials: "include",
+        body: JSON.stringify(data),
+        cache: "no-cache",
+        headers: new Headers({
+          "content-type": "application/json"
+      })
     })
-    .done(function(reponse){
-        updateMenu(response);
+    .then(function(res){
+        return res.json();
+    })
+    .then(function(data){
+        updateMenu(JSON.stringify(data));
         optionDisplay = false;
+        deleteDialog("#dialog");
     })
-    .fail(function(){
-        throw "Ajout du dossier impossible"
-        return false;
+    .catch(function(error){
+        console.error("Catch : " + error);
     })
-    deleteDialog("#dialog");
     return false;
 }
 
 
-function displayPadMenu(event, pad){
-    event.preventDefault();
-
-    let paramRenamePad = ["Nouveau nom du pad :", pad.text(), "renamePad"];
-
-    var op1 = new Option("Renommer", createDialog, paramRenamePad);
-    var op2 = new Option("Supprimer", deletePad, pad.text());
-    var tabOp = new Array();
-    tabOp.push(op1);
-    tabOp.push(op2);
-    displayMenu(tabOp);
-}
-
 function deletePad(namePad){
-    $.ajax({
-      url: "/api/remove/pad",
+
+  let data = {name : namePad};
+  let url = "/api/remove/pad";
+
+  fetch(url, {
       method: "POST",
-      data: {name: namePad}
+      credentials: "include",
+      body: JSON.stringify(data),
+      cache: "no-cache",
+      headers: new Headers({
+        "content-type": "application/json"
     })
-    .done(function(response){
-      updateMenu(response);
+  })
+  .then(function(res){
+      return res.json();
+  })
+  .then(function(data){
+      updateMenu(JSON.stringify(data));
       optionDisplay = false;
-      return true;
-    })
-    .fail(function(){
-      throw "Impossible de supprimer ce pad";
-      return false;
+      deleteDialog("#dialog");
+  })
+  .catch(function(error) {
+      console.error("Catch : " + error);
   })
 }
 
 function renamePad(form, oldName){
-    newName = form.name.value;
-    $.ajax({
-      url: "/api/rename/pad",
-      method: "POST",
-      data: {oldName: oldName, newName: newName}
+    let data = {oldName: oldName, newName: form.name.value};
+    let url = "/api/rename/pad";
+    fetch(url,{
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(data),
+        cache: "no-cache",
+        headers: new Headers({
+          "content-type": "application/json"
+      })
     })
-    .done(function(response){
-      updateMenu(response);
+    .then(function(res){
+        return res.json();
     })
-    .fail(function(){
-      throw "Renommage du pad impossible";
-      return false;
+    .then(function(data){
+        updateMenu(JSON.stringify(data));
+    })
+    .catch(function(error){
+      console.error("Catch : " + error);
   })
   deleteDialog("#dialog");
   return false;

@@ -1,0 +1,53 @@
+{
+    "parent": "Root",
+    "enfants" :
+    {
+        "enfants": [{
+                "Nom" : "outcast",
+                "Adresse" : "p/9tm8outcast",
+                "Contenu" : "blabablablablablalblalblalblalblalblalb"
+            },
+            {
+                "Nom" : "outcast2",
+                "Adresse" : "p/9tm8outcast2",
+                "Contenu" : "blabablablablablalblalblalblalblalblalb"
+            }
+        ],
+
+        "dossiers": [{
+                "NomDir" : "Documentation",
+                "enfants" : [{
+                        "Nom" : "Installation du carré",
+                        "Adresse" : "p/9tm8install",
+                        "Contenu" : "Script install.sh"
+                    },
+                    {
+                        "Nom" : "tuto",
+                        "Adresse" : "p/9tm8tuto",
+                        "Contenu" : "Hello world"
+                    }
+                ]
+
+            },
+            {
+                "NomDir" : "Le Grenier",
+                "enfants" : [{
+                        "Nom" : "1er pad du grenier",
+                        "Adresse" : "p/9tm8firstgrenier",
+                        "Contenu" : "Contenu random"
+                    },
+                    {
+                        "NomDir" : "Sous-grenier (la cave)",
+                        "enfants" : [{
+                                "Nom" : "Sous-sous-pad",
+                                "Adresse" : "p/9tm8padcave",
+                                "Contenu" : "Etes vous bien sûr de vouloir vous aventurer dans la cave ?"
+                            }]
+                    }
+                ]
+            }
+        ]
+
+
+    }
+}
