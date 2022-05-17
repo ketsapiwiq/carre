@@ -69,10 +69,14 @@ class Menu:
 
     def add(self, pad):
         data = []
-        data.append(pad.getParent())
-        data.append(pad.getAdress())
-        data.append(pad.getContenu())
-        self.tree.create_node(pad.getName(), pad.getName(), parent=pad.getParent(), data=data)
+        #data.append(pad.getParent())
+        #data.append(pad.getAdress())
+        #data.append(pad.getContenu())
+        data.append(pad[0])
+        data.append(pad[1])
+        data.append(pad[2])
+        self.tree.create_node(pad[0], pad[0], parent=pad[1], data=data)
+        print("Ajout d'un bidule")
 
 
     def addDirectory(self, directory):

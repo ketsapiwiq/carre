@@ -1,14 +1,37 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, Response
 from src import pad, threads, directory
-import json,time, configparser, re
+import json,time, configparser, re, queue, threading
+from flask_socketio import SocketIO, emit, disconnect, send
 
 ## @nono : Attention aux chemins relatifs
 ## À changer par une variable d'environnement ou une clé de configuration ?
 pathFlaskFolder = '../static'
 # Fichier de configuration
 ficIni = "config.ini"
+#Queue d'évènements
+queueEvent = queue.Queue()
 
 app = Flask(__name__, template_folder=pathFlaskFolder, static_folder=pathFlaskFolder)
+
+
+def supervisor():
+    #Gère la queue d'évnements et lance les treads associés
+    while True:
+        item = queueEvent.get()
+        padData = item[1:]
+        threadEvent = threads.ThreadFunctionalities(item[0], padData)
+        threadEvent.start()
+        threadEvent.join()
+        queueEvent.task_done()
+        queueEvent.join()
+        update()
+
+# Fais les vérifs
+# Envoie le broadcast à tous les clients
+def update():
+    print("Update de tous les fichiers !!!")
+    menu = getMenu()
+    #send(menu, json=True, broadcast=True)
 
 
 def getMenu():
@@ -27,12 +50,14 @@ def getMenu():
     return listMenu
 
 
+
 ##
 #   fonction d'entrée : redirige vers la page d'accueil
 ##
 @app.route("/", methods=['POST', 'GET'])
 def index():
-    #fonctionnalities.creaNbPad(10000)
+    initThread = threading.Thread(target=supervisor, daemon=True)
+    initThread.start()
     return render_template('index.html')
 
 
@@ -55,28 +80,31 @@ def ajouterPad():
     if (request.method == 'POST') :
         param = request.get_json()
         name = param['name']
-        if not inputValidation(name):
+        parent = param['parent']
+        if not inputValidation(name) and not inputValidation(parent):
             raise NameError ("Nom du pad non valide");
 
-        parent = param['parent']
         adress = "p/9tm8" + name
         padAjout = pad.Pad(name, parent, adress, " ")
-        threadAjoutPad = threads.ThreadFunctionalities("ajoutPadFunc", padAjout)
-        threadAjoutPad.start()
-        threadAjoutPad.join()
 
-    # En fait ici l'idée c'est que le serveur retourne directement du json
-    # et n'ai pas besoin de faire de redirection du tout : le client
-    # reste sur la page d'index, et c'est le Javascript qui se charge de faire
-    # la "navigation"
+        dataPad=["ajouterPadFunc", name, parent, adress, " "]
+
+        queueEvent.put(dataPad)
+        #threadAjoutPad = threads.ThreadFunctionalities("ajoutPadFunc", padAjout)
+        #threadAjoutPad.start()
+        #threadAjoutPad.join()
+        queueEvent.join()
+
         return json.dumps(getMenu())
 
 @app.route("/api/remove/pad", methods=['POST'])
 def removePad():
     name = request.get_json()['name']
-    threadRemovePad = threads.ThreadFunctionalities("remove", name)
-    threadRemovePad.start()
-    threadRemovePad.join()
+    queueEvent.put(name, "remove")
+
+    #threadRemovePad = threads.ThreadFunctionalities("remove", name)
+    #threadRemovePad.start()
+    #threadRemovePad.join()
     return json.dumps(getMenu())
 
 @app.route("/api/rename/pad", methods=['POST'])
@@ -84,33 +112,40 @@ def renamePad():
     param = request.get_json()
     oldName = param['oldName']
     newName = param['newName']
-    if not inputValidation(newName):
+    if not inputValidation(newName) and not inputValidation(oldName):
         raise NameError ("Nom du pad non valide")
 
     names = [oldName, newName]
-    threadRenamePad = threads.ThreadFunctionalities("renamePad", names)
-    threadRenamePad.start()
-    threadRenamePad.join()
+    queueEvent.put(names, "renamePad")
+    #threadRenamePad = threads.ThreadFunctionalities("renamePad", names)
+    #threadRenamePad.start()
+    #threadRenamePad.join()
     return json.dumps(getMenu())
 
 @app.route("/api/remove/dir", methods=['POST'])
 def removeDir():
     name = request.get_json()['nameDir']
-    threadRemovePad = threads.ThreadFunctionalities("remove", name)
-    threadRemovePad.start()
-    threadRemovePad.join()
+    if not inputValidation(nameDir) :
+        raise NameError("Nom du répertoire non valide")
+
+    queueEvent.put(name, "remove")
+    #threadRemovePad = threads.ThreadFunctionalities("remove", name)
+    #threadRemovePad.start()
+    #threadRemovePad.join()
     return json.dumps(getMenu())
 
 @app.route("/api/add/dir", methods=['POST'])
 def addDir():
     name = request.get_json()['name']
     parent = request.get_json()['parent']
-    if not inputValidation(name):
+    if not inputValidation(name) and not inputValidation(parent):
         raise NameError("Nom du dossier non valide")
     dir = directory.Directory(name, parent)
-    threadAddDirectory = threads.ThreadFunctionalities("addDirectory",dir)
-    threadAddDirectory.start()
-    threadAddDirectory.join()
+    queueEvent.push(dir, "addDirectory")
+
+    #threadAddDirectory = threads.ThreadFunctionalities("addDirectory",dir)
+    #threadAddDirectory.start()
+    #threadAddDirectory.join()
     return json.dumps(getMenu())
 
 @app.route("/api/rename/dir", methods=['POST'])
@@ -118,12 +153,14 @@ def renameDir():
     paramAjax = request.get_json()
     oldName = paramAjax['oldName']
     newName = paramAjax['newName']
-    if not inputValidation(newName):
-        raise NameError ("Nom du dossier non valide");
+    if not inputValidation(newName) and not inputValidation(oldName):
+        raise NameError ("Nom du dossier non valide")
     param = [oldName, newName]
-    threadRenameDir = threads.ThreadFunctionalities("renameDirectory", param)
-    threadRenameDir.start()
-    threadRenameDir.join()
+
+    queueEvent.put(param,"renameDirectory")
+    #threadRenameDir = threads.ThreadFunctionalities("renameDirectory", param)
+    #threadRenameDir.start()
+    #threadRenameDir.join()
     return json.dumps(getMenu())
 
 def inputValidation(input):

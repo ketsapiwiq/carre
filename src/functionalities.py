@@ -4,6 +4,7 @@ import time
 menuPads = menu.Menu()
 
 def ajoutPadFunc(pad):
+    
     menuPads.add(pad)
     menuPads.writeData()
 
