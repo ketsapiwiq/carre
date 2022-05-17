@@ -46,8 +46,6 @@ class Menu:
                 data.append(nodes[i].data.getAdress())
                 data.append(nodes[i].data.getContenu())
             nodes[i].data = data
-
-        print(nodes)
         return nodes
 
     def writeData(self):
@@ -78,7 +76,9 @@ class Menu:
 
 
     def addDirectory(self, directory):
-        self.tree.create_node(directory.getName(), directory.getName(), parent=directory.getParent(), data=directory.getParent())
+        data = []
+        data.append(directory.getParent())
+        self.tree.create_node(directory.getName(), directory.getName(), parent=directory.getParent(), data=data)
 
     def rename(self, oldName, newName):
         self.tree.update_node(oldName, tag=newName, identifier=newName)
@@ -99,31 +99,18 @@ def createTree(menu, tempTree, parent):
     if isinstance(menu,list):
         for i in range(0, len(menu)):
             cles = list(menu[i].keys())[0]
-            # Répertoire
+            # Répertoire  avec enfants
             if list(menu[i][cles].keys())[0] == "children":
                 dir = directory.Directory(cles, parent)
                 tempTree.create_node(cles, cles, parent=parent, data = dir)
                 # On ré-itère sur les enfants du répertoire
                 createTree(menu[i][cles]["children"], tempTree, cles)
             # Pad
-            else:
+            elif len(menu[i][cles]['data']) > 1 :
                 padNode = pad.Pad(cles, parent, menu[i][cles]['data'][1], menu[i][cles]['data'][2])
                 tempTree.create_node(cles, cles, parent=parent, data=padNode)
+            # Répertoire sans enfants
+            else:
+                dir = directory.Directory(cles, parent)
+                tempTree.create_node(cles, cles, parent=parent, data=dir)
     return tempTree
-
-
-
-def createJson(json, liste):
-    if(isinstance(json,list)):
-        for i in range(0, len(json)):
-            cles = list(json[i].keys())[0]
-            if(list(json[i][cles].keys())[0] == "children"):
-                createJson(json[i][cles]["children"], liste)
-            else :
-                liste.append(json[i])
-    else :
-        print("Voici l'état du json " + json)
-        cles = list(json.keys())
-        liste.append(json[i][cles[0]])
-
-    return liste

@@ -20,9 +20,9 @@ def getMenu():
     listMenu = []
     for i in range(0, len(menu)):
         if len(menu[i].data) > 1 :
-            data = {"name": menu[i].tag, "parent": menu[i].data[0], "isDirectory": True}
+            data = {"name": menu[i].tag, "parent": menu[i].data[0], "adresse": menu[i].data[1], "contenu": menu[i].data[2], "isDirectory": False}
         else:
-            data = {"name": menu[i].tag, "parent": menu[i].data[0], "isDirectory": False}
+            data = {"name": menu[i].tag, "parent": menu[i].data[0], "isDirectory": True}
         listMenu.append(data)
     return listMenu
 

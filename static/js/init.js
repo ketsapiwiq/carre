@@ -7,6 +7,9 @@
  */
 
 var menu;
+// Liste de tous les pads
+var pads = [];
+
 var pad;
 var adrServ;
 var optionDisplay = false;
@@ -48,26 +51,22 @@ function init(){
 function updateMenu(data){
     $("#liste").children().slice().remove();
     menu = JSON.parse(data);
-    console.log(menu);
     let directory = [];
     var menuHtml = $("#liste");
     menuHtml.append("<li>");
 
     // Initialise le tableau des dossiers
     for (let i = 0; i < menu.length; ++i){
-        if(directory.indexOf(menu[i]['parent']) == -1){
-            directory.push(menu[i]['parent']);
+        if(menu[i]['isDirectory']){
+            directory.push(menu[i]['name']);
+        }
+        else{
+            pads.push({'name': menu[i]['name'], 'adresse': menu[i]['adresse']});
         }
     }
 
 
-    /*for (let i = 0; i < menu.length; ++i){
-        if(menu[i]['isDirectory']){
-            directory.push(menu[i]['name']);
-        }
-    }*/
-    //console.log(menu[9]["parent"]);
-    console.log(directory);
+
     for (let i = 0; i < directory.length; ++i){
         // Afficher les dossiers
         menuHtml.append("<ul class='parent'><h2>" + directory[i] + "</h2></ul>");
@@ -79,12 +78,6 @@ function updateMenu(data){
         }
     }
 
-    /*for (var i = 0; i < menu["Root"]["children"].length; ++i){
-        menuHtml.append("<ul class='parent'><h2>" + menu["Root"]["children"][i]["children"][0] + "</h2></ul>");
-        for(var j in menu[i]["pads"]){
-            menuHtml.append("<ul class='child'>" + menu[i]["pads"][j]["Nom"] + "</ul>");
-        }
-    }*/
     menuHtml.append("</li>");
 
     //------Ajout des EventListener--------//
@@ -136,7 +129,7 @@ function updateIFrame(e){
     $("ul").css('background-color','white');
     e.css('background-color','red');
     let adress = findAdress(text);
-
+    console.log(adress)
     pad.append("<iframe id='iPad' src='" + adrServ + adress + "'> </iframe>")
 }
 
@@ -148,12 +141,9 @@ function updateIFrame(e){
 // @nono : Y'a sûrement une meilleur manière de faire, ici c'est une compléxité
 // n*m, ça va devenir très lent quand y'aura bcp de pads.
 function findAdress(text){
-    // Possibilité d'améliorer la boucle avec un foreach ?
-    for (var i = 0; i < menu.length; i++){
-        for(var j = 0; j < menu[i]["pads"].length; ++j){
-            if(text == menu[i]["pads"][j]["Nom"]){
-                return menu[i]["pads"][j]["Adresse"];
-            }
+    for (var i = 0; i < pads.length; i++){
+        if(text == pads[i]['name']){
+            return pads[i]['adresse'];
         }
     }
 }
