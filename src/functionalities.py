@@ -4,7 +4,6 @@ import time
 menuPads = menu.Menu()
 
 def ajoutPadFunc(pad):
-    
     menuPads.add(pad)
     menuPads.writeData()
 
@@ -19,22 +18,17 @@ def creaNbPad(nb):
         ajoutPadFunc(newPad)
     print(str(time.time() - start) + " seconds to create" + nb + "pads")
 
-def renameDir(names):
+def rename(names):
     oldName = names[0]
     newName = names[1]
     menuPads.rename(oldName, newName)
     menuPads.writeData()
 
 def remove(name):
-    menuPads.delete(name)
+    menuPads.delete(name[0])
     menuPads.writeData()
 
-def renamePad(names):
-    oldName = names[0]
-    newName = names[1]
-    menuPads.rename(oldName, newName)
-    menuPads.writeData()
 
 def addDirectory(dir):
-    menuPads.addDirectory(dir)
+    menuPads.addDirectory(dir[0])
     menuPads.writeData()

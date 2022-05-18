@@ -64,6 +64,7 @@ class Menu:
         # A tester avec un nom qui n'existe pas, le nom d'un pad qui existe et le nom d'un dossier
         self.tree.remove_node(name)
 
+
     def move(self, name, movePoint):
         self.tree.move_node(name,movePoint)
 
