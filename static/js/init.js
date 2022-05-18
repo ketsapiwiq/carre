@@ -46,6 +46,17 @@ function init(){
         .fail(function(){
             throw new Error("Récupération du menu impossible");
         })
+
+    var socket = io();
+    $('form#broadcast').submit(function(event) {
+        socket.emit('broadcast_message', {data: 'broadcast triggered'});
+        return false;
+    });
+    
+    socket.on('broadcast_response', function(msg) {
+        console.log("Broscast !!!!!");
+        $('#log').append('<br>' + $('<div/>').text(msg.data).html());
+    })
 }
 
 function updateMenu(data){

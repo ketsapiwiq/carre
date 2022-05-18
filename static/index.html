@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"/>
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/lib/jquery/jquery_min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/lib/jquery/jquery_min3_5_1.js')}}"></script>
     <script src="{{ url_for('static', filename='js/lib/jquery/jquery-ui.js')}}"></script>
     <script src="{{ url_for('static', filename='js/lib/socketio.js')}}"></script>
     <script src="{{ url_for('static', filename='js/init.js') }}"></script>
@@ -34,7 +35,16 @@
 
     </div>
 
+    <div id="log">
+
+    </div>
+
     <div id="test">
+        <form id="broadcast" method="POST" action="#">
+            <input type="submit" value="Broadcast">
+        </form>
+
+
         <form method="POST" action="/addPad">
             <button>+</button>
         </form>

@@ -11,8 +11,10 @@ ficIni = "config.ini"
 #Queue d'évènements
 queueEvent = queue.Queue()
 
-app = Flask(__name__, template_folder=pathFlaskFolder, static_folder=pathFlaskFolder)
 
+async_mode = None
+app = Flask(__name__, template_folder=pathFlaskFolder, static_folder=pathFlaskFolder)
+socketio = SocketIO(app, async_mode=async_mode)
 
 def supervisor():
     #Gère la queue d'évnements et lance les treads associés
@@ -32,6 +34,11 @@ def update():
 
     menu = getMenu()
     #send(menu, json=True, broadcast=True)
+
+@socketio.on('broadcast_message')
+def handle_broadcast(data):
+    print('received: ' + str(data))
+    emit('broadcast_response', {'data': 'Broadcast sent'}, broadcast=True)
 
 
 def getMenu():
