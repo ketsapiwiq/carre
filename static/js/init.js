@@ -48,13 +48,8 @@ function init(){
         })
 
     var socket = io();
-    $('form#broadcast').submit(function(event) {
-        socket.emit('broadcast_message', {data: 'broadcast triggered'});
-        return false;
-    });
 
     socket.on('broadcast_response', function(data) {
-        $('#log').append('<br>' + $('<div/>').text("l'update a été faite !").html());
         updateMenu(JSON.stringify(data));
         deleteDialog("#dialog");
     })
@@ -174,7 +169,7 @@ function displayMenu(tabOptions){
 
 function defaultMenu(event){
     event.preventDefault();
-    let paramCreaDirectory = ["Nom du nouveau dossier : ", null, "addDirectory"];
+    let paramCreaDirectory = ["Nom du nouveau dossier : ", "Root", "addDirectory"];
     var op1 = new Option("Créer un dossier", createDialog, paramCreaDirectory);
     var tabOp = new Array();
     tabOp.push(op1);
@@ -192,12 +187,13 @@ function directoryMenu(event, parent){
 
     let paramAjoutPad = ["Entrez le nom du nouveau pad : ", parent.text(), "addPad"];
     let paramRenameDirectory = ["Nouveau nom du dossier :", parent.text(), "renameDirectory"];
+    let paramAddDirectory = ["Entrez le nom du nouveau dossier :", parent.text(), "addDirectory"];
 
     var op1 = new Option("Ajouter un pad", createDialog, paramAjoutPad);
     var op2 = new Option("Supprimer le dossier", deleteDirectory, parent.text());
     var op3 = new Option("Renommer le dossier", createDialog, paramRenameDirectory);
     // Dernière option : création d'un sous-dossier
-    var op4 = new Option("Ajouter un dossier", addDirectory);
+    var op4 = new Option("Ajouter un dossier", createDialog, paramAddDirectory);
     var tabOp = new Array();
     tabOp.push(op1);
     tabOp.push(op2);
@@ -360,9 +356,9 @@ function renameDirectory(form, oldName){
 }
 
 
-function addDirectory(form){
+function addDirectory(form, parent){
     event.preventDefault();
-    let data = {name : form.name.value, parent : "Root"};
+    let data = {name : form.name.value, parent : parent};
     let url = "/api/add/dir";
 
     fetch(url,{

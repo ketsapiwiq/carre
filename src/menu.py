@@ -37,6 +37,7 @@ class Menu:
         self.ficTree = tempTree
 
         self.tree = self.ficTree
+        self.tree.show()
         nodes = self.tree.all_nodes()
         for i in range(0, len(nodes)):
             data = []

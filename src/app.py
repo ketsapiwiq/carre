@@ -4,7 +4,6 @@ import json,time, configparser, re, queue, threading
 from flask_socketio import SocketIO, emit, disconnect, send
 
 ###### Demain
-# Implémenter le broadcast avec la mise à jour du menu
 # Faire la fonction de vérif
 # Faire la dernière option : la création de sous-dossier
 ######
