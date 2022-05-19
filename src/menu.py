@@ -77,7 +77,6 @@ class Menu:
         data.append(pad[1])
         data.append(pad[2])
         self.tree.create_node(pad[0], pad[0], parent=pad[1], data=data)
-        print("Ajout d'un bidule")
 
 
     def addDirectory(self, directory):

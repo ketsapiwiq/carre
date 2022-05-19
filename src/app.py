@@ -104,6 +104,7 @@ def ajouterPad():
         #threadAjoutPad.start()
         #threadAjoutPad.join()
         queueEvent.join()
+        socketio.emit('broadcast_response', getMenu())
         return json.dumps(getMenu())
 
 @app.route("/api/remove/pad", methods=['POST'])
@@ -115,6 +116,7 @@ def removePad():
     #threadRemovePad = threads.ThreadFunctionalities("remove", name)
     #threadRemovePad.start()
     #threadRemovePad.join()
+    socketio.emit('broadcast_response', getMenu())
     return json.dumps(getMenu())
 
 @app.route("/api/rename/pad", methods=['POST'])
@@ -131,6 +133,7 @@ def renamePad():
     #threadRenamePad = threads.ThreadFunctionalities("renamePad", names)
     #threadRenamePad.start()
     #threadRenamePad.join()
+    socketio.emit('broadcast_response', getMenu())
     return json.dumps(getMenu())
 
 @app.route("/api/remove/dir", methods=['POST'])
@@ -145,6 +148,7 @@ def removeDir():
     #threadRemovePad = threads.ThreadFunctionalities("remove", name)
     #threadRemovePad.start()
     #threadRemovePad.join()
+    socketio.emit('broadcast_response', getMenu())
     return json.dumps(getMenu())
 
 @app.route("/api/add/dir", methods=['POST'])
@@ -161,6 +165,7 @@ def addDir():
     #threadAddDirectory = threads.ThreadFunctionalities("addDirectory",dir)
     #threadAddDirectory.start()
     #threadAddDirectory.join()
+    socketio.emit('broadcast_response', getMenu())
     return json.dumps(getMenu())
 
 @app.route("/api/rename/dir", methods=['POST'])
@@ -176,6 +181,7 @@ def renameDir():
     #threadRenameDir = threads.ThreadFunctionalities("renameDirectory", param)
     #threadRenameDir.start()
     #threadRenameDir.join()
+    socketio.emit('broadcast_response', getMenu())
     return json.dumps(getMenu())
 
 def inputValidation(input):
