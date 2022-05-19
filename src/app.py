@@ -3,8 +3,11 @@ from src import pad, threads, directory, functionalities
 import json,time, configparser, re, queue, threading
 from flask_socketio import SocketIO, emit, disconnect, send
 
-## @nono : Attention aux chemins relatifs
-## À changer par une variable d'environnement ou une clé de configuration ?
+###### Demain
+# Implémenter le broadcast avec la mise à jour du menu
+# Faire la fonction de vérif
+# Faire la dernière option : la création de sous-dossier
+######
 pathFlaskFolder = '../static'
 # Fichier de configuration
 ficIni = "config.ini"
@@ -38,7 +41,7 @@ def update():
 @socketio.on('broadcast_message')
 def handle_broadcast(data):
     print('received: ' + str(data))
-    emit('broadcast_response', {'data': 'Broadcast sent'}, broadcast=True)
+    emit('broadcast_response', getMenu(), broadcast=True)
 
 
 def getMenu():

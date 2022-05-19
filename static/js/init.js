@@ -52,10 +52,11 @@ function init(){
         socket.emit('broadcast_message', {data: 'broadcast triggered'});
         return false;
     });
-    
-    socket.on('broadcast_response', function(msg) {
-        console.log("Broscast !!!!!");
-        $('#log').append('<br>' + $('<div/>').text(msg.data).html());
+
+    socket.on('broadcast_response', function(data) {
+        $('#log').append('<br>' + $('<div/>').text("l'update a été faite !").html());
+        updateMenu(JSON.stringify(data));
+        deleteDialog("#dialog");
     })
 }
 
@@ -65,6 +66,7 @@ function updateMenu(data){
     let directory = [];
     var menuHtml = $("#liste");
     menuHtml.append("<li>");
+    console.log(menu);
 
     // Initialise le tableau des dossiers
     for (let i = 0; i < menu.length; ++i){
@@ -140,7 +142,6 @@ function updateIFrame(e){
     $("ul").css('background-color','white');
     e.css('background-color','red');
     let adress = findAdress(text);
-    console.log(adress)
     pad.append("<iframe id='iPad' src='" + adrServ + adress + "'> </iframe>")
 }
 
