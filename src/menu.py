@@ -31,7 +31,9 @@ class Menu:
         menu = loadJSON(self)
 
         tempTree = Tree()
-        tempTree.create_node("Root", "Root", data= directory.Directory("Root", "Root"))
+        dataRoot = []
+        dataRoot.append("Root")
+        tempTree.create_node("Root", "Root", data=dataRoot)
         tempTree = createTree(menu["Root"]["children"], tempTree, "Root")
 
         self.ficTree = tempTree
@@ -39,14 +41,7 @@ class Menu:
         self.tree = self.ficTree
         self.tree.show()
         nodes = self.tree.all_nodes()
-        for i in range(0, len(nodes)):
-            data = []
-            data.append(nodes[i].data.getParent())
-            # Si le noeud est un pad, on rajoute l'adresse et le contenu
-            if isinstance(nodes[i].data, pad.Pad):
-                data.append(nodes[i].data.getAdress())
-                data.append(nodes[i].data.getContenu())
-            nodes[i].data = data
+
         return nodes
 
     def writeData(self):
@@ -71,12 +66,9 @@ class Menu:
 
     def add(self, pad):
         data = []
-        #data.append(pad.getParent())
-        #data.append(pad.getAdress())
-        #data.append(pad.getContenu())
-        data.append(pad[0])
         data.append(pad[1])
         data.append(pad[2])
+        data.append(pad[3])
         self.tree.create_node(pad[0], pad[0], parent=pad[1], data=data)
 
 
@@ -106,16 +98,24 @@ def createTree(menu, tempTree, parent):
             cles = list(menu[i].keys())[0]
             # Répertoire  avec enfants
             if list(menu[i][cles].keys())[0] == "children":
-                dir = directory.Directory(cles, parent)
-                tempTree.create_node(cles, cles, parent=parent, data = dir)
+                dataDir = []
+                dataDir.append(parent)
+                tempTree.create_node(cles, cles, parent=parent, data=dataDir)
                 # On ré-itère sur les enfants du répertoire
                 createTree(menu[i][cles]["children"], tempTree, cles)
             # Pad
             elif len(menu[i][cles]['data']) > 1 :
-                padNode = pad.Pad(cles, parent, menu[i][cles]['data'][1], menu[i][cles]['data'][2])
-                tempTree.create_node(cles, cles, parent=parent, data=padNode)
+                dataPad = []
+                dataPad.append(parent)
+                dataPad.append(menu[i][cles]['data'][1])
+                dataPad.append(menu[i][cles]['data'][2])
+                tempTree.create_node(cles, cles, parent=parent, data=dataPad)
+
             # Répertoire sans enfants
             else:
-                dir = directory.Directory(cles, parent)
-                tempTree.create_node(cles, cles, parent=parent, data=dir)
+
+                dataDir = []
+                dataDir.append(parent)
+                tempTree.create_node(cles, cles, parent=parent, data=dataDir)
+
     return tempTree

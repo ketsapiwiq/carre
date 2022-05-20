@@ -55,12 +55,37 @@ function init(){
     })
 }
 
+function createMenu(liste, indice){
+    for(i = indice; i < menu.length; ++i){
+        if(menu[i]['isDirectory']){
+            let sousListe = document.createElement("ul");
+            sousListe.setAttribute("id", "parent");
+            let titre = document.createElement("h2");
+            titre.innerText = menu[i]['name'];
+            sousListe.appendChild(titre);
+            liste.appendChild(sousListe);
+            for(j = i+1; j < menu.length; ++j){
+                if(menu[i]['name'] == menu[j]['parent']){
+                    if(menu[j]['isDirectory']){
+                        createMenu(sousListe, j);
+                    }else{
+                        titre = document.createElement("li");
+                        titre.innerText = menu[j]['name'];
+                        sousListe.appendChild(titre);
+                        liste.appendChild(sousListe);
+                    }
+                }
+            }
+        }
+    }
+}
+
 function updateMenu(data){
     $("#liste").children().slice().remove();
     menu = JSON.parse(data);
     let directory = [];
     var menuHtml = $("#liste");
-    menuHtml.append("<li>");
+    menuHtml.append("<ul>");
     console.log(menu);
 
     // Initialise le tableau des dossiers
@@ -72,21 +97,9 @@ function updateMenu(data){
             pads.push({'name': menu[i]['name'], 'adresse': menu[i]['adresse']});
         }
     }
+    let liste = document.querySelector("#liste>ul");
+    createMenu(liste, 0);
 
-
-
-    for (let i = 0; i < directory.length; ++i){
-        // Afficher les dossiers
-        menuHtml.append("<ul class='parent'><h2>" + directory[i] + "</h2></ul>");
-        for (let j = 0; j < menu.length; ++j){
-            // Afficher les pads
-            if(directory.indexOf(menu[j]['name']) == -1 && menu[j]['parent'] == directory[i]){
-                menuHtml.append("<ul class='child'>" + menu[j]['name'] + "</ul>");
-            }
-        }
-    }
-
-    menuHtml.append("</li>");
 
     //------Ajout des EventListener--------//
 
@@ -96,12 +109,12 @@ function updateMenu(data){
         }
     })
     //Click sur le nom d'un pad
-    $("ul.child").click(function(){
+    $("ul>li").click(function(){
         updateIFrame($(this));
     });
 
     //Click droit sur le nom d'un pad
-    $("ul.child").contextmenu(function(event){
+    $("ul>li").contextmenu(function(event){
         if(!optionDisplay){
             clickMenu = true;
             padMenu(event, $(this));
@@ -109,12 +122,12 @@ function updateMenu(data){
     });
 
     //Passage de la souris sur le nom d'un pad
-    $("ul.child").hover(function(){
+    $("ul>li").hover(function(){
         $(this).css('cursor','pointer');
     });
 
     //Click droit sur le nom d'un dossier
-    $("ul.parent").contextmenu(function(event){
+    $("ul").contextmenu(function(event){
         if(!optionDisplay){
             clickMenu = true;
             directoryMenu(event, $(this));
@@ -274,13 +287,6 @@ function addPad(form, parent){
           "content-type": "application/json"
       })
     })
-    .then(function(res){
-        return res.json();
-    })
-    .then(function(data){
-        updateMenu(JSON.stringify(data));
-        deleteDialog("#dialog");
-    })
     .catch(function(error) {
         console.error("Catch : " + error);
     })
@@ -316,13 +322,6 @@ function deleteDirectory(nameDir){
           "content-type": "application/json"
       })
     })
-    .then(function(res){
-        return res.json();
-    })
-    .then(function(data){
-        updateMenu(JSON.stringify(data));
-        deleteDialog("#dialog");
-    })
     .catch(function(error){
         console.error("Catch : " + error);
     })
@@ -340,12 +339,6 @@ function renameDirectory(form, oldName){
         headers: new Headers({
           "content-type": "application/json"
       })
-    })
-    .then(function(res){
-        return res.json();
-    })
-    .then(function(data){
-        updateMenu(JSON.stringify(data));
     })
     .catch(function(error){
       console.error("Catch : " + error);
@@ -371,12 +364,7 @@ function addDirectory(form, parent){
       })
     })
     .then(function(res){
-        return res.json();
-    })
-    .then(function(data){
-        updateMenu(JSON.stringify(data));
         optionDisplay = false;
-        deleteDialog("#dialog");
     })
     .catch(function(error){
         console.error("Catch : " + error);
@@ -400,12 +388,7 @@ function deletePad(namePad){
     })
   })
   .then(function(res){
-      return res.json();
-  })
-  .then(function(data){
-      updateMenu(JSON.stringify(data));
-      optionDisplay = false;
-      deleteDialog("#dialog");
+       optionDisplay = false;
   })
   .catch(function(error) {
       console.error("Catch : " + error);
@@ -423,12 +406,6 @@ function renamePad(form, oldName){
         headers: new Headers({
           "content-type": "application/json"
       })
-    })
-    .then(function(res){
-        return res.json();
-    })
-    .then(function(data){
-        updateMenu(JSON.stringify(data));
     })
     .catch(function(error){
       console.error("Catch : " + error);

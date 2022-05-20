@@ -1,11 +1,11 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, Response
 from src import pad, threads, directory, functionalities
-import json,time, configparser, re, queue, threading
+import json,time, configparser, re, queue, threading, http.client
 from flask_socketio import SocketIO, emit, disconnect, send
 
-###### Demain
-# Faire la fonction de vérif
-# Faire la dernière option : la création de sous-dossier
+###### To-Do
+# Faire la fonction de vérif (Créer conflit.py pour gérer toutes les possibilités d'erreurs)
+# Refactoriser le code (fnct Ajax, fichier functionnalities)
 ######
 pathFlaskFolder = '../static'
 # Fichier de configuration
@@ -19,7 +19,7 @@ app = Flask(__name__, template_folder=pathFlaskFolder, static_folder=pathFlaskFo
 socketio = SocketIO(app, async_mode=async_mode)
 
 def supervisor():
-    #Gère la queue d'évnements et lance les treads associés
+    #Gère la queue d'évnements et lance les threads associés
     while True:
         data = queueEvent.get()
         param = data[1:]
@@ -33,14 +33,7 @@ def supervisor():
 # Fais les vérifs
 # Envoie le broadcast à tous les clients
 def update():
-
-    menu = getMenu()
-    #send(menu, json=True, broadcast=True)
-
-@socketio.on('broadcast_message')
-def handle_broadcast(data):
-    print('received: ' + str(data))
-    emit('broadcast_response', getMenu(), broadcast=True)
+    socketio.emit('broadcast_response', getMenu())
 
 
 def getMenu():
@@ -93,18 +86,15 @@ def ajouterPad():
         if not inputValidation(name) and not inputValidation(parent):
             raise NameError ("Nom du pad non valide");
 
-        adress = "p/9tm8" + name
+        adress = "p/9tm8" + name.replace(" ","")
         padAjout = pad.Pad(name, parent, adress, " ")
 
         dataPad=["ajoutPadFunc", name, parent, adress, " "]
 
         queueEvent.put(dataPad)
-        #threadAjoutPad = threads.ThreadFunctionalities("ajoutPadFunc", padAjout)
-        #threadAjoutPad.start()
-        #threadAjoutPad.join()
         queueEvent.join()
-        socketio.emit('broadcast_response', getMenu())
-        return json.dumps(getMenu())
+
+        return ("", http.HTTPStatus.NO_CONTENT)
 
 @app.route("/api/remove/pad", methods=['POST'])
 def removePad():
@@ -112,11 +102,7 @@ def removePad():
     data = ["remove", name]
     queueEvent.put(data)
     queueEvent.join()
-    #threadRemovePad = threads.ThreadFunctionalities("remove", name)
-    #threadRemovePad.start()
-    #threadRemovePad.join()
-    socketio.emit('broadcast_response', getMenu())
-    return json.dumps(getMenu())
+    return ("", http.HTTPStatus.NO_CONTENT)
 
 @app.route("/api/rename/pad", methods=['POST'])
 def renamePad():
@@ -129,11 +115,7 @@ def renamePad():
     data = ["rename",oldName, newName]
     queueEvent.put(data)
     queueEvent.join()
-    #threadRenamePad = threads.ThreadFunctionalities("renamePad", names)
-    #threadRenamePad.start()
-    #threadRenamePad.join()
-    socketio.emit('broadcast_response', getMenu())
-    return json.dumps(getMenu())
+    return ("", http.HTTPStatus.NO_CONTENT)
 
 @app.route("/api/remove/dir", methods=['POST'])
 def removeDir():
@@ -144,11 +126,7 @@ def removeDir():
     data = ["remove", name]
     queueEvent.put(data)
     queueEvent.join()
-    #threadRemovePad = threads.ThreadFunctionalities("remove", name)
-    #threadRemovePad.start()
-    #threadRemovePad.join()
-    socketio.emit('broadcast_response', getMenu())
-    return json.dumps(getMenu())
+    return ("", http.HTTPStatus.NO_CONTENT)
 
 @app.route("/api/add/dir", methods=['POST'])
 def addDir():
@@ -161,11 +139,7 @@ def addDir():
     queueEvent.put(data)
     queueEvent.join()
 
-    #threadAddDirectory = threads.ThreadFunctionalities("addDirectory",dir)
-    #threadAddDirectory.start()
-    #threadAddDirectory.join()
-    socketio.emit('broadcast_response', getMenu())
-    return json.dumps(getMenu())
+    return ("", http.HTTPStatus.NO_CONTENT)
 
 @app.route("/api/rename/dir", methods=['POST'])
 def renameDir():
@@ -177,11 +151,7 @@ def renameDir():
     data = ["rename", oldName, newName]
     queueEvent.put(data)
     queueEvent.join()
-    #threadRenameDir = threads.ThreadFunctionalities("renameDirectory", param)
-    #threadRenameDir.start()
-    #threadRenameDir.join()
-    socketio.emit('broadcast_response', getMenu())
-    return json.dumps(getMenu())
+    return ("", http.HTTPStatus.NO_CONTENT)
 
 def inputValidation(input):
     match = re.search("[><?;!&]+", input)

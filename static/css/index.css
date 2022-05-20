@@ -35,3 +35,8 @@ li{
 #options p:hover{
     background-color : #aaaaaa;
 }
+
+.parent{
+    padding-left: 5%;
+    color: green;
+}
