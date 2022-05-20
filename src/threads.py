@@ -17,24 +17,31 @@ class ThreadFunctionalities(threading.Thread):
         return self.stock
 
     def run(self):
+        lock = threading.Lock()
         match self.fonction :
             case "recupMenu" :
-                self.stock = functionalities.recupMenu()
-                return self.stock
+                with lock :
+                    self.stock = functionalities.recupMenu()
+                    return self.stock
             case "ajoutPadFunc" :
-                functionalities.ajoutPadFunc(self.stock)
-                return 0
+                with lock :
+                    functionalities.ajoutPadFunc(self.stock)
+                    return 0
             case "testPerf" :
-                functionalities.creaPad(self.stock)
-                return 0
+                with lock :
+                    functionalities.creaPad(self.stock)
+                    return 0
             case "rename":
-                functionalities.rename(self.stock)
-                return 0
+                with lock :
+                    functionalities.rename(self.stock)
+                    return 0
             case "remove":
-                functionalities.remove(self.stock)
-                return 0
+                with lock :
+                    functionalities.remove(self.stock)
+                    return 0
             case "addDirectory":
-                functionalities.addDirectory(self.stock)
-                return 0
+                with lock :
+                    functionalities.addDirectory(self.stock)
+                    return 0
 
         return -1

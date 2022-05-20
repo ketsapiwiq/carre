@@ -51,7 +51,6 @@ function init(){
 
     socket.on('broadcast_response', function(data) {
         updateMenu(JSON.stringify(data));
-        deleteDialog("#dialog");
     })
 }
 
@@ -127,7 +126,7 @@ function updateMenu(data){
     });
 
     //Click droit sur le nom d'un dossier
-    $("ul").contextmenu(function(event){
+    $("ul#parent>h2").contextmenu(function(event){
         if(!optionDisplay){
             clickMenu = true;
             directoryMenu(event, $(this));
@@ -197,7 +196,6 @@ function defaultMenu(event){
 */
 function directoryMenu(event, parent){
     event.preventDefault();
-
     let paramAjoutPad = ["Entrez le nom du nouveau pad : ", parent.text(), "addPad"];
     let paramRenameDirectory = ["Nouveau nom du dossier :", parent.text(), "renameDirectory"];
     let paramAddDirectory = ["Entrez le nom du nouveau dossier :", parent.text(), "addDirectory"];
@@ -287,6 +285,9 @@ function addPad(form, parent){
           "content-type": "application/json"
       })
     })
+    .then(function(){
+        deleteDialog("#dialog");
+    })
     .catch(function(error) {
         console.error("Catch : " + error);
     })
@@ -322,6 +323,9 @@ function deleteDirectory(nameDir){
           "content-type": "application/json"
       })
     })
+    .then(function(){
+        deleteDialog("#dialog");
+    })
     .catch(function(error){
         console.error("Catch : " + error);
     })
@@ -339,6 +343,9 @@ function renameDirectory(form, oldName){
         headers: new Headers({
           "content-type": "application/json"
       })
+    })
+    .then(function(){
+        deleteDialog("#dialog");
     })
     .catch(function(error){
       console.error("Catch : " + error);
@@ -364,6 +371,7 @@ function addDirectory(form, parent){
       })
     })
     .then(function(res){
+        deleteDialog("#dialog");
         optionDisplay = false;
     })
     .catch(function(error){
@@ -388,6 +396,7 @@ function deletePad(namePad){
     })
   })
   .then(function(res){
+      deleteDialog("#dialog");
        optionDisplay = false;
   })
   .catch(function(error) {
@@ -406,6 +415,9 @@ function renamePad(form, oldName){
         headers: new Headers({
           "content-type": "application/json"
       })
+    })
+    .then(function(){
+        deleteDialog("#dialog");
     })
     .catch(function(error){
       console.error("Catch : " + error);

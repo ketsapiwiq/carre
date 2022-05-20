@@ -1,12 +1,17 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, Response
-from src import pad, threads, directory, functionalities
+from src import pad, threads, directory, functionalities, conflicts
 import json,time, configparser, re, queue, threading, http.client
 from flask_socketio import SocketIO, emit, disconnect, send
 
 ###### To-Do
-# Faire la fonction de vérif (Créer conflit.py pour gérer toutes les possibilités d'erreurs)
+# --> Faire la fonction de errorManager (Créer conflit.py pour gérer toutes les possibilités d'erreurs)
+# Coder la fonction retournant les erreurs
 # Refactoriser le code (fnct Ajax, fichier functionnalities)
 ######
+
+##### BUG
+#
+#####
 pathFlaskFolder = '../static'
 # Fichier de configuration
 ficIni = "config.ini"
@@ -23,17 +28,28 @@ def supervisor():
     while True:
         data = queueEvent.get()
         param = data[1:]
+        try:
+            #conflicts.errorManager(data[0], param)
+            print("La fonction de gestion de conflits arrive bientôt !")
+        except Exception :
+            #displayError(e.info)
+            print("Erreur !")
         threadEvent = threads.ThreadFunctionalities(data[0], param)
         threadEvent.start()
         threadEvent.join()
         queueEvent.task_done()
 
-        update()
+        #update()
 
 # Fais les vérifs
 # Envoie le broadcast à tous les clients
 def update():
-    socketio.emit('broadcast_response', getMenu())
+    while True :
+        time.sleep(5)
+        socketio.emit('broadcast_response', getMenu())
+
+def displayError(errorInformation):
+    print(errorInformation)
 
 
 def getMenu():
@@ -60,6 +76,8 @@ def getMenu():
 def index():
     initThread = threading.Thread(target=supervisor, daemon=True)
     initThread.start()
+    updateThread = threading.Thread(target=update, daemon=True)
+    updateThread.start()
     return render_template('index.html')
 
 
