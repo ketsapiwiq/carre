@@ -55,24 +55,80 @@ function init(){
 }
 
 function createMenu(liste, indice){
-    for(i = indice; i < menu.length; ++i){
+    for(i = indice; i < menu.length - 1; ++i){
         if(menu[i]['isDirectory']){
             let sousListe = document.createElement("ul");
-            sousListe.setAttribute("id", "parent");
+            sousListe.setAttribute("class", "parent");
+            sousListe.setAttribute("id", menu[i]['name']);
             let titre = document.createElement("h2");
             titre.innerText = menu[i]['name'];
             sousListe.appendChild(titre);
             liste.appendChild(sousListe);
+            //console.log("Création de : " + menu[i]['name']);
+
             for(j = i+1; j < menu.length; ++j){
                 if(menu[i]['name'] == menu[j]['parent']){
+                    //console.log(menu[j]['name'] + " a pour parent " + menu[i]['name']);
+                    //console.log(j + " : " + menu[j]['name']);
                     if(menu[j]['isDirectory']){
+                        //console.log("ul pour le répertoire : " + menu[j]['name']);
                         createMenu(sousListe, j);
                     }else{
+                        console.log(menu[j]['name']);
                         titre = document.createElement("li");
                         titre.innerText = menu[j]['name'];
                         sousListe.appendChild(titre);
                         liste.appendChild(sousListe);
                     }
+                }
+                else{
+                    // Récupèrer le "ul" ayant pour texte le nom du parent du répertoire en question
+                    sousListe = document.getElementById(menu[j]['parent']);
+                    console.log(sousListe);
+                    createMenu(sousListe, j);
+                }
+            }
+        }
+    }
+}
+
+function createMenuV2(indice){
+
+    for(i = indice; i < menu.length - 1; ++i){
+        if(menu[i]['isDirectory']){
+            let liste = document.getElementById(menu[i]['parent']);
+            let sousListe = document.createElement("ul");
+            sousListe.setAttribute("class", "parent");
+            sousListe.setAttribute("id", menu[i]['name']);
+            let titre = document.createElement("h2");
+            titre.innerText = menu[i]['name'];
+            sousListe.appendChild(titre);
+            liste.appendChild(sousListe);
+            //console.log("Création de : " + menu[i]['name']);
+
+            // Repère les pads
+            for(j = i+1; j < menu.length; ++j){
+                if(menu[i]['name'] == menu[j]['parent']){
+                    //console.log(menu[j]['name'] + " a pour parent " + menu[i]['name']);
+                    //console.log(j + " : " + menu[j]['name']);
+                    if(!menu[j]['isDirectory']){
+                        titre = document.createElement("li");
+                        titre.innerText = menu[j]['name'];
+                        sousListe.appendChild(titre);
+                        liste.appendChild(sousListe);
+                }
+                else{
+                    // Récupèrer le "ul" ayant pour texte le nom du parent du répertoire en question
+                    /*sousListe = document.getElementById(menu[j]['parent']);
+                    console.log(sousListe);
+                    createMenu(sousListe, j);*/
+                    }
+                }
+            }
+            // Repère les dossiers
+            for(k = i+1; k < menu.length; ++k){
+                if(menu[i]['name'] == menu[k]['parent'] && menu[k]['isDirectory']){
+                    createMenuV2(k);
                 }
             }
         }
@@ -97,7 +153,23 @@ function updateMenu(data){
         }
     }
     let liste = document.querySelector("#liste>ul");
-    createMenu(liste, 0);
+    let sousListe = document.createElement("ul");
+    sousListe.setAttribute("class", "parent");
+    sousListe.setAttribute("id", "Root");
+
+    liste.appendChild(sousListe);
+
+    // Afficher les pads de Root
+    for(let x = 0; x < menu.length; ++x){
+        if(menu[x]['parent'] == "Root" && !menu[x]['isDirectory']){
+            let liste = document.getElementById("Root");
+            titre = document.createElement("li");
+            titre.innerText = menu[x]['name'];
+            liste.appendChild(titre);
+        }
+    }
+    //createMenu(liste, 0);
+    createMenuV2(1);
 
 
     //------Ajout des EventListener--------//
@@ -126,7 +198,7 @@ function updateMenu(data){
     });
 
     //Click droit sur le nom d'un dossier
-    $("ul#parent>h2").contextmenu(function(event){
+    $("ul.parent>h2").contextmenu(function(event){
         if(!optionDisplay){
             clickMenu = true;
             directoryMenu(event, $(this));

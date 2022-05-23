@@ -1,16 +1,22 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, Response
-from src import pad, threads, directory, functionalities, conflicts
+from src import pad, threads, directory, functionalities
 import json,time, configparser, re, queue, threading, http.client
 from flask_socketio import SocketIO, emit, disconnect, send
+from src.conflicts import conflicts
 
 ###### To-Do
 # --> Faire la fonction de errorManager (Créer conflit.py pour gérer toutes les possibilités d'erreurs)
 # Coder la fonction retournant les erreurs
 # Refactoriser le code (fnct Ajax, fichier functionnalities)
+# Possibilité d'avoir plusieurs pads ayant le même nom dans des répertoires différents
+# Possibilité d'avoir les pads et les répoertoires ayant le même nom
+# Optimiser la fonction d'affichage du menu :')
+
+#En plus de catcher les erreurs ->Renvoyer la dernière version du menu non-confllictuelle
 ######
 
 ##### BUG
-#
+# Pas de bugs !!!!! \o/
 #####
 pathFlaskFolder = '../static'
 # Fichier de configuration
@@ -29,11 +35,9 @@ def supervisor():
         data = queueEvent.get()
         param = data[1:]
         try:
-            #conflicts.errorManager(data[0], param)
-            print("La fonction de gestion de conflits arrive bientôt !")
-        except Exception :
-            #displayError(e.info)
-            print("Erreur !")
+            conflicts.errorManager(data[0], param, getMenu())
+        except (DuplicateError, InvalidNameError, InvalidActionError) as err:
+            displayError(err.info)
         threadEvent = threads.ThreadFunctionalities(data[0], param)
         threadEvent.start()
         threadEvent.join()
@@ -45,11 +49,13 @@ def supervisor():
 # Envoie le broadcast à tous les clients
 def update():
     while True :
-        time.sleep(5)
+        time.sleep(30)
         socketio.emit('broadcast_response', getMenu())
 
 def displayError(errorInformation):
+    # Rediriger vers le javascript
     print(errorInformation)
+
 
 
 def getMenu():
@@ -78,6 +84,7 @@ def index():
     initThread.start()
     updateThread = threading.Thread(target=update, daemon=True)
     updateThread.start()
+    print(getMenu())
     return render_template('index.html')
 
 
