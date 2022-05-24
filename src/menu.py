@@ -1,5 +1,5 @@
 import json, configparser
-from src import functionalities, pad, directory
+from src import pad, directory
 from treelib import Node, Tree
 import json
 
@@ -21,7 +21,6 @@ class Menu:
         # Arbre correspondant au fichier
         self.ficTree = Tree()
 
-
     ##
     # Récupère le menu du fichier JSON dans un dictionnaire
     # A partir de celui-ci, un arbre représentant le menu est créé
@@ -39,7 +38,6 @@ class Menu:
         self.ficTree = tempTree
 
         self.tree = self.ficTree
-        self.tree.show()
         nodes = self.tree.all_nodes()
 
         return nodes
@@ -69,6 +67,10 @@ class Menu:
         data.append(pad[1])
         data.append(pad[2])
         data.append(pad[3])
+        self.tree.show()
+        print("le noeud parent est : " + pad[1])
+        nodes = self.tree.all_nodes()
+        print(nodes)
         self.tree.create_node(pad[0], pad[0], parent=pad[1], data=data)
 
 

@@ -58,45 +58,7 @@ function init(){
     })
 }
 
-function createMenu(liste, indice){
-    for(i = indice; i < menu.length - 1; ++i){
-        if(menu[i]['isDirectory']){
-            let sousListe = document.createElement("ul");
-            sousListe.setAttribute("class", "parent");
-            sousListe.setAttribute("id", menu[i]['name']);
-            let titre = document.createElement("h2");
-            titre.innerText = menu[i]['name'];
-            sousListe.appendChild(titre);
-            liste.appendChild(sousListe);
-            //console.log("Création de : " + menu[i]['name']);
-
-            for(j = i+1; j < menu.length; ++j){
-                if(menu[i]['name'] == menu[j]['parent']){
-                    //console.log(menu[j]['name'] + " a pour parent " + menu[i]['name']);
-                    //console.log(j + " : " + menu[j]['name']);
-                    if(menu[j]['isDirectory']){
-                        //console.log("ul pour le répertoire : " + menu[j]['name']);
-                        createMenu(sousListe, j);
-                    }else{
-                        console.log(menu[j]['name']);
-                        titre = document.createElement("li");
-                        titre.innerText = menu[j]['name'];
-                        sousListe.appendChild(titre);
-                        liste.appendChild(sousListe);
-                    }
-                }
-                else{
-                    // Récupèrer le "ul" ayant pour texte le nom du parent du répertoire en question
-                    sousListe = document.getElementById(menu[j]['parent']);
-                    console.log(sousListe);
-                    createMenu(sousListe, j);
-                }
-            }
-        }
-    }
-}
-
-function createMenuV2(indice){
+function createMenu(indice){
 
     for(i = indice; i < menu.length - 1; ++i){
         if(menu[i]['isDirectory']){
@@ -120,19 +82,13 @@ function createMenuV2(indice){
                         titre.innerText = menu[j]['name'];
                         sousListe.appendChild(titre);
                         liste.appendChild(sousListe);
-                }
-                else{
-                    // Récupèrer le "ul" ayant pour texte le nom du parent du répertoire en question
-                    /*sousListe = document.getElementById(menu[j]['parent']);
-                    console.log(sousListe);
-                    createMenu(sousListe, j);*/
                     }
                 }
             }
             // Repère les dossiers
             for(k = i+1; k < menu.length; ++k){
                 if(menu[i]['name'] == menu[k]['parent'] && menu[k]['isDirectory']){
-                    createMenuV2(k);
+                    createMenu(k);
                 }
             }
         }
@@ -172,8 +128,7 @@ function updateMenu(data){
             liste.appendChild(titre);
         }
     }
-    //createMenu(liste, 0);
-    createMenuV2(1);
+    createMenu(1);
 
 
     //------Ajout des EventListener--------//
@@ -342,6 +297,25 @@ function createDialog(param){
 
 }
 
+function createAJAX(data, url){
+    fetch(url, {
+        method: "POST",
+        body: JSON.stringify(data),
+        cache: "no-cache",
+        headers: new Headers({
+          "content-type": "application/json"
+      })
+    })
+    .then(function(){
+        deleteDialog("#dialog");
+        optionDisplay = false;
+    })
+    .catch(function(error) {
+        console.error("Catch : " + error);
+    })
+
+}
+
 /**
 * Création d'un nouveau pad
 * @param form : le formulaire d'ajout du pad
@@ -351,22 +325,7 @@ function addPad(form, parent){
     event.preventDefault();
     let data = {name : form.name.value, parent : parent};
     var url = "/api/add/pad";
-
-    fetch(url, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(data),
-        cache: "no-cache",
-        headers: new Headers({
-          "content-type": "application/json"
-      })
-    })
-    .then(function(){
-        deleteDialog("#dialog");
-    })
-    .catch(function(error) {
-        console.error("Catch : " + error);
-    })
+    createAJAX(data, url);
 
 }
 
@@ -389,46 +348,14 @@ function addPad(form, parent){
 function deleteDirectory(nameDir){
     let data = {nameDir : nameDir};
     let url = 'api/remove/dir';
-
-    fetch(url,{
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(data),
-        cache: "no-cache",
-        headers: new Headers({
-          "content-type": "application/json"
-      })
-    })
-    .then(function(){
-        deleteDialog("#dialog");
-    })
-    .catch(function(error){
-        console.error("Catch : " + error);
-    })
+    createAJAX(data, url);
 }
 
 function renameDirectory(form, oldName){
     data = {oldName: oldName, newName: form.name.value};
     url = '/api/rename/dir';
-
-    fetch(url,{
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(data),
-        cache: "no-cache",
-        headers: new Headers({
-          "content-type": "application/json"
-      })
-    })
-    .then(function(){
-        deleteDialog("#dialog");
-    })
-    .catch(function(error){
-      console.error("Catch : " + error);
-      deleteDialog("#dialog");
-  })
-  deleteDialog("#dialog");
-  return false;
+    createAJAX(data, url);
+    return false;
 }
 
 
@@ -436,23 +363,7 @@ function addDirectory(form, parent){
     event.preventDefault();
     let data = {name : form.name.value, parent : parent};
     let url = "/api/add/dir";
-
-    fetch(url,{
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(data),
-        cache: "no-cache",
-        headers: new Headers({
-          "content-type": "application/json"
-      })
-    })
-    .then(function(res){
-        deleteDialog("#dialog");
-        optionDisplay = false;
-    })
-    .catch(function(error){
-        console.error("Catch : " + error);
-    })
+    createAJAX(data, url);
     return false;
 }
 
@@ -461,43 +372,12 @@ function deletePad(namePad){
 
   let data = {name : namePad};
   let url = "/api/remove/pad";
-
-  fetch(url, {
-      method: "POST",
-      credentials: "include",
-      body: JSON.stringify(data),
-      cache: "no-cache",
-      headers: new Headers({
-        "content-type": "application/json"
-    })
-  })
-  .then(function(res){
-      deleteDialog("#dialog");
-       optionDisplay = false;
-  })
-  .catch(function(error) {
-      console.error("Catch : " + error);
-  })
+  createAJAX(data, url);
 }
 
 function renamePad(form, oldName){
     let data = {oldName: oldName, newName: form.name.value};
     let url = "/api/rename/pad";
-    fetch(url,{
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(data),
-        cache: "no-cache",
-        headers: new Headers({
-          "content-type": "application/json"
-      })
-    })
-    .then(function(){
-        deleteDialog("#dialog");
-    })
-    .catch(function(error){
-      console.error("Catch : " + error);
-  })
-  deleteDialog("#dialog");
-  return false;
+    createAJAX(data, url);
+    return false;
 }

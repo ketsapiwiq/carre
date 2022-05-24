@@ -6,7 +6,7 @@ def errorManager(action, param, menu):
         case "ajoutPadFunc" | "addDirectory":
             # Vérifier les doublons : le nom du pad NE DOIT PAS déjà être présent dans le menu
             if isExist(param[0], menu):
-                raise Errors.DuplicatePadError()
+                raise Errors.DuplicateError()
             #Vérifier si le parent existe : le nom du répertoire DOIT être présent dans le menu
             if not isExist(param[1], menu):
                 raise Errors.InvalidDirectoryError()

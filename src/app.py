@@ -1,22 +1,19 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, Response
-from src import pad, threads, directory, functionalities
+from src import pad, threads, directory, menu
 import json,time, configparser, re, queue, threading, http.client
 from flask_socketio import SocketIO, emit, disconnect, send
 from src.conflicts import Errors, conflicts
 
 ###### To-Do
-# --> Faire la fonction de errorManager (Créer conflit.py pour gérer toutes les possibilités d'erreurs)
-# Coder la fonction retournant les erreurs
-# Refactoriser le code (fnct Ajax, fichier functionnalities)
+# --> Refactoriser le code (fnct Ajax, fichier functionnalities)
 # Possibilité d'avoir plusieurs pads ayant le même nom dans des répertoires différents
-# Possibilité d'avoir les pads et les répoertoires ayant le même nom
+# Possibilité d'avoir les pads et les répertoires ayant le même nom
 # Optimiser la fonction d'affichage du menu :')
-
-#En plus de catcher les erreurs ->Renvoyer la dernière version du menu non-confllictuelle
 ######
 
 ##### BUG
-# Importations : catching classes that do not inherit from BaseException is not allowed
+# Pas du buuuuuuuuuuuuugs \o/
+# Ne pas mettre menu dans le thread, le faire passer à chaque fois, c'est moche pas pô grave
 #####
 pathFlaskFolder = '../static'
 # Fichier de configuration
@@ -24,6 +21,7 @@ ficIni = "config.ini"
 #Queue d'évènements
 queueEvent = queue.Queue()
 
+menuCarre = menu.Menu()
 
 async_mode = None
 app = Flask(__name__, template_folder=pathFlaskFolder, static_folder=pathFlaskFolder)
@@ -35,7 +33,7 @@ def supervisor():
         data = queueEvent.get()
         param = data[1:]
         if(conflictVerification(data[0], param)):
-            threadEvent = threads.ThreadFunctionalities(data[0], param)
+            threadEvent = threads.ThreadFunctionalities(data[0], param, menuCarre)
             threadEvent.start()
             threadEvent.join()
             queueEvent.task_done()
@@ -62,7 +60,7 @@ def displayError(errorInformation):
 
 def getMenu():
     menu = None
-    threadMenu = threads.ThreadFunctionalities("recupMenu", menu)
+    threadMenu = threads.ThreadFunctionalities("recupMenu", menu, menuCarre)
     threadMenu.start()
     threadMenu.join()
     menu = threadMenu.getStock()
