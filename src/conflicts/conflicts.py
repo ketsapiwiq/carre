@@ -1,35 +1,23 @@
 #import conflicts import DuplicateError, InvalidNameError, InvalidActionError
-from src.conflicts import *
+from src.conflicts import Errors
 def errorManager(action, param, menu):
-    # Doit vérifier que l'action est réalisable
-    # A appeler dès qu'on fait une action
-    # On vérifie si c'est possible
-    # On lock le thread de l'action réalisant l'action
-
-
-    # Faire des switch case selon les actions
-    #Vérifier s'il n'y a pas de doublons de pads
-    # Vérifier que le pad en question existe bien
-    #....
-
-
 
     match action:
         case "ajoutPadFunc" | "addDirectory":
             # Vérifier les doublons : le nom du pad NE DOIT PAS déjà être présent dans le menu
             if isExist(param[0], menu):
-                raise DuplicatePadError
+                raise Errors.DuplicatePadError()
             #Vérifier si le parent existe : le nom du répertoire DOIT être présent dans le menu
             if not isExist(param[1], menu):
-                raise InvalidDirectoryError
+                raise Errors.InvalidDirectoryError()
             return True
         case "rename" | "remove":
             #Vérifier que le pad existe
             if not isExist(param[0], menu):
-                raise InvalidNameError
+                raise Errors.InvalidNameError()
             return True
 
-    raise InvalidActionError
+    raise Errors.InvalidActionError()
 
 
 # Un pad et un répertoire ne peuvent pas avoir le même nom (contrainte liées à l'arbre)

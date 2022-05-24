@@ -2,7 +2,7 @@ from flask import Flask, render_template, jsonify, request, redirect, url_for, R
 from src import pad, threads, directory, functionalities
 import json,time, configparser, re, queue, threading, http.client
 from flask_socketio import SocketIO, emit, disconnect, send
-from src.conflicts import conflicts
+from src.conflicts import Errors, conflicts
 
 ###### To-Do
 # --> Faire la fonction de errorManager (Créer conflit.py pour gérer toutes les possibilités d'erreurs)
@@ -16,7 +16,7 @@ from src.conflicts import conflicts
 ######
 
 ##### BUG
-# Pas de bugs !!!!! \o/
+# Importations : catching classes that do not inherit from BaseException is not allowed
 #####
 pathFlaskFolder = '../static'
 # Fichier de configuration
@@ -34,29 +34,31 @@ def supervisor():
     while True:
         data = queueEvent.get()
         param = data[1:]
-        try:
-            conflicts.errorManager(data[0], param, getMenu())
-        except (DuplicateError, InvalidNameError, InvalidActionError) as err:
-            displayError(err.info)
-        threadEvent = threads.ThreadFunctionalities(data[0], param)
-        threadEvent.start()
-        threadEvent.join()
-        queueEvent.task_done()
+        if(conflictVerification(data[0], param)):
+            threadEvent = threads.ThreadFunctionalities(data[0], param)
+            threadEvent.start()
+            threadEvent.join()
+            queueEvent.task_done()
 
-        #update()
+def conflictVerification(action, param):
+    try:
+        conflicts.errorManager(action, param, getMenu())
+    except (Errors.InvalidNameError, Errors.DuplicateError, Errors.InvalidActionError) as err :
+        displayError(str(err.info))
+        return False
+    return True
 
 # Fais les vérifs
 # Envoie le broadcast à tous les clients
 def update():
     while True :
-        time.sleep(30)
+        time.sleep(12)
         socketio.emit('broadcast_response', getMenu())
 
 def displayError(errorInformation):
     # Rediriger vers le javascript
     print(errorInformation)
-
-
+    socketio.emit('error', errorInformation)
 
 def getMenu():
     menu = None

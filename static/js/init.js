@@ -52,6 +52,10 @@ function init(){
     socket.on('broadcast_response', function(data) {
         updateMenu(JSON.stringify(data));
     })
+
+    socket.on('error', function(data){
+        alert(data);
+    })
 }
 
 function createMenu(liste, indice){
