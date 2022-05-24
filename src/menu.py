@@ -43,8 +43,6 @@ class Menu:
         return nodes
 
     def writeData(self):
-        # A FAIRE
-        ## Faire les vérifs entre les 2 arbres et gérer les conflits
         try :
             fileMenu = open(self.path, "w")
             json.dump(self.tree.to_dict(with_data=True), fileMenu)
@@ -67,11 +65,8 @@ class Menu:
         data.append(pad[1])
         data.append(pad[2])
         data.append(pad[3])
-        self.tree.show()
-        print("le noeud parent est : " + pad[1])
         nodes = self.tree.all_nodes()
-        print(nodes)
-        self.tree.create_node(pad[0], pad[0], parent=pad[1], data=data)
+        self.tree.create_node(pad[0], pad[0] + pad[1], parent=pad[1], data=data)
 
 
     def addDirectory(self, directory):
@@ -111,11 +106,10 @@ def createTree(menu, tempTree, parent):
                 dataPad.append(parent)
                 dataPad.append(menu[i][cles]['data'][1])
                 dataPad.append(menu[i][cles]['data'][2])
-                tempTree.create_node(cles, cles, parent=parent, data=dataPad)
+                tempTree.create_node(cles, cles + parent, parent=parent, data=dataPad)
 
             # Répertoire sans enfants
             else:
-
                 dataDir = []
                 dataDir.append(parent)
                 tempTree.create_node(cles, cles, parent=parent, data=dataDir)

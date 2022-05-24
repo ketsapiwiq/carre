@@ -5,15 +5,13 @@ from flask_socketio import SocketIO, emit, disconnect, send
 from src.conflicts import Errors, conflicts
 
 ###### To-Do
-# --> Refactoriser le code (fnct Ajax, fichier functionnalities)
-# Possibilité d'avoir plusieurs pads ayant le même nom dans des répertoires différents
+# --> Possibilité d'avoir plusieurs pads ayant le même nom dans des répertoires différents
 # Possibilité d'avoir les pads et les répertoires ayant le même nom
 # Optimiser la fonction d'affichage du menu :')
 ######
 
 ##### BUG
 # Pas du buuuuuuuuuuuuugs \o/
-# Ne pas mettre menu dans le thread, le faire passer à chaque fois, c'est moche pas pô grave
 #####
 pathFlaskFolder = '../static'
 # Fichier de configuration
@@ -84,7 +82,6 @@ def index():
     initThread.start()
     updateThread = threading.Thread(target=update, daemon=True)
     updateThread.start()
-    print(getMenu())
     return render_template('index.html')
 
 
@@ -124,6 +121,7 @@ def ajouterPad():
 @app.route("/api/remove/pad", methods=['POST'])
 def removePad():
     name = request.get_json()['name']
+    #parent = request.get_json()['parent']
     data = ["remove", name]
     queueEvent.put(data)
     queueEvent.join()
@@ -168,6 +166,7 @@ def addDir():
 
 @app.route("/api/rename/dir", methods=['POST'])
 def renameDir():
+    print("Renommage d'un dossier")
     paramAjax = request.get_json()
     oldName = paramAjax['oldName']
     newName = paramAjax['newName']

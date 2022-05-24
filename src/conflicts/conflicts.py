@@ -3,19 +3,32 @@ from src.conflicts import Errors
 def errorManager(action, param, menu):
 
     match action:
-        case "ajoutPadFunc" | "addDirectory":
+        case "ajoutPadFunc":
+            print("AJOUT D UN PAD")
             # Vérifier les doublons : le nom du pad NE DOIT PAS déjà être présent dans le menu
-            if isExist(param[0], menu):
+            if isPadExist(param[0], menu, param[1]):
                 raise Errors.DuplicateError()
             #Vérifier si le parent existe : le nom du répertoire DOIT être présent dans le menu
-            if not isExist(param[1], menu):
-                raise Errors.InvalidDirectoryError()
             return True
-        case "rename" | "remove":
+        case "addDirectory":
+            print("AJOUT D UN DOSSIER")
+            if isExist(param[0], menu):
+                raise Errors.DuplicateError()
+            return True
+        case "remove":
             #Vérifier que le pad existe
+            print("REMOVE")
             if not isExist(param[0], menu):
+                print("Nom du directory à renommer : " + param[0])
                 raise Errors.InvalidNameError()
             return True
+        case "rename":
+            print("RENAME")
+            if not isExist(param[1], menu):
+                raise Errors.DuplicateError()
+
+            if isExist(param[0], menu):
+                raise Errors.InvalidNameError()
 
     raise Errors.InvalidActionError()
 
@@ -23,8 +36,29 @@ def errorManager(action, param, menu):
 # Un pad et un répertoire ne peuvent pas avoir le même nom (contrainte liées à l'arbre)
 
 # Postulat de départ : Il ne peut pas y avoir 2 pads ayant le même nom dans le carré même s'ils sont dans des répertoires différents
+#Postulat v.2 : 2 pads peuvent avoir le même nom tant qu'il ne sont pas dans le même dossier
+
+##
+# @param name : nom du pad à chercher
+# @return True si on trouve le nom dans la liste du menu
+##
+def isPadExist(name, menu, parent):
+    for i in range(0, len(menu)):
+        if menu[i]['name'] == name:
+            #Si le parent n'est pas le même --> OK
+            if(menu[i]['parent'] == parent):
+                return True
+            else:
+                return False
+    return False
+
+
+##
+# Return True si le répertoire existe déjà
+##
 def isExist(name, menu):
     for i in range(0, len(menu)):
+        print(name + " va être comparé avec : " + menu[i]['name'])
         if menu[i]['name'] == name:
             return True
     return False

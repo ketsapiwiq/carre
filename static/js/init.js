@@ -147,6 +147,7 @@ function updateMenu(data){
     $("ul>li").contextmenu(function(event){
         if(!optionDisplay){
             clickMenu = true;
+            // Récupérer le nom du parent
             padMenu(event, $(this));
         }
     });
@@ -369,7 +370,6 @@ function addDirectory(form, parent){
 
 
 function deletePad(namePad){
-
   let data = {name : namePad};
   let url = "/api/remove/pad";
   createAJAX(data, url);
