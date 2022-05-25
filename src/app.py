@@ -5,8 +5,8 @@ from flask_socketio import SocketIO, emit, disconnect, send
 from src.conflicts import Errors, conflicts
 
 ###### To-Do
-# --> Possibilité d'avoir plusieurs pads ayant le même nom dans des répertoires différents
-# Possibilité d'avoir les pads et les répertoires ayant le même nom
+# Récupérer le nom du parent lorsqu'on supprime ou renomme un pad
+# Découper le init.js en plusieurs fichiers
 # Optimiser la fonction d'affichage du menu :')
 ######
 
@@ -52,8 +52,6 @@ def update():
         socketio.emit('broadcast_response', getMenu())
 
 def displayError(errorInformation):
-    # Rediriger vers le javascript
-    print(errorInformation)
     socketio.emit('error', errorInformation)
 
 def getMenu():
@@ -108,7 +106,7 @@ def ajouterPad():
         if not inputValidation(name) and not inputValidation(parent):
             raise NameError ("Nom du pad non valide");
 
-        adress = "p/9tm8" + name.replace(" ","")
+        adress = "p/9tm8" + name.replace(" |.","")
         padAjout = pad.Pad(name, parent, adress, " ")
 
         dataPad=["ajoutPadFunc", name, parent, adress, " "]
@@ -121,8 +119,8 @@ def ajouterPad():
 @app.route("/api/remove/pad", methods=['POST'])
 def removePad():
     name = request.get_json()['name']
-    #parent = request.get_json()['parent']
-    data = ["remove", name]
+    parent = request.get_json()['parent']
+    data = ["removePad", name, parent]
     queueEvent.put(data)
     queueEvent.join()
     return ("", http.HTTPStatus.NO_CONTENT)
@@ -132,10 +130,10 @@ def renamePad():
     param = request.get_json()
     oldName = param['oldName']
     newName = param['newName']
+    parent = param['parent']
     if not inputValidation(newName) and not inputValidation(oldName):
         raise NameError ("Nom du pad non valide")
-
-    data = ["rename",oldName, newName]
+    data = ["renamePad",oldName, newName, parent]
     queueEvent.put(data)
     queueEvent.join()
     return ("", http.HTTPStatus.NO_CONTENT)
@@ -146,7 +144,7 @@ def removeDir():
     if not inputValidation(name) :
         raise NameError("Nom du répertoire non valide")
 
-    data = ["remove", name]
+    data = ["removeDir", name]
     queueEvent.put(data)
     queueEvent.join()
     return ("", http.HTTPStatus.NO_CONTENT)
@@ -166,19 +164,18 @@ def addDir():
 
 @app.route("/api/rename/dir", methods=['POST'])
 def renameDir():
-    print("Renommage d'un dossier")
     paramAjax = request.get_json()
     oldName = paramAjax['oldName']
     newName = paramAjax['newName']
     if not inputValidation(newName) and not inputValidation(oldName):
         raise NameError ("Nom du dossier non valide")
-    data = ["rename", oldName, newName]
+    data = ["renameDir", oldName, newName]
     queueEvent.put(data)
     queueEvent.join()
     return ("", http.HTTPStatus.NO_CONTENT)
 
 def inputValidation(input):
-    match = re.search("[><?;!&]+", input)
+    match = re.search("[><?;!&,]+", input)
     if match != None:
         return False
     else:

@@ -148,7 +148,8 @@ function updateMenu(data){
         if(!optionDisplay){
             clickMenu = true;
             // Récupérer le nom du parent
-            padMenu(event, $(this));
+            //alert(this.parentNode.id);
+            padMenu(event, $(this), this.parentNode.id);
         }
     });
 
@@ -245,13 +246,14 @@ function directoryMenu(event, parent){
     displayMenu(tabOp);
 }
 
-function padMenu(event, pad){
+function padMenu(event, pad, parent){
     event.preventDefault();
 
-    let paramRenamePad = ["Nouveau nom du pad :", pad.text(), "renamePad"];
+    let paramRenamePad = ["Nouveau nom du pad :", [pad.text(), parent], "renamePad"];
+    let paramRemovePad = [pad.text(), parent];
 
     var op1 = new Option("Renommer", createDialog, paramRenamePad);
-    var op2 = new Option("Supprimer", deletePad, pad.text());
+    var op2 = new Option("Supprimer", deletePad, paramRemovePad);
     var tabOp = new Array();
     tabOp.push(op1);
     tabOp.push(op2);
@@ -369,14 +371,15 @@ function addDirectory(form, parent){
 }
 
 
-function deletePad(namePad){
-  let data = {name : namePad};
+function deletePad(paramRemovePad){
+  let data = {name : paramRemovePad[0], parent: paramRemovePad[1]};
   let url = "/api/remove/pad";
   createAJAX(data, url);
 }
 
-function renamePad(form, oldName){
-    let data = {oldName: oldName, newName: form.name.value};
+function renamePad(form, paramRename){
+    paramRename = paramRename.split(",");
+    let data = {oldName: paramRename[0], newName: form.name.value, parent: paramRename[1]};
     let url = "/api/rename/pad";
     createAJAX(data, url);
     return false;

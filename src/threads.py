@@ -31,14 +31,23 @@ class ThreadFunctionalities(threading.Thread):
                     self.menuCarre.add(self.stock)
                     self.menuCarre.writeData()
                     return 0
-            case "rename":
+            case "renamePad":
                 with lock :
-                    self.menuCarre.rename(self.stock[0], self.stock[1])
+                    self.menuCarre.rename(self.stock[0], self.stock[1], self.stock[2])
                     self.menuCarre.writeData()
                     return 0
-            case "remove":
+            case "renameDir":
+                with lock:
+                    self.menuCarre.rename(self.stock[0], self.stock[1], None)
+                    self.menuCarre.writeData()
+            case "removePad":
                 with lock :
-                    self.menuCarre.delete(self.stock[0])
+                    self.menuCarre.delete(self.stock[0], self.stock[1])
+                    self.menuCarre.writeData()
+                    return 0
+            case "removeDir":
+                with lock:
+                    self.menuCarre.delete(self.stock[0], None)
                     self.menuCarre.writeData()
                     return 0
             case "addDirectory":

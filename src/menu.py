@@ -52,9 +52,11 @@ class Menu:
             print("Erreur fichier : {0}" .format(err))
             return -1
 
-    def delete(self, name):
-        # A tester avec un nom qui n'existe pas, le nom d'un pad qui existe et le nom d'un dossier
-        self.tree.remove_node(name)
+    def delete(self, name, parent):
+        if(parent == None):
+            parent = ""
+        self.tree.remove_node(name + parent)
+
 
 
     def move(self, name, movePoint):
@@ -74,8 +76,10 @@ class Menu:
         data.append(directory.getParent())
         self.tree.create_node(directory.getName(), directory.getName(), parent=directory.getParent(), data=data)
 
-    def rename(self, oldName, newName):
-        self.tree.update_node(oldName, tag=newName, identifier=newName)
+    def rename(self, oldName, newName, parent):
+        if(parent == None):
+            parent = ""
+        self.tree.update_node(oldName+parent, tag=newName, identifier=newName+parent)
 
 
 def loadJSON(self):

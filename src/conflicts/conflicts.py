@@ -11,25 +11,45 @@ def errorManager(action, param, menu):
             #Vérifier si le parent existe : le nom du répertoire DOIT être présent dans le menu
             return True
         case "addDirectory":
-            print("AJOUT D UN DOSSIER")
             if isExist(param[0], menu):
                 raise Errors.DuplicateError()
             return True
-        case "remove":
-            #Vérifier que le pad existe
-            print("REMOVE")
+        case "removeDir":
+            #Vérifier que le pad et le répertoire existent
             if not isExist(param[0], menu):
-                print("Nom du directory à renommer : " + param[0])
                 raise Errors.InvalidNameError()
             return True
-        case "rename":
-            print("RENAME")
-            if not isExist(param[1], menu):
+        case "removePad":
+            #Vérifier que le pad et le répertoire existent
+            if not (isExist(param[0], menu) & isExist(param[1], menu)):
+                raise Errors.InvalidNameError()
+            return True
+
+        case "renameDir":
+            #Le nouveau nom ne doit pas correspondre à un élement du menu
+            print("oldName : " + param[0] + " newName : " + param[1])
+            if isExist(param[1], menu):
                 raise Errors.DuplicateError()
 
-            if isExist(param[0], menu):
+            # L'ancien nom doit corresondre à un élement du menu
+            if not isExist(param[0], menu):
                 raise Errors.InvalidNameError()
 
+            return True
+
+        case "renamePad":
+            #Le nouveau nom ne doit pas correspondre à un élement du menu
+            print("oldName : " + param[0] + " newName : " + param[1])
+            if isExist(param[1], menu):
+                raise Errors.DuplicateError()
+
+            # L'ancien nom doit corresondre à un élement du menu
+            if not (isExist(param[0], menu) & isExist(param[2], menu)):
+                raise Errors.InvalidNameError()
+
+            return True
+
+    print("Action non valide : " + action)
     raise Errors.InvalidActionError()
 
 
@@ -58,7 +78,7 @@ def isPadExist(name, menu, parent):
 ##
 def isExist(name, menu):
     for i in range(0, len(menu)):
-        print(name + " va être comparé avec : " + menu[i]['name'])
         if menu[i]['name'] == name:
+            print(menu[i]['name'] + " a été trouvé, le nom de base était : " + name)
             return True
     return False
