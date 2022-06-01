@@ -39,14 +39,16 @@
     </div>
 
     <div id="test">
+        {% if idConnexion == -1 %}
+            <form method="POST" action="/connectionRedirect">
+                <button> Inscription ou connexion </button>
+            </form>
+        {% else %}
+            <form method="POST" action="/api/deconnect">
+                <button> Déconnexion </button>
+            </form>
+        {% endif %}
 
-        <form method="POST" action="/addPad">
-            <button>+</button>
-        </form>
-
-        <form method="POST" action="/testMenu">
-            <button> Menu </button>
-        </form>
     </div>
 
 </body>

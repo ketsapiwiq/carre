@@ -1,12 +1,19 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, Response
+from flask_login import login_required, current_user
 from src import pad, threads, directory, menu
-import json,time, configparser, re, queue, threading, http.client
+import json,time, configparser, re, queue, threading, http.client, bcrypt, sqlite3
 from flask_socketio import SocketIO, emit, disconnect, send
 from src.conflicts import Errors, conflicts
 
 ###### To-Do
-# Récupérer le nom du parent lorsqu'on supprime ou renomme un pad
-# Découper le init.js en plusieurs fichiers
+# Connexion :
+#             - Créer un bouton de déconnexion
+#             - Faire les vérifs pour les suppressions
+#             - Créer un variable contenant l'ID de celui qui est connecté
+#             - Changer le machin dans le menu pour que ce soit l'id de la personne et pas son pseudo
+#             - Renvoyer les erreurs
+# Implémenter le système de gestion de droits
+# Implémenter BD pour les pads
 # Optimiser la fonction d'affichage du menu :')
 ######
 
@@ -20,6 +27,8 @@ ficIni = "config.ini"
 queueEvent = queue.Queue()
 
 menuCarre = menu.Menu()
+
+idConnexion = -1
 
 async_mode = None
 app = Flask(__name__, template_folder=pathFlaskFolder, static_folder=pathFlaskFolder)
@@ -63,7 +72,7 @@ def getMenu():
     listMenu = []
     for i in range(0, len(menu)):
         if len(menu[i].data) > 1 :
-            data = {"name": menu[i].tag, "parent": menu[i].data[0], "adresse": menu[i].data[1], "contenu": menu[i].data[2], "isDirectory": False}
+            data = {"name": menu[i].tag, "parent": menu[i].data[0], "adresse": menu[i].data[1], "contenu": menu[i].data[2], "isDirectory": False, "proprietaire": menu[i].data[3]}
         else:
             data = {"name": menu[i].tag, "parent": menu[i].data[0], "isDirectory": True}
         listMenu.append(data)
@@ -80,7 +89,109 @@ def index():
     initThread.start()
     updateThread = threading.Thread(target=update, daemon=True)
     updateThread.start()
-    return render_template('index.html')
+    # Création de la base de donénes si elle n'existe pas
+    try:
+        conn = sqlite3.connect('file:users.db?mode=rw', uri=True)
+        conn.close()
+    except sqlite3.OperationalError as err :
+        create_db()
+    return render_template('index.html', idConnexion=idConnexion)
+
+
+@app.route("/connectionRedirect", methods=["POST"])
+def redirection():
+    return render_template('connexion.html')
+
+##
+# Vérifie les identifiants
+##
+@app.route("/api/login", methods=["POST"])
+def login():
+    if(request.method == 'POST'):
+        pseudo = request.form['pseudo']
+        password = request.form['password']
+    try:
+        conn = sqlite3.connect('users.db')
+    except sqlite3.OperationalError as err :
+        print("La base de données n'existe pas")
+
+    #Vérifier que le pseudo soit bien enregistré dans la bd
+    cursor = conn.cursor()
+
+    cursor.execute("""SELECT pseudo, password, id from users WHERE pseudo=:pseudo""", {"pseudo": pseudo})
+    result = cursor.fetchall()
+    if len(result) != 0:
+        #Si trouvé, récupérer le mot de passe et faire la vérif
+        password = password.encode(encoding='UTF-8', errors='xmlcharrefreplace')
+        if bcrypt.checkpw(password, result[0][1]):
+            print("OK")
+            idConnexion = result[0][1]
+        else :
+            print("Identifiants incorrects")
+    cursor.close()
+    conn.close()
+    return render_template('index.html', idConnexion=idConnexion)
+
+@app.route("/api/signup", methods=["POST"])
+def sign_up():
+    if(request.method == 'POST'):
+        pseudo = request.form['pseudo']
+        password = request.form['password']
+        if not inputValidation(pseudo):
+            raise Exception
+    try :
+        conn = sqlite3.connect('users.db')
+    except sqlite3.OperationalError as err :
+        print("La base de données n'existe pas");
+
+    cursor = conn.cursor()
+
+    #Vérifier que l'utilisateur n'existe pas
+    cursor.execute("SELECT pseudo FROM users WHERE pseudo= :pseudo", {"pseudo": pseudo})
+    result = cursor.fetchall()
+    if len(result) == 0 :
+        password = password.encode(encoding='UTF-8', errors='xmlcharrefreplace')
+        try:
+            # Insertion d'un nouvel utilisateur
+            cursor.execute("INSERT INTO users(pseudo, password) VALUES (:pseudo, :password)", {"pseudo" : pseudo, "password" : bcrypt.hashpw(password, bcrypt.gensalt())})
+            conn.commit()
+
+            #Récupération de l'id
+            cursor.execute("SELECT id FROM users WHERE pseudo=:pseudo", {"pseudo": pseudo})
+            result = cursor.fetchall()
+            idConnexion = result[0][0]
+
+        except sqlite3.Error as e :
+            print("Erreur lors de l'insertion de données")
+    else :
+        print("Vous êtes déjà enregistré dans la base de données, authentifiez-vous")
+    cursor.close()
+    conn.close()
+    return render_template('index.html', idConnexion=idConnexion)
+
+
+@app.route("/api/deconnect", methods=["POST"])
+def deconnect():
+    idConnexion = -1
+    return render_template('index.html', idConnexion=idConnexion)
+
+def create_db():
+    print("Création de la base de données")
+    try:
+        conn = sqlite3.connect('users.db')
+        sql = '''CREATE TABLE users (
+                  id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  pseudo TEXT NOT NULL,
+                  password TEXT NOT NULL
+           );'''
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        conn.commit()
+        cursor.close()
+        conn.close()
+        print("Connexion SQLite est fermée")
+    except sqlite3.Error as error:
+        print("Erreur lors de la création de la table SQLite", error)
 
 
 @app.route("/api/init/menu")
@@ -116,7 +227,9 @@ def ajouterPad():
 
         return ("", http.HTTPStatus.NO_CONTENT)
 
+
 @app.route("/api/remove/pad", methods=['POST'])
+@login_required
 def removePad():
     name = request.get_json()['name']
     parent = request.get_json()['parent']
@@ -139,6 +252,7 @@ def renamePad():
     return ("", http.HTTPStatus.NO_CONTENT)
 
 @app.route("/api/remove/dir", methods=['POST'])
+@login_required
 def removeDir():
     name = request.get_json()['nameDir']
     if not inputValidation(name) :

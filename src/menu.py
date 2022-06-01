@@ -110,6 +110,7 @@ def createTree(menu, tempTree, parent):
                 dataPad.append(parent)
                 dataPad.append(menu[i][cles]['data'][1])
                 dataPad.append(menu[i][cles]['data'][2])
+                dataPad.append(menu[i][cles]['data'][3])
                 tempTree.create_node(cles, cles + parent, parent=parent, data=dataPad)
 
             # Répertoire sans enfants
