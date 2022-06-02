@@ -42,12 +42,12 @@ class ThreadFunctionalities(threading.Thread):
                     self.menuCarre.writeData()
             case "removePad":
                 with lock :
-                    self.menuCarre.delete(self.stock[0], self.stock[1])
+                    self.menuCarre.delete(self.stock[0], self.stock[1], self.stock[2])
                     self.menuCarre.writeData()
                     return 0
             case "removeDir":
                 with lock:
-                    self.menuCarre.delete(self.stock[0], None)
+                    self.menuCarre.delete(self.stock[0], None, None)
                     self.menuCarre.writeData()
                     return 0
             case "addDirectory":

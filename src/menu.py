@@ -52,10 +52,17 @@ class Menu:
             print("Erreur fichier : {0}" .format(err))
             return -1
 
-    def delete(self, name, parent):
+    def delete(self, name, parent, idConnexion):
         if(parent == None):
-            parent = ""
-        self.tree.remove_node(name + parent)
+            self.tree.remove_node(name)
+        else :
+            #Trouver le bon pad et récupérer son id de connexion
+            idCo = self.tree.get_node(name + parent).data[3]
+            # Si l'id de connexion == à celui passé en param ou si celui est trouvé == -1 --> On peut supprimer
+            if(idCo == str(idConnexion) or idCo == "-1"):
+                self.tree.remove_node(name + parent)
+
+
 
 
 
@@ -64,9 +71,14 @@ class Menu:
 
     def add(self, pad):
         data = []
+        #Nom du parent
         data.append(pad[1])
+        #Adresse du pad
         data.append(pad[2])
+        #Contenu du pad
         data.append(pad[3])
+        #Propriétaire du pad
+        data.append(str(pad[4]))
         nodes = self.tree.all_nodes()
         self.tree.create_node(pad[0], pad[0] + pad[1], parent=pad[1], data=data)
 

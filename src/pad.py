@@ -1,10 +1,11 @@
 class Pad:
 
-    def __init__(self,name, parent, adress, contenu):
+    def __init__(self,name, parent, adress, contenu, id):
         self.name = name
         self.parent = parent
         self.adress = adress
         self.contenu = contenu
+        self.idProprio = id
 
 ##### GETTERS #####
 

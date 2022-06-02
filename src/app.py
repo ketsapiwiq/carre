@@ -1,5 +1,4 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, Response
-from flask_login import login_required, current_user
 from src import pad, threads, directory, menu
 import json,time, configparser, re, queue, threading, http.client, bcrypt, sqlite3
 from flask_socketio import SocketIO, emit, disconnect, send
@@ -17,8 +16,8 @@ from src.conflicts import Errors, conflicts
 # Optimiser la fonction d'affichage du menu :')
 ######
 
-##### BUG
-# Pas du buuuuuuuuuuuuugs \o/
+##### BUG(S)
+#
 #####
 pathFlaskFolder = '../static'
 # Fichier de configuration
@@ -57,7 +56,7 @@ def conflictVerification(action, param):
 # Envoie le broadcast à tous les clients
 def update():
     while True :
-        time.sleep(12)
+        time.sleep(2)
         socketio.emit('broadcast_response', getMenu())
 
 def displayError(errorInformation):
@@ -124,8 +123,8 @@ def login():
         #Si trouvé, récupérer le mot de passe et faire la vérif
         password = password.encode(encoding='UTF-8', errors='xmlcharrefreplace')
         if bcrypt.checkpw(password, result[0][1]):
-            print("OK")
-            idConnexion = result[0][1]
+            global idConnexion
+            idConnexion = result[0][2]
         else :
             print("Identifiants incorrects")
     cursor.close()
@@ -159,6 +158,7 @@ def sign_up():
             #Récupération de l'id
             cursor.execute("SELECT id FROM users WHERE pseudo=:pseudo", {"pseudo": pseudo})
             result = cursor.fetchall()
+            global idConnexion
             idConnexion = result[0][0]
 
         except sqlite3.Error as e :
@@ -218,9 +218,8 @@ def ajouterPad():
             raise NameError ("Nom du pad non valide");
 
         adress = "p/9tm8" + name.replace(" |.","")
-        padAjout = pad.Pad(name, parent, adress, " ")
 
-        dataPad=["ajoutPadFunc", name, parent, adress, " "]
+        dataPad=["ajoutPadFunc", name, parent, adress, " ", idConnexion]
 
         queueEvent.put(dataPad)
         queueEvent.join()
@@ -229,11 +228,11 @@ def ajouterPad():
 
 
 @app.route("/api/remove/pad", methods=['POST'])
-@login_required
 def removePad():
+    print("(removePad) idConnexion : " + str(idConnexion))
     name = request.get_json()['name']
     parent = request.get_json()['parent']
-    data = ["removePad", name, parent]
+    data = ["removePad", name, parent, idConnexion]
     queueEvent.put(data)
     queueEvent.join()
     return ("", http.HTTPStatus.NO_CONTENT)
@@ -252,7 +251,6 @@ def renamePad():
     return ("", http.HTTPStatus.NO_CONTENT)
 
 @app.route("/api/remove/dir", methods=['POST'])
-@login_required
 def removeDir():
     name = request.get_json()['nameDir']
     if not inputValidation(name) :
