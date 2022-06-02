@@ -172,6 +172,7 @@ def sign_up():
 
 @app.route("/api/deconnect", methods=["POST"])
 def deconnect():
+    global idConnexion
     idConnexion = -1
     return render_template('index.html', idConnexion=idConnexion)
 
@@ -193,6 +194,35 @@ def create_db():
     except sqlite3.Error as error:
         print("Erreur lors de la création de la table SQLite", error)
 
+@app.route("/api/deleteAccount", methods=["POST"])
+def deleteAccount():
+    global idConnexion
+    #Update de tous les pads de l'utilisateur
+    data = ["deleteAccount", idConnexion]
+    queueEvent.put(data)
+    queueEvent.join()
+
+    #Suppression de la base de données
+    try :
+        conn = sqlite3.connect('users.db')
+    except sqlite3.OperationalError as err :
+        print("La base de données n'existe pas")
+    try:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM users WHERE id=:id", {"id": idConnexion})
+        conn.commit()
+
+        cursor.execute("SELECT pseudo FROM users")
+        result = cursor.fetchall()
+        print(result)
+
+        cursor.close()
+        conn.close()
+    except sqlite.DatabaseError as err:
+        print("DatabaseError : " + err)
+
+    idConnexion = -1
+    return render_template("index.html", idConnexion=idConnexion)
 
 @app.route("/api/init/menu")
 def initMenu():
@@ -229,7 +259,6 @@ def ajouterPad():
 
 @app.route("/api/remove/pad", methods=['POST'])
 def removePad():
-    print("(removePad) idConnexion : " + str(idConnexion))
     name = request.get_json()['name']
     parent = request.get_json()['parent']
     data = ["removePad", name, parent, idConnexion]

@@ -55,5 +55,10 @@ class ThreadFunctionalities(threading.Thread):
                     self.menuCarre.addDirectory(self.stock[0])
                     self.menuCarre.writeData()
                     return 0
+            case "deleteAccount":
+                with lock:
+                    self.menuCarre.updatePads(self.stock[0])
+                    self.menuCarre.writeData()
+                    return 0
 
         return -1

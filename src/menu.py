@@ -57,13 +57,23 @@ class Menu:
             self.tree.remove_node(name)
         else :
             #Trouver le bon pad et récupérer son id de connexion
-            idCo = self.tree.get_node(name + parent).data[3]
+            idCoPad = self.tree.get_node(name + parent).data[3]
             # Si l'id de connexion == à celui passé en param ou si celui est trouvé == -1 --> On peut supprimer
-            if(idCo == str(idConnexion) or idCo == "-1"):
+            if(idCoPad == str(idConnexion) or str(idCoPad) == "-1"):
                 self.tree.remove_node(name + parent)
 
-
-
+    ##
+    # Lors de la suppression d'un utilisateur, tous les pads qu'il a deviennent sans proprietaire
+    # param @idConnexion : L'Id de connexion de l'utilisateur à supprimer
+    ##
+    def updatePads(self, idConnexion):
+        nodes = self.tree.all_nodes()
+        print("id utilisateur : " + str(idConnexion))
+        for node in nodes:
+            if(len(node.data) > 2):
+                if node.data[3] == str(idConnexion):
+                    node.data[3] = -1
+                    print(node.data[3])
 
 
     def move(self, name, movePoint):
