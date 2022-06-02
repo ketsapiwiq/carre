@@ -54,7 +54,15 @@ class Menu:
 
     def delete(self, name, parent, idConnexion):
         if(parent == None):
-            self.tree.remove_node(name)
+            #Vérifier que tous les pads présents dans le dossier appartiennent à l'utilsateur ou à personne
+            canDelete = True
+            children = self.tree.children(name)
+            for child in children:
+                if(len(child.data) > 2 and not(child.data[3] == "-1" or child.data[3] == str(idConnexion))):
+                    canDelete = False
+                    print("(delete menu.py) /!\ un des pads dans le dossier n'appartient pas à l'utilisateur")
+            if(canDelete):
+                self.tree.remove_node(name)
         else :
             #Trouver le bon pad et récupérer son id de connexion
             idCoPad = self.tree.get_node(name + parent).data[3]
@@ -132,7 +140,7 @@ def createTree(menu, tempTree, parent):
                 dataPad.append(parent)
                 dataPad.append(menu[i][cles]['data'][1])
                 dataPad.append(menu[i][cles]['data'][2])
-                dataPad.append(menu[i][cles]['data'][3])
+                dataPad.append(str(menu[i][cles]['data'][3]))
                 tempTree.create_node(cles, cles + parent, parent=parent, data=dataPad)
 
             # Répertoire sans enfants

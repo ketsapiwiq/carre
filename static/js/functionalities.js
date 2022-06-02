@@ -30,7 +30,7 @@ function addPad(form, parent){
 
 function deleteDirectory(nameDir){
     let data = {nameDir : nameDir};
-    let url = 'api/remove/dir';
+    let url = '/api/remove/dir';
     createAJAX(data, url);
 }
 

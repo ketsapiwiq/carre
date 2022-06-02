@@ -47,7 +47,7 @@ class ThreadFunctionalities(threading.Thread):
                     return 0
             case "removeDir":
                 with lock:
-                    self.menuCarre.delete(self.stock[0], None, None)
+                    self.menuCarre.delete(self.stock[0], None, self.stock[1])
                     self.menuCarre.writeData()
                     return 0
             case "addDirectory":

@@ -6,18 +6,15 @@ from src.conflicts import Errors, conflicts
 
 ###### To-Do
 # Connexion :
-#             - Créer un bouton de déconnexion
-#             - Faire les vérifs pour les suppressions
-#             - Créer un variable contenant l'ID de celui qui est connecté
-#             - Changer le machin dans le menu pour que ce soit l'id de la personne et pas son pseudo
+#             - Gérer la suppression des dossiers
 #             - Renvoyer les erreurs
-# Implémenter le système de gestion de droits
+#             - Faire les vérifs des inputs de l'utilistateur
 # Implémenter BD pour les pads
 # Optimiser la fonction d'affichage du menu :')
 ######
 
 ##### BUG(S)
-#
+# Requête POST pour supprimer un répertoire qui beug lorsque l'utilisateur est connecté
 #####
 pathFlaskFolder = '../static'
 # Fichier de configuration
@@ -285,7 +282,7 @@ def removeDir():
     if not inputValidation(name) :
         raise NameError("Nom du répertoire non valide")
 
-    data = ["removeDir", name]
+    data = ["removeDir", name, idConnexion]
     queueEvent.put(data)
     queueEvent.join()
     return ("", http.HTTPStatus.NO_CONTENT)
