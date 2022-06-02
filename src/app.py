@@ -6,11 +6,21 @@ from src.conflicts import Errors, conflicts
 
 ###### To-Do
 # Connexion :
-#             - Gérer la suppression des dossiers
 #             - Renvoyer les erreurs
 #             - Faire les vérifs des inputs de l'utilistateur
 # Implémenter BD pour les pads
 # Optimiser la fonction d'affichage du menu :')
+
+# Lciquer sur tout l'élement pour lancer le petit menu de création de dossier --> 7 - 7
+
+# ~~> Faire une vérif sur les mots de passe + sur le nom de l'utilisateur (test avec comtpe vide) --> 3 - 4
+# ~~> Fermeture automatique des boîtes de dialogues et des menus quand on clique autre part --> 3 - 6
+# ~~> Autofocus sur les boîtes de dialogue --> 1 - 2
+# ~~> Vérification des noms de pads (éviter les noms vides) --> 2 - 2
+# Pb suppression du compte --> Problème à trouver - 10
+# Faire en sorte que le formulaire d'inscription et de connexion s'ouvre en pop-up --> 6 - 4
+# Py test
+# Add directory --> boîte de dialogue qui ne se ferme pas
 ######
 
 ##### BUG(S)
@@ -103,9 +113,14 @@ def redirection():
 ##
 @app.route("/api/login", methods=["POST"])
 def login():
+    global idConnexion
     if(request.method == 'POST'):
         pseudo = request.form['pseudo']
         password = request.form['password']
+        if not inputValidation(pseudo) and not inputValidation(password):
+            displayError("Caractères invalides dans le pseudo ou le mot de passe")
+            return render_template('index.html', idConnexion=idConnexion)
+            #raise NameError ("Caractères invalides dans le pseudo ou le mot de passe")
     try:
         conn = sqlite3.connect('users.db')
     except sqlite3.OperationalError as err :
@@ -120,7 +135,6 @@ def login():
         #Si trouvé, récupérer le mot de passe et faire la vérif
         password = password.encode(encoding='UTF-8', errors='xmlcharrefreplace')
         if bcrypt.checkpw(password, result[0][1]):
-            global idConnexion
             idConnexion = result[0][2]
         else :
             print("Identifiants incorrects")
@@ -130,11 +144,14 @@ def login():
 
 @app.route("/api/signup", methods=["POST"])
 def sign_up():
+    global idConnexion
     if(request.method == 'POST'):
         pseudo = request.form['pseudo']
         password = request.form['password']
-        if not inputValidation(pseudo):
-            raise Exception
+        if not inputValidation(pseudo) and not inputValidation(password):
+            displayError("Caractères invalides dans le pseudo ou le mot de passe")
+            return render_template('index.html', idConnexion=idConnexion)
+            #raise NameError ("Caractères invalides dans le pseudo ou le mot de passe");
     try :
         conn = sqlite3.connect('users.db')
     except sqlite3.OperationalError as err :
@@ -155,7 +172,7 @@ def sign_up():
             #Récupération de l'id
             cursor.execute("SELECT id FROM users WHERE pseudo=:pseudo", {"pseudo": pseudo})
             result = cursor.fetchall()
-            global idConnexion
+
             idConnexion = result[0][0]
 
         except sqlite3.Error as e :
@@ -208,10 +225,6 @@ def deleteAccount():
         cursor = conn.cursor()
         cursor.execute("DELETE FROM users WHERE id=:id", {"id": idConnexion})
         conn.commit()
-
-        cursor.execute("SELECT pseudo FROM users")
-        result = cursor.fetchall()
-        print(result)
 
         cursor.close()
         conn.close()
@@ -270,6 +283,7 @@ def renamePad():
     newName = param['newName']
     parent = param['parent']
     if not inputValidation(newName) and not inputValidation(oldName):
+        displayError("Nom du pad non valide")
         raise NameError ("Nom du pad non valide")
     data = ["renamePad",oldName, newName, parent]
     queueEvent.put(data)
@@ -313,11 +327,19 @@ def renameDir():
     return ("", http.HTTPStatus.NO_CONTENT)
 
 def inputValidation(input):
-    match = re.search("[><?;!&,]+", input)
-    if match != None:
+    match = re.search("[><?;!&, ]+", input)
+    if match != None and isEmpty(input):
+        #Un de ces caractères a été trouvé
         return False
     else:
         return True
+
+
+def isEmpty(input):
+    if(not(input and input.strip())):
+        return True
+    else:
+        return False
 
 
 app.run(debug = True)

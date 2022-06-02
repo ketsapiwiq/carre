@@ -60,7 +60,6 @@ class Menu:
             for child in children:
                 if(len(child.data) > 2 and not(child.data[3] == "-1" or child.data[3] == str(idConnexion))):
                     canDelete = False
-                    print("(delete menu.py) /!\ un des pads dans le dossier n'appartient pas à l'utilisateur")
             if(canDelete):
                 self.tree.remove_node(name)
         else :

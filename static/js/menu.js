@@ -82,12 +82,15 @@ function eventsManager(){
     })
     //Click sur le nom d'un pad
     $("ul>li").click(function(){
+        deleteDialog("#options");
         updateIFrame($(this));
     });
 
     //Click droit sur le nom d'un pad
     $("ul>li").contextmenu(function(event){
+        deleteDialog("#options");
         if(!optionDisplay){
+            deleteDialog("#options");
             clickMenu = true;
             // Récupérer le nom du parent
             //alert(this.parentNode.id);
@@ -102,6 +105,7 @@ function eventsManager(){
 
     //Click droit sur le nom d'un dossier
     $("ul.parent>h2").contextmenu(function(event){
+        deleteDialog("#options");
         if(!optionDisplay){
             clickMenu = true;
             directoryMenu(event, $(this));
