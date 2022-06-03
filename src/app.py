@@ -87,7 +87,6 @@ def getMenu():
     return listMenu
 
 
-
 ##
 #   fonction d'entrée : redirige vers la page d'accueil
 ##
@@ -105,10 +104,6 @@ def index():
         create_db()
     return render_template('index.html', idConnexion=idConnexion)
 
-
-@app.route("/connectionRedirect", methods=["POST"])
-def redirection():
-    return render_template('connexion.html')
 
 ##
 # Vérifie les identifiants
