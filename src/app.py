@@ -122,7 +122,7 @@ def login():
 
         if not inputValidation(pseudo) and not inputValidation(password):
             displayError("Caractères invalides dans le pseudo ou le mot de passe")
-            return render_template('connexion.html')
+            return render_template('index.html', idConnexion=idConnexion)
             #return render_template('index.html', idConnexion=idConnexion)
             #raise NameError ("Caractères invalides dans le pseudo ou le mot de passe")
     try:
@@ -152,7 +152,14 @@ def sign_up():
     if(request.method == 'POST'):
         pseudo = request.form['pseudo']
         password = request.form['password']
-        if not inputValidation(pseudo) and not inputValidation(password):
+        print("pour le pseudo")
+        print(inputValidation(pseudo))
+        print("pour le mot de passe")
+        print(inputValidation(password))
+
+        print(not inputValidation(pseudo) or not inputValidation(password))
+        if not inputValidation(pseudo) or not inputValidation(password):
+            #print("Pas valide !")
             displayError("Caractères invalides dans le pseudo ou le mot de passe")
             return render_template('index.html', idConnexion=idConnexion)
             #raise NameError ("Caractères invalides dans le pseudo ou le mot de passe");
@@ -332,7 +339,7 @@ def renameDir():
 
 def inputValidation(input):
     match = re.search("[><?;!&, ]+", input)
-    if isEmpty(input) and match != None:
+    if isEmpty(input) or match != None:
         #Un de ces caractères a été trouvé
         return False
     else:
@@ -340,7 +347,6 @@ def inputValidation(input):
 
 
 def isEmpty(input):
-    print("input : " + input)
     if(not(input and input.strip())):
         return True
     else:
