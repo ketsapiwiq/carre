@@ -48,6 +48,8 @@ def errorManager(action, param, menu):
                 raise Errors.InvalidNameError()
 
             return True
+        case "deleteAccount":
+            return True
 
     print("Action non valide : " + action)
     raise Errors.InvalidActionError()

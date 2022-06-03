@@ -52,11 +52,35 @@ class Menu:
             print("Erreur fichier : {0}" .format(err))
             return -1
 
-    def delete(self, name, parent):
+    def delete(self, name, parent, idConnexion):
         if(parent == None):
-            parent = ""
-        self.tree.remove_node(name + parent)
+            #Vérifier que tous les pads présents dans le dossier appartiennent à l'utilsateur ou à personne
+            canDelete = True
+            children = self.tree.children(name)
+            for child in children:
+                if(len(child.data) > 2 and not(child.data[3] == "-1" or child.data[3] == str(idConnexion))):
+                    canDelete = False
+            if(canDelete):
+                self.tree.remove_node(name)
+        else :
+            #Trouver le bon pad et récupérer son id de connexion
+            idCoPad = self.tree.get_node(name + parent).data[3]
+            # Si l'id de connexion == à celui passé en param ou si celui est trouvé == -1 --> On peut supprimer
+            if(idCoPad == str(idConnexion) or str(idCoPad) == "-1"):
+                self.tree.remove_node(name + parent)
 
+    ##
+    # Lors de la suppression d'un utilisateur, tous les pads qu'il a deviennent sans proprietaire
+    # param @idConnexion : L'Id de connexion de l'utilisateur à supprimer
+    ##
+    def updatePads(self, idConnexion):
+        nodes = self.tree.all_nodes()
+        print("id utilisateur : " + str(idConnexion))
+        for node in nodes:
+            if(len(node.data) > 2):
+                if node.data[3] == str(idConnexion):
+                    node.data[3] = -1
+                    print(node.data[3])
 
 
     def move(self, name, movePoint):
@@ -64,9 +88,14 @@ class Menu:
 
     def add(self, pad):
         data = []
+        #Nom du parent
         data.append(pad[1])
+        #Adresse du pad
         data.append(pad[2])
+        #Contenu du pad
         data.append(pad[3])
+        #Propriétaire du pad
+        data.append(str(pad[4]))
         nodes = self.tree.all_nodes()
         self.tree.create_node(pad[0], pad[0] + pad[1], parent=pad[1], data=data)
 
@@ -110,6 +139,7 @@ def createTree(menu, tempTree, parent):
                 dataPad.append(parent)
                 dataPad.append(menu[i][cles]['data'][1])
                 dataPad.append(menu[i][cles]['data'][2])
+                dataPad.append(str(menu[i][cles]['data'][3]))
                 tempTree.create_node(cles, cles + parent, parent=parent, data=dataPad)
 
             # Répertoire sans enfants
