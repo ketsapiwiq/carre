@@ -18,9 +18,11 @@ from src.conflicts import Errors, conflicts
 # ~~> Autofocus sur les boîtes de dialogue --> 1 - 2
 # ~~> Vérification des noms de pads (éviter les noms vides) --> 2 - 2
 # Pb suppression du compte --> Problème à trouver - 10
-# Faire en sorte que le formulaire d'inscription et de connexion s'ouvre en pop-up --> 6 - 4
+# ~~> Faire en sorte que le formulaire d'inscription et de connexion s'ouvre en pop-up --> 6 - 4
 # Py test
 # Add directory --> boîte de dialogue qui ne se ferme pas
+# Faire une page html pour ceux n'ayant pas activé le javascript sur le browser
+# Faille XSS/SQL
 ######
 
 ##### BUG(S)
@@ -117,9 +119,11 @@ def login():
     if(request.method == 'POST'):
         pseudo = request.form['pseudo']
         password = request.form['password']
+
         if not inputValidation(pseudo) and not inputValidation(password):
             displayError("Caractères invalides dans le pseudo ou le mot de passe")
-            return render_template('index.html', idConnexion=idConnexion)
+            return render_template('connexion.html')
+            #return render_template('index.html', idConnexion=idConnexion)
             #raise NameError ("Caractères invalides dans le pseudo ou le mot de passe")
     try:
         conn = sqlite3.connect('users.db')
@@ -328,7 +332,7 @@ def renameDir():
 
 def inputValidation(input):
     match = re.search("[><?;!&, ]+", input)
-    if match != None and isEmpty(input):
+    if isEmpty(input) and match != None:
         #Un de ces caractères a été trouvé
         return False
     else:
@@ -336,6 +340,7 @@ def inputValidation(input):
 
 
 def isEmpty(input):
+    print("input : " + input)
     if(not(input and input.strip())):
         return True
     else:

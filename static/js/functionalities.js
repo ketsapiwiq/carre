@@ -179,3 +179,96 @@ function padMenu(event, pad, parent){
     tabOp.push(op2);
     displayMenu(tabOp);
 }
+
+// GESTION DES COMPTES UTILISATEURS
+
+/**function inscription(){
+    // Lancer pop-up du formulaire de l'inscription
+    if(!dialogDisplay){
+        dialogDisplay = true;
+        let d = $("#dialog");
+        d.css("position", "absolute");
+        d.css("margin-left", "50%");
+        d.css("margin-top", "10%");
+        d.css("width", "40%");
+        d.css("height", "15%");
+
+        d.append("<h2> Inscription </h2>");
+
+        d.append("<form method='POST' onsubmit='return sendUserCredentials(this," +"'/api/signup'"+")'><input type='text' name='pseudo' autofocus> <input type='password' name='password'> <button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
+
+        $("#cancel").click(function(){
+            deleteDialog("#dialog");
+        });
+    }
+    return false;
+}**/
+
+function logInOrSignUp(title, url){
+    event.preventDefault();
+    if(!dialogDisplay){
+        dialogDisplay = true;
+        let d = $("#dialog");
+        d.css("position", "absolute");
+        d.css("margin-left", "50%");
+        d.css("margin-top", "10%");
+        d.css("width", "40%");
+        d.css("height", "15%");
+
+
+        // onsubmit='return " + param[2] + "(this,\"" + param[1] + "\")'
+
+        //onsubmit='return sendUserCredentials(this,\""+ url +"\")'
+
+        d.append("<h2>"+ title +"</h2>");
+        d.append("<form method='POST' action='"+ url +"'><input type='text' name='pseudo' autofocus> <input type='password' name='password'> <button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
+
+        $("#cancel").click(function(){
+            deleteDialog("#dialog");
+        });
+    }
+    return false;
+}
+
+/**function connexion(){
+    // Lancer pop-up du formulaire de connexion
+    if(!dialogDisplay){
+        dialogDisplay = true;
+        let d = $("#dialog");
+        d.css("position", "absolute");
+        d.css("margin-left", "50%");
+        d.css("margin-top", "10%");
+        d.css("width", "40%");
+        d.css("height", "15%");
+
+        d.append("<h2> Connexion </h2>");
+
+        d.append("<form method='POST' onsubmit='return sendUserCredentials(this," +"'/api/login'"+")'><input type='text' name='pseudo' autofocus> <input type='password' name='password'> <button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
+
+        $("#cancel").click(function(){
+            deleteDialog("#dialog");
+        });
+    }
+    return false;
+}**/
+
+function sendUserCredentials(form, url){
+    var data = {pseudo: form.pseudo.value, password: form.password.value};
+    fetch(url, {
+        method: "POST",
+        body: JSON.stringify(data),
+        cache: "no-cache",
+        headers: new Headers({
+          "content-type": "application/json"
+      })
+    })
+    .then(function(){
+        deleteDialog("#dialog");
+        optionDisplay = false;
+        window.location.reload()
+    })
+    .catch(function(error) {
+        console.error("Catch : " + error);
+    })
+    return true;
+}

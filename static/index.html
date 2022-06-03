@@ -43,6 +43,14 @@
             <form method="POST" action="/connectionRedirect">
                 <button> Inscription ou connexion </button>
             </form>
+
+            <form method="POST" action="" onSubmit="return logInOrSignUp('Inscription', '/api/signup')">
+                <button> Inscription </button>
+            </form>
+
+            <form method="POST" action="" onsubmit="return logInOrSignUp('Connexion', '/api/login')">
+                <button> Connexion </button>
+            </form>
         {% else %}
             <form method="POST" action="/api/deconnect">
                 <button> Déconnexion </button>
