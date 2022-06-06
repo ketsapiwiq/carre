@@ -146,6 +146,7 @@ def login():
             return ({"data":result[0][2]})
         else :
             print("Identifiants incorrects")
+            displayError("Identifiants incorrects")
     cursor.close()
     conn.close()
     return ({"data":-1})
@@ -156,14 +157,10 @@ def sign_up():
         param = request.get_json()
         pseudo = param['pseudo']
         password = param['password']
-        #pseudo = request.form['pseudo']
-        #password = request.form['password']
 
         if not inputValidation(pseudo) or not inputValidation(password):
-            #print("Pas valide !")
             displayError("Caractères invalides dans le pseudo ou le mot de passe")
             return ({"data":-1})
-            #raise NameError ("Caractères invalides dans le pseudo ou le mot de passe");
     try :
         conn = sqlite3.connect('users.db')
     except sqlite3.OperationalError as err :
@@ -190,7 +187,7 @@ def sign_up():
         except sqlite3.Error as e :
             print("Erreur lors de l'insertion de données")
     else :
-        print("Vous êtes déjà enregistré dans la base de données, authentifiez-vous")
+        displayError("Vous êtes déjà enregistré dans la base de données, authentifiez-vous")
     cursor.close()
     conn.close()
     return ({"data":-1})
