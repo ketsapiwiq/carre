@@ -3,6 +3,7 @@ from src import pad, threads, directory, menu
 import json,time, configparser, re, queue, threading, http.client, bcrypt, sqlite3
 from flask_socketio import SocketIO, emit, disconnect, send
 from src.conflicts import Errors, conflicts
+#from src.tests import confTest
 
 ###### To-Do
 # Connexion :
@@ -27,11 +28,6 @@ from src.conflicts import Errors, conflicts
 # Bugs sur la connexion (tous les clients connectés au même compte)
 
 
-# P'tit point pour lundi
-# Pour éviter que tous les clients soient connectés au même compte (c'est quand même vachement mieux)
-#
-######
-
 ##### BUG(S)
 # Requête POST pour supprimer un répertoire qui beug lorsque l'utilisateur est connecté
 #####
@@ -42,7 +38,6 @@ ficIni = "config.ini"
 queueEvent = queue.Queue()
 
 menuCarre = menu.Menu()
-
 
 async_mode = None
 app = Flask(__name__, template_folder=pathFlaskFolder, static_folder=pathFlaskFolder)
@@ -110,6 +105,10 @@ def index():
         create_db()
     return render_template('index.html')
 
+@app.route("/api/test", methods=["POST"])
+def fnct_test():
+    return "Coucou, ceci est un test"
+
 
 ##
 # Vérifie les identifiants
@@ -121,8 +120,6 @@ def login():
         param = request.get_json()
         pseudo = param['pseudo']
         password = param['password']
-        #pseudo = request.form['pseudo']
-        #password = request.form['password']
 
         if not inputValidation(pseudo) and not inputValidation(password):
             displayError("Caractères invalides dans le pseudo ou le mot de passe")
@@ -188,6 +185,8 @@ def sign_up():
             print("Erreur lors de l'insertion de données")
     else :
         displayError("Vous êtes déjà enregistré dans la base de données, authentifiez-vous")
+        print("Déjà dans la base mon bon monsieur")
+        return ({"data":-1})
     cursor.close()
     conn.close()
     return ({"data":-1})
@@ -218,7 +217,6 @@ def deleteAccount():
     data = ["deleteAccount", idConnexion]
     queueEvent.put(data)
     queueEvent.join()
-
     #Suppression de la base de données
     try :
         conn = sqlite3.connect('users.db')
@@ -233,7 +231,6 @@ def deleteAccount():
         conn.close()
     except sqlite3.DatabaseError as err:
         print("DatabaseError : " + err)
-
     return render_template("index.html")
 
 @app.route("/api/init/menu")
@@ -256,6 +253,7 @@ def ajouterPad():
         param = request.get_json()
         name = param['name']
         parent = param['parent']
+        idConnexion = param['idCo']
         if not inputValidation(name) and not inputValidation(parent):
             raise NameError ("Nom du pad non valide");
 
@@ -271,8 +269,10 @@ def ajouterPad():
 
 @app.route("/api/remove/pad", methods=['POST'])
 def removePad():
-    name = request.get_json()['name']
-    parent = request.get_json()['parent']
+    param = request.get_json()
+    name = param['name']
+    parent = param['parent']
+    idConnexion = param['idCo']
     data = ["removePad", name, parent, idConnexion]
     queueEvent.put(data)
     queueEvent.join()
@@ -294,7 +294,9 @@ def renamePad():
 
 @app.route("/api/remove/dir", methods=['POST'])
 def removeDir():
-    name = request.get_json()['nameDir']
+    param = request.get_json()
+    name = param['nameDir']
+    idConnexion = param['idCo']
     if not inputValidation(name) :
         raise NameError("Nom du répertoire non valide")
 
@@ -329,7 +331,7 @@ def renameDir():
     return ("", http.HTTPStatus.NO_CONTENT)
 
 def inputValidation(input):
-    match = re.search("[><?;!&, ]+", input)
+    match = re.search("[><?;!&,]+", input)
     if isEmpty(input) or match != None:
         #Un de ces caractères a été trouvé
         return False
@@ -342,6 +344,18 @@ def isEmpty(input):
         return True
     else:
         return False
+
+
+
+##### FONCTIONS DE TESTS #####
+
+# def test_connexion(client):
+#     pseudo = 'Erolf'
+#     password = 'erolf'
+#     response = client.post("/api/login", data={'pseudo': pseudo, 'password': password})
+#     assert response.data.decode() != -1
+
+
 
 
 app.run(debug = True)
