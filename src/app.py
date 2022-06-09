@@ -79,9 +79,13 @@ def renamePad():
     threadRenamePad.join()
     return initMenu()
 
-@app.route("/api/remove/dir")
+@app.route("/api/remove/dir", methods=['POST'])
 def removeDir():
-    print("Remove directory")
+    nameDir = request.form.get('nameDir')
+    threadDeleteDirectory = threads.ThreadFunctionalities("deleteDirectory", nameDir)
+    threadDeleteDirectory.start()
+    threadDeleteDirectory.join()
+    return initMenu()
 
 @app.route("/api/add/dir", methods=['POST'])
 def addDir():

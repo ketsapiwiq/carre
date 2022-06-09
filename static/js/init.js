@@ -163,7 +163,7 @@ function displayDirectoryMenu(event, parent){
     let paramRenameDirectory = ["Nouveau nom du dossier :", parent.text(), "renameDirectory"];
 
     var op1 = new Option("Ajouter un pad", createDialog, paramAjoutPad);
-    var op2 = new Option("Supprimer le dossier", deleteDirectory);
+    var op2 = new Option("Supprimer le dossier", deleteDirectory, parent.text());
     var op3 = new Option("Renommer le dossier", createDialog, paramRenameDirectory);
     var op4 = new Option("Ajouter un dossier", addDirectory);
     var tabOp = new Array();
@@ -281,8 +281,18 @@ function addPad(form, parent){
 
 
 // A faire plus tard : fonctions pour les options
-function deleteDirectory(){
-    alert("Fonctionnalité non développée, c'est pour bientôt ;)");
+function deleteDirectory(nameDir){
+    $.ajax({
+        url: 'api/remove/dir',
+        method: 'POST',
+        data: {nameDir : nameDir}
+    })
+    .done(function(response){
+        updateMenu(response);
+    })
+    .fail(function(){
+        throw "Suppression du dossier impossible";
+    })
 }
 
 function renameDirectory(form, oldName){
