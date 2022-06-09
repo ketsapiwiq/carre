@@ -3,6 +3,7 @@ from src import pad, threads, directory, menu
 import json,time, configparser, re, queue, threading, http.client, bcrypt, sqlite3
 from flask_socketio import SocketIO, emit, disconnect, send
 from src.conflicts import Errors, conflicts
+#from src.tests import confTest
 
 ###### To-Do
 # Connexion :
@@ -23,7 +24,9 @@ from src.conflicts import Errors, conflicts
 # Add directory --> boîte de dialogue qui ne se ferme pas
 # Faire une page html pour ceux n'ayant pas activé le javascript sur le browser
 # Faille XSS/SQL
-######
+# Suppression impossible de dossier vide (à cause de la connexion)
+# Bugs sur la connexion (tous les clients connectés au même compte)
+
 
 ##### BUG(S)
 # Requête POST pour supprimer un répertoire qui beug lorsque l'utilisateur est connecté
@@ -35,8 +38,6 @@ ficIni = "config.ini"
 queueEvent = queue.Queue()
 
 menuCarre = menu.Menu()
-
-idConnexion = -1
 
 async_mode = None
 app = Flask(__name__, template_folder=pathFlaskFolder, static_folder=pathFlaskFolder)
@@ -87,7 +88,6 @@ def getMenu():
     return listMenu
 
 
-
 ##
 #   fonction d'entrée : redirige vers la page d'accueil
 ##
@@ -103,27 +103,27 @@ def index():
         conn.close()
     except sqlite3.OperationalError as err :
         create_db()
-    return render_template('index.html', idConnexion=idConnexion)
+    return render_template('index.html')
 
+@app.route("/api/test", methods=["POST"])
+def fnct_test():
+    return "Coucou, ceci est un test"
 
-@app.route("/connectionRedirect", methods=["POST"])
-def redirection():
-    return render_template('connexion.html')
 
 ##
 # Vérifie les identifiants
 ##
 @app.route("/api/login", methods=["POST"])
+#@socketio.on("/api/login")
 def login():
-    global idConnexion
     if(request.method == 'POST'):
-        pseudo = request.form['pseudo']
-        password = request.form['password']
+        param = request.get_json()
+        pseudo = param['pseudo']
+        password = param['password']
 
         if not inputValidation(pseudo) and not inputValidation(password):
             displayError("Caractères invalides dans le pseudo ou le mot de passe")
-            return render_template('index.html', idConnexion=idConnexion)
-            #return render_template('index.html', idConnexion=idConnexion)
+            return ({"data":-1})
             #raise NameError ("Caractères invalides dans le pseudo ou le mot de passe")
     try:
         conn = sqlite3.connect('users.db')
@@ -139,30 +139,25 @@ def login():
         #Si trouvé, récupérer le mot de passe et faire la vérif
         password = password.encode(encoding='UTF-8', errors='xmlcharrefreplace')
         if bcrypt.checkpw(password, result[0][1]):
-            idConnexion = result[0][2]
+            #socketio.emit("error",{"data":result[0][2]})
+            return ({"data":result[0][2]})
         else :
             print("Identifiants incorrects")
+            displayError("Identifiants incorrects")
     cursor.close()
     conn.close()
-    return render_template('index.html', idConnexion=idConnexion)
+    return ({"data":-1})
 
 @app.route("/api/signup", methods=["POST"])
 def sign_up():
-    global idConnexion
     if(request.method == 'POST'):
-        pseudo = request.form['pseudo']
-        password = request.form['password']
-        print("pour le pseudo")
-        print(inputValidation(pseudo))
-        print("pour le mot de passe")
-        print(inputValidation(password))
+        param = request.get_json()
+        pseudo = param['pseudo']
+        password = param['password']
 
-        print(not inputValidation(pseudo) or not inputValidation(password))
         if not inputValidation(pseudo) or not inputValidation(password):
-            #print("Pas valide !")
             displayError("Caractères invalides dans le pseudo ou le mot de passe")
-            return render_template('index.html', idConnexion=idConnexion)
-            #raise NameError ("Caractères invalides dans le pseudo ou le mot de passe");
+            return ({"data":-1})
     try :
         conn = sqlite3.connect('users.db')
     except sqlite3.OperationalError as err :
@@ -184,22 +179,17 @@ def sign_up():
             cursor.execute("SELECT id FROM users WHERE pseudo=:pseudo", {"pseudo": pseudo})
             result = cursor.fetchall()
 
-            idConnexion = result[0][0]
+            return ({"data":result[0][0]})
 
         except sqlite3.Error as e :
             print("Erreur lors de l'insertion de données")
     else :
-        print("Vous êtes déjà enregistré dans la base de données, authentifiez-vous")
+        displayError("Vous êtes déjà enregistré dans la base de données, authentifiez-vous")
+        print("Déjà dans la base mon bon monsieur")
+        return ({"data":-1})
     cursor.close()
     conn.close()
-    return render_template('index.html', idConnexion=idConnexion)
-
-
-@app.route("/api/deconnect", methods=["POST"])
-def deconnect():
-    global idConnexion
-    idConnexion = -1
-    return render_template('index.html', idConnexion=idConnexion)
+    return ({"data":-1})
 
 def create_db():
     print("Création de la base de données")
@@ -221,12 +211,12 @@ def create_db():
 
 @app.route("/api/deleteAccount", methods=["POST"])
 def deleteAccount():
-    global idConnexion
+    param = request.get_json()
+    idConnexion = param['idConnexion']
     #Update de tous les pads de l'utilisateur
     data = ["deleteAccount", idConnexion]
     queueEvent.put(data)
     queueEvent.join()
-
     #Suppression de la base de données
     try :
         conn = sqlite3.connect('users.db')
@@ -239,11 +229,9 @@ def deleteAccount():
 
         cursor.close()
         conn.close()
-    except sqlite.DatabaseError as err:
+    except sqlite3.DatabaseError as err:
         print("DatabaseError : " + err)
-
-    idConnexion = -1
-    return render_template("index.html", idConnexion=idConnexion)
+    return render_template("index.html")
 
 @app.route("/api/init/menu")
 def initMenu():
@@ -265,6 +253,7 @@ def ajouterPad():
         param = request.get_json()
         name = param['name']
         parent = param['parent']
+        idConnexion = param['idCo']
         if not inputValidation(name) and not inputValidation(parent):
             raise NameError ("Nom du pad non valide");
 
@@ -280,8 +269,10 @@ def ajouterPad():
 
 @app.route("/api/remove/pad", methods=['POST'])
 def removePad():
-    name = request.get_json()['name']
-    parent = request.get_json()['parent']
+    param = request.get_json()
+    name = param['name']
+    parent = param['parent']
+    idConnexion = param['idCo']
     data = ["removePad", name, parent, idConnexion]
     queueEvent.put(data)
     queueEvent.join()
@@ -303,7 +294,9 @@ def renamePad():
 
 @app.route("/api/remove/dir", methods=['POST'])
 def removeDir():
-    name = request.get_json()['nameDir']
+    param = request.get_json()
+    name = param['nameDir']
+    idConnexion = param['idCo']
     if not inputValidation(name) :
         raise NameError("Nom du répertoire non valide")
 
@@ -338,7 +331,7 @@ def renameDir():
     return ("", http.HTTPStatus.NO_CONTENT)
 
 def inputValidation(input):
-    match = re.search("[><?;!&, ]+", input)
+    match = re.search("[><?;!&,]+", input)
     if isEmpty(input) or match != None:
         #Un de ces caractères a été trouvé
         return False
@@ -351,6 +344,18 @@ def isEmpty(input):
         return True
     else:
         return False
+
+
+
+##### FONCTIONS DE TESTS #####
+
+# def test_connexion(client):
+#     pseudo = 'Erolf'
+#     password = 'erolf'
+#     response = client.post("/api/login", data={'pseudo': pseudo, 'password': password})
+#     assert response.data.decode() != -1
+
+
 
 
 app.run(debug = True)

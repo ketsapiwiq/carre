@@ -15,6 +15,7 @@ var adrServ;
 var optionDisplay = false;
 var dialogDisplay = false;
 var clickMenu = false;
+var idConnexion = -1;
 
 $(document).ready(function(){
     init();
@@ -46,7 +47,7 @@ function init(){
         .fail(function(){
             throw new Error("Récupération du menu impossible");
         })
-
+    updateForms();
     var socket = io();
 
     socket.on('broadcast_response', function(data) {
@@ -56,4 +57,5 @@ function init(){
     socket.on('error', function(data){
         alert(data);
     })
+
 }
