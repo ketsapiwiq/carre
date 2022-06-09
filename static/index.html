@@ -5,16 +5,15 @@
     <title>Le carré</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"/>
     <!-- Scripts -->
-    <script src="{{ url_for('static', filename='js/jquery/jquery_min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/jquery/jquery-ui.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/lib/jquery/jquery_min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/lib/jquery/jquery_min3_5_1.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/lib/jquery/jquery-ui.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/lib/socketio.js')}}"></script>
     <script src="{{ url_for('static', filename='js/init.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/functionalities.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/menu.js')}}"></script>
     <script src="{{ url_for('static', filename='js/options/Option.js')  }}"></script>
     <script src="{{ url_for('static', filename='js/options/menuOptions.js')}}"></script>
-   <!-- <script src="pad.js"></script>
-    <script src="option.js"></script>
-    <script src="click.js"></script>
-    <script src="construct.js"></script>
-    <script src="init.js"></script> -->
 </head>
 <body>
 
@@ -22,7 +21,8 @@
         <img src="{{ url_for('static', filename='images/lqdn.svg') }}">
         <h1> Le carré </h1>
         <div id="liste">
-
+            <ul>
+            </ul>
         </div>
     </div>
 
@@ -38,16 +38,28 @@
 
     </div>
 
-
-    <!-- <iframe src='https://pad.lqdn.fr/p/9tixtest' width=600 height=400> </iframe> -->
     <div id="test">
-        <form method="POST" action="/addPad">
-            <button>+</button>
-        </form>
+        {% if idConnexion == -1 %}
+            <form method="POST" action="/connectionRedirect">
+                <button> Inscription ou connexion </button>
+            </form>
 
-        <form method="POST" action="/testMenu">
-            <button> Menu </button>
-        </form>
+            <form method="POST" action="" onSubmit="return logInOrSignUp('Inscription', '/api/signup')">
+                <button> Inscription </button>
+            </form>
+
+            <form method="POST" action="" onsubmit="return logInOrSignUp('Connexion', '/api/login')">
+                <button> Connexion </button>
+            </form>
+        {% else %}
+            <form method="POST" action="/api/deconnect">
+                <button> Déconnexion </button>
+            </form>
+
+            <form method="POST" action="/api/deleteAccount">
+                <button> Supprimer mon compte </button>
+            </form>
+        {% endif %}
     </div>
 
 </body>

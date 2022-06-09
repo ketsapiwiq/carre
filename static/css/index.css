@@ -35,3 +35,13 @@ li{
 #options p:hover{
     background-color : #aaaaaa;
 }
+
+ul{
+    /*padding-left: 5%;*/
+    color: green;
+}
+
+li{
+    padding-top: 2%;
+    color: red;
+}

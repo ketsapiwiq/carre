@@ -1,5 +1,5 @@
 import json, configparser
-from src import functionalities, pad, directory
+from src import pad, directory
 from treelib import Node, Tree
 import json
 
@@ -21,7 +21,6 @@ class Menu:
         # Arbre correspondant au fichier
         self.ficTree = Tree()
 
-
     ##
     # Récupère le menu du fichier JSON dans un dictionnaire
     # A partir de celui-ci, un arbre représentant le menu est créé
@@ -37,26 +36,19 @@ class Menu:
                     objMenu.append(newPad)
 
         tempTree = Tree()
-        tempTree.create_node("Root", "Root", data= directory.Directory("Root", "Root"))
+        dataRoot = []
+        dataRoot.append("Root")
+        tempTree.create_node("Root", "Root", data=dataRoot)
         tempTree = createTree(menu["Root"]["children"], tempTree, "Root")
 
         self.ficTree = tempTree
 
         self.tree = self.ficTree
         nodes = self.tree.all_nodes()
-        for i in range(0, len(nodes)):
-            data = []
-            data.append(nodes[i].data.getParent())
-            # Si le noeud est un pad, on rajoute l'adresse et le contenu
-            if isinstance(nodes[i].data, pad.Pad):
-                data.append(nodes[i].data.getAdress())
-                data.append(nodes[i].data.getContenu())
-            nodes[i].data = data
+
         return nodes
 
     def writeData(self):
-        # A FAIRE
-        ## Faire les vérifs entre les 2 arbres et gérer les conflits
         try :
             fileMenu = open(self.path, "w")
             json.dump(self.tree.to_dict(with_data=True), fileMenu)
@@ -66,19 +58,52 @@ class Menu:
             print("Erreur fichier : {0}" .format(err))
             return -1
 
-    def delete(self, name):
-        # A tester avec un nom qui n'existe pas, le nom d'un pad qui existe et le nom d'un dossier
-        self.tree.remove_node(name)
+    def delete(self, name, parent, idConnexion):
+        if(parent == None):
+            #Vérifier que tous les pads présents dans le dossier appartiennent à l'utilsateur ou à personne
+            canDelete = True
+            children = self.tree.children(name)
+            for child in children:
+                if(len(child.data) > 2 and not(child.data[3] == "-1" or child.data[3] == str(idConnexion))):
+                    canDelete = False
+            if(canDelete):
+                self.tree.remove_node(name)
+        else :
+            #Trouver le bon pad et récupérer son id de connexion
+            idCoPad = self.tree.get_node(name + parent).data[3]
+            # Si l'id de connexion == à celui passé en param ou si celui est trouvé == -1 --> On peut supprimer
+            if(idCoPad == str(idConnexion) or str(idCoPad) == "-1"):
+                self.tree.remove_node(name + parent)
+
+    ##
+    # Lors de la suppression d'un utilisateur, tous les pads qu'il a deviennent sans proprietaire
+    # param @idConnexion : L'Id de connexion de l'utilisateur à supprimer
+    ##
+    def updatePads(self, idConnexion):
+        nodes = self.tree.all_nodes()
+        print("id utilisateur : " + str(idConnexion))
+        for node in nodes:
+            if(len(node.data) > 2):
+                if node.data[3] == str(idConnexion):
+                    node.data[3] = -1
+                    print(node.data[3])
+
 
     def move(self, name, movePoint):
         self.tree.move_node(name,movePoint)
 
     def add(self, pad):
         data = []
-        data.append(pad.getParent())
-        data.append(pad.getAdress())
-        data.append(pad.getContenu())
-        self.tree.create_node(pad.getName(), pad.getName(), parent=pad.getParent(), data=data)
+        #Nom du parent
+        data.append(pad[1])
+        #Adresse du pad
+        data.append(pad[2])
+        #Contenu du pad
+        data.append(pad[3])
+        #Propriétaire du pad
+        data.append(str(pad[4]))
+        nodes = self.tree.all_nodes()
+        self.tree.create_node(pad[0], pad[0] + pad[1], parent=pad[1], data=data)
 
 
     def addDirectory(self, directory):
@@ -86,8 +111,10 @@ class Menu:
         data.append(directory.getParent())
         self.tree.create_node(directory.getName(), directory.getName(), parent=directory.getParent(), data=data)
 
-    def rename(self, oldName, newName):
-        self.tree.update_node(oldName, tag=newName, identifier=newName)
+    def rename(self, oldName, newName, parent):
+        if(parent == None):
+            parent = ""
+        self.tree.update_node(oldName+parent, tag=newName, identifier=newName+parent)
 
 
 def loadJSON(self):
@@ -107,16 +134,24 @@ def createTree(menu, tempTree, parent):
             cles = list(menu[i].keys())[0]
             # Répertoire  avec enfants
             if list(menu[i][cles].keys())[0] == "children":
-                dir = directory.Directory(cles, parent)
-                tempTree.create_node(cles, cles, parent=parent, data = dir)
+                dataDir = []
+                dataDir.append(parent)
+                tempTree.create_node(cles, cles, parent=parent, data=dataDir)
                 # On ré-itère sur les enfants du répertoire
                 createTree(menu[i][cles]["children"], tempTree, cles)
             # Pad
             elif len(menu[i][cles]['data']) > 1 :
-                padNode = pad.Pad(cles, parent, menu[i][cles]['data'][1], menu[i][cles]['data'][2])
-                tempTree.create_node(cles, cles, parent=parent, data=padNode)
+                dataPad = []
+                dataPad.append(parent)
+                dataPad.append(menu[i][cles]['data'][1])
+                dataPad.append(menu[i][cles]['data'][2])
+                dataPad.append(str(menu[i][cles]['data'][3]))
+                tempTree.create_node(cles, cles + parent, parent=parent, data=dataPad)
+
             # Répertoire sans enfants
             else:
-                dir = directory.Directory(cles, parent)
-                tempTree.create_node(cles, cles, parent=parent, data=dir)
+                dataDir = []
+                dataDir.append(parent)
+                tempTree.create_node(cles, cles, parent=parent, data=dataDir)
+
     return tempTree
