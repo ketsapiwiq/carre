@@ -28,12 +28,6 @@ class Menu:
     ##
     def loadData(self):
         menu = loadJSON(self)
-        if menu != -1 :
-            for i in range(0, len(menu)):
-                parent = menu[i]['parent']
-                for j in range(0, len(menu[i]["pads"])):
-                    newPad = pad.Pad(menu[i]["pads"][j]["Nom"], parent, menu[i]["pads"][j]["Adresse"])
-                    objMenu.append(newPad)
 
         tempTree = Tree()
         dataRoot = []

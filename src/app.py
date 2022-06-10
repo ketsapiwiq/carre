@@ -3,6 +3,7 @@ from src import pad, threads, directory, menu
 import json,time, configparser, re, queue, threading, http.client, bcrypt, sqlite3
 from flask_socketio import SocketIO, emit, disconnect, send
 from src.conflicts import Errors, conflicts
+
 #from src.tests import confTest
 
 ###### To-Do
@@ -10,7 +11,6 @@ from src.conflicts import Errors, conflicts
 #             - Renvoyer les erreurs
 #             - Faire les vérifs des inputs de l'utilistateur
 # Implémenter BD pour les pads
-# Optimiser la fonction d'affichage du menu :')
 
 # Lciquer sur tout l'élement pour lancer le petit menu de création de dossier --> 7 - 7
 
@@ -344,17 +344,6 @@ def isEmpty(input):
         return True
     else:
         return False
-
-
-
-##### FONCTIONS DE TESTS #####
-
-# def test_connexion(client):
-#     pseudo = 'Erolf'
-#     password = 'erolf'
-#     response = client.post("/api/login", data={'pseudo': pseudo, 'password': password})
-#     assert response.data.decode() != -1
-
 
 
 
