@@ -2,7 +2,9 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Le carré</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"/>
@@ -17,118 +19,34 @@
     <script src="{{ url_for('static', filename='js/options/Option.js')  }}"></script>
     <script src="{{ url_for('static', filename='js/options/menuOptions.js')}}"></script>
 </head>
-<body class="container-fluid d-flex flex-row align-items-stretch  align-content-stretch">
-  <div class="row p-2 flex-fill bd-highlight">
+<body class="container-fluid d-flex flex-row align-items-stretch align-content-stretch g-0">
+  <div class="row flex-fill g-0 ">
 
-<<<<<<< HEAD
-    <header class="col-4 bg-primary">
-      <img class="img-thumbnail" src="{{ url_for('static', filename='images/lqdn.svg') }}">
-      <h1> Le carré </h1>
-      <nav class="">
-
-      <div id="options"></div>
-      <div id="test"></div>
-
-      <div id="liste">
-        <ul>
-=======
-    <header class="col-2 bg-secondary ">
-        <img class="img-thumbnail" src="{{ url_for('static', filename='images/lqdn.svg') }}">
-        <h1> Le carré </h1>
+    <div class="col-2">
+      <header class=" flex-fill">
+        <img class="" src="{{ url_for('static', filename='images/lqdn.svg') }}">
+        <h1 class="float-right"> Le carré </h1>
         <hr>
-        <br>
-
-    <nav class="">
-      <div class="btn-group">
-        <div class="btn-group" role="group" aria-label="Basic example">
-          <form method="POST" action="/addPad">
-            <button type="button" class="btn btn-primary"><i class="bi bi-clipboard-plus"></i></button>
-          </form>
-
-          <form method="POST" action="/testMenu">
-             <button type="button" class="btn btn-primary"><i class="bi bi-folder-plus"></i></button>
-          </form>
+        <nav class="">
+          <div id="options"></div>
+          <div id="test"></div>
+          <div id="dialog"></div>
+        </nav>
+      </header>
+  
+      <section class="flex-fill">
+        <noscript>
+          Le Carré nécessite l'activation du JavaScript dans votre navigateur. Nous l'utilison pour rendre interactif cette page, et nous nous basons sur des systèmes d'éiditon en temps réel qui nécessitent également le Javascript. Si vous ne savez pas comment faire, vous pouvez consulter les pages d'aide de votre navigateur.
+        </noscript>
+        <div id="liste">
+          <ul>
+          </ul>
         </div>
+      </section>
+    </div>
 
-      </div>
-      <div class="overflow-scroll">
-        <ul>
-          <li>gzrgerg</li>
-          <li>zefzefze</li>
-          <li>zfzefzef</li>
-          <li>
-            <ul>
-              <li>fezfz</li>
-              <li>hrthrtzh</li>
-              <li>a"rfar</li>
-              <li>etjhryh</li>
-            </ul>
-          </li><li>
-            <ul>
-              <li>fezfz</li>
-              <li>hrthrtzh</li>
-              <li>a"rfar</li>
-              <li>etjhryh</li>
-            </ul>
-          </li><li>
-            <ul>
-              <li>fezfz</li>
-              <li>hrthrtzh</li>
-              <li>a"rfar</li>
-              <li>etjhryh</li>
-            </ul>
-          </li><li>
-            <ul>
-              <li>fezfz</li>
-              <li>hrthrtzh</li>
-              <li>a"rfar</li>
-              <li>etjhryh</li>
-            </ul>
-          </li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li>
-            <ul>
-              <li></li>
-              <li></li>
-              <li>
-                <ul>
-                  <li></li>
-                  <li></li>
-                  <li>
-                    <ul>
-                      <li></li>
-                      <li></li>
-                      <li></li>
-                      <li></li>
-                    </ul>
-                  </li>
-                  <li></li>
-                </ul>
-              </li>
-              <li></li>
-            </ul>
-          </li>
-          <li></li>
->>>>>>> b025ca8 (Ajout des icones Bootstrap)
-        </ul>
-      </div>
-
-      <div id="dialog"></div>
-
-    
-    </nav>
-    </header>
-
-    <section id="pad" class="col-10 flex-grow-1 bg-success flex-fill">
-      <noscript>
-        Le Carré nécessite l'activation du JavaScript dans votre navigateur. Nous l'utilison pour rendre interactif cette page, et nous nous basons sur des systèmes d'éiditon en temps réel qui nécessitent également le Javascript. Si vous ne savez pas comment faire, vous pouvez consulter les pages d'aide de votre navigateur.
-      </noscript>
-    </section>
-
-    <div id="pad"></div>
-
+    <section class="col-10" id="pad"></section>
+  
   </div>
 </body>
 </html>
