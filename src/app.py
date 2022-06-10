@@ -105,11 +105,6 @@ def index():
         create_db()
     return render_template('index.html')
 
-@app.route("/api/test", methods=["POST"])
-def fnct_test():
-    return "Coucou, ceci est un test"
-
-
 ##
 # Vérifie les identifiants
 ##
@@ -233,10 +228,10 @@ def deleteAccount():
         print("DatabaseError : " + err)
     return render_template("index.html")
 
-@app.route("/api/init/menu")
+@app.route("/api/init/menu", methods=["POST"])
 def initMenu():
-    menu = getMenu()
-    return json.dumps(menu)
+    menu = json.dumps(getMenu())
+    return menu
 
 @app.route("/api/init/var")
 def initVariables():

@@ -48,7 +48,6 @@ def test_inscription_password_emoji():
     response = app.test_client().post("/api/signup", json={'pseudo': pseudo, 'password': password})
     id = response.json["data"]
     assert response.status_code == 200
-    print(str(id) + " pseudo : " + pseudo)
     deleteAccount(pseudo, password)
     assert id != -1
 

@@ -4,7 +4,6 @@ def errorManager(action, param, menu):
 
     match action:
         case "ajoutPadFunc":
-            print("AJOUT D UN PAD")
             # Vérifier les doublons : le nom du pad NE DOIT PAS déjà être présent dans le menu
             if isPadExist(param[0], menu, param[1]):
                 raise Errors.DuplicateError()
