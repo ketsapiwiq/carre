@@ -1,8 +1,10 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, Response
 from src import pad, threads, directory, menu
+#import pad, threads, directory, menu
 import json,time, configparser, re, queue, threading, http.client, bcrypt, sqlite3
 from flask_socketio import SocketIO, emit, disconnect, send
 from src.conflicts import Errors, conflicts
+#from conflicts import Errors, conflicts
 
 #from src.tests import confTest
 
@@ -44,6 +46,7 @@ app = Flask(__name__, template_folder=pathFlaskFolder, static_folder=pathFlaskFo
 socketio = SocketIO(app, async_mode=async_mode)
 
 def supervisor():
+    print("Supervisor lancé")
     #Gère la queue d'évnements et lance les threads associés
     while True:
         data = queueEvent.get()
@@ -255,7 +258,6 @@ def ajouterPad():
         adress = "p/9tm8" + name.replace(" |.","")
 
         dataPad=["ajoutPadFunc", name, parent, adress, " ", idConnexion]
-
         queueEvent.put(dataPad)
         queueEvent.join()
 
@@ -269,6 +271,7 @@ def removePad():
     parent = param['parent']
     idConnexion = param['idCo']
     data = ["removePad", name, parent, idConnexion]
+    print("RemovePad")
     queueEvent.put(data)
     queueEvent.join()
     return ("", http.HTTPStatus.NO_CONTENT)
