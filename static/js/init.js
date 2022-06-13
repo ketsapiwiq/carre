@@ -7,7 +7,15 @@
  */
 
 var menu;
+// Liste de tous les pads
+var pads = [];
+
 var pad;
+var adrServ;
+var optionDisplay = false;
+var dialogDisplay = false;
+var clickMenu = false;
+var idConnexion = -1;
 
 $(document).ready(function(){
     init();
@@ -18,45 +26,38 @@ $(document).ready(function(){
  * Afficher le pad par défaut
  **/
 function init(){
-    //S'il y a un click droit --> Lancer la fenêtre modale
-    // Initialisation du pad
-    pad = $("#pad");
-    pad.append("<iframe id='iPad' src='https://pad.lqdn.fr/p/9tlotestDev'> </iframe>")
+    $.get('/api/init/var')
+      .done(function(data){
+        adrServ = data["adrserv"];
+        // Initialisation du pad
+        pad = $("#pad");
+        pad.append("<iframe id='iPad' src='" + adrServ + "p/9tlotestDev'> </iframe>");
+      })
+      .fail(function(){
+        throw new Error("Variables de config non initialisées");
+      })
+
     // Initialisation du menu
-    // Doit récupérer le tableau contenant le menu et l'afficher sur la page
-    $.get('initMenu')
+    $.get('/api/init/menu')
         .done(function(data){
             // Traitement et affichage du menu
-            menu = JSON.parse(data)
-            var menuHtml = $("#menu");
-            menuHtml.append("<li>");
-            for (var i in menu){
-                menuHtml.append("<ul class='parent'><h2>" + menu[i]["parent"] + "</h2></ul>");
-                for(var j in menu[i]["pads"]){
-                    menuHtml.append("<ul class='child'>" + menu[i]["pads"][j]["Nom"] + "</ul>");
-                }
-            }
-            menuHtml.append("</li>")
+            updateMenu(data);
 
-            //Ajout des EventListener
-
-            $("ul.child").click(function(){
-                updateIFrame($(this));
-
-            });
-            $("ul.child").hover(function(){
-                $(this).css('cursor','pointer');
-            });
-            $("ul.parent").contextmenu(function(event){
-                displayDirectoryMenu(event, $(this));
-            });
-            $("#options").mouseleave(function(){
-                deleteOptions();
-            })
         })
         .fail(function(){
-            alert("le callback s'est mal passé");
+            throw new Error("Récupération du menu impossible");
         })
+    updateForms();
+    var socket = io();
+
+    socket.on('broadcast_response', function(data) {
+        updateMenu(JSON.stringify(data));
+    })
+
+    socket.on('error', function(data){
+        alert(data);
+    })
+
 }
 
 function updateIFrame(e){
