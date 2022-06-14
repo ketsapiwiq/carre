@@ -188,20 +188,27 @@ function logInOrSignUp(title, url){
     if(!dialogDisplay){
         dialogDisplay = true;
         let d = $("#dialog");
-        d.css("position", "absolute");
+        /*d.css("position", "absolute");
         d.css("margin-left", "50%");
         d.css("margin-top", "10%");
         d.css("width", "40%");
-        d.css("height", "15%");
+        d.css("height", "15%");*/
 
-
+        //d.append("<div class='modal-dialog'><div class='modal-content'><div class='modal-header'>")
         // onsubmit='return " + param[2] + "(this,\"" + param[1] + "\")'
 
         //onsubmit='return sendUserCredentials(this,\""+ url +"\")'
         // action='"+ url +"'
 
-        d.append("<h2>"+ title +"</h2>");
+        //d.append("<h2 class='modal-title' id='staticBackdropLabel'>"+ title +"</h2></div></div>");
+
         d.append("<form method='POST' onsubmit='return sendUserCredentials(this,\""+ url +"\")'><input type='text' name='pseudo' autofocus> <input type='password' name='password'> <button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
+
+        // d.append("<div class='mb-3'> <label for='pseudo' class='col-form-label'>Pseudo: </label><input type='text' class='form-control' id='pseudo'> </div>");
+        //
+        // d.append("<div class='mb-3'> <label for='password' class='col-form-label'>Mot de passe: </label><input type='password' class='form-control' id='password'> </div>");
+        //
+        // d.append("<div class='modal-footer'> <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Close</button> <button type='button' class='btn btn-primary'>Send message</button></div></div></div>");
 
         $("#cancel").click(function(){
             deleteDialog("#dialog");
@@ -226,6 +233,7 @@ function sendUserCredentials(form, url){
     .then(response => response.json())
     .then(function(data){
         deleteDialog("#dialog");
+        deleteDialog("#test");
         optionDisplay = false;
         // Si le serveur est OK --> renvoie l'id de connexion
         idConnexion = data['data'];
@@ -262,13 +270,21 @@ function deconnect(){
 
 function updateForms(){
     let t = $("#test");
-    t.children().slice().remove();
+    //t.children().slice().remove();
     if(idConnexion == -1){
         // Formulaire de connexion
-        t.append("<form method='POST' onsubmit='return logInOrSignUp(\""+'Inscription'+"\",\""+ '/api/signup' +"\")'><button type='submit'>Inscription</button></form>");
+        //t.append("<form method='POST' onsubmit='return logInOrSignUp(\""+'Inscription'+"\",\""+ '/api/signup' +"\")'><button type='submit'>Inscription</button></form>");
+
+        urlInscription = '/api/signup'
+        urlConnexion = '/api/login'
+        t.append("<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#inscription'>Inscription </button>");
+        t.append("<div class='modal fade' id='inscription' data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><h5 class='modal-title' id='staticBackdropLabel'>Inscription</h5><button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button></div><form method='POST' onsubmit='return sendUserCredentials(this,\""+ urlInscription +"\")'><div class='modal-body'><div class='mb-3'><label for='pseudo' class='col-form-label'>Pseudo: </label><input type='text' class='form-control' id='pseudo'></div><div class='mb-3'><label for='password' class='col-form-label'>Mot de passe: </label><input type='password' class='form-control' id='password'></div></div><div class='modal-footer'><button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Close</button><button type='submit' class='btn btn-primary'data-bs-dismiss='modal'>Understood</button></div></div></form></div></div>");
         // Formulaire d'Inscription
         //t.append('<form method="POST" action="" onSubmit="return logInOrSignUp(' + "Inscription" + ", '//api//signup')" + '><button> InscriptionJS </button></form>');
-        t.append("<form method='POST' onsubmit='return logInOrSignUp(\""+'Connexion'+"\",\""+ '/api/login' +"\")'><button type='submit'>Connexion</button></form>");
+        //t.append("<form method='POST' onsubmit='return logInOrSignUp(\""+'Connexion'+"\",\""+ '/api/login' +"\")'><button type='submit'>Connexion</button></form>");
+        t.append("<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#connexion'>Connexion </button>");
+        t.append("<div class='modal fade' id='connexion' data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><h5 class='modal-title' id='staticBackdropLabel'>Connexion</h5><button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button></div><form method='POST' onsubmit='return sendUserCredentials(this,\""+ urlConnexion +"\")'><div class='modal-body'><div class='mb-3'><label for='pseudo' class='col-form-label'>Pseudo: </label><input type='text' class='form-control' id='pseudo'></div><div class='mb-3'><label for='password' class='col-form-label'>Mot de passe: </label><input type='password' class='form-control' id='password'></div></div><div class='modal-footer'><button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Close</button><button type='submit' class='btn btn-primary'data-bs-dismiss='modal'>Understood</button></div></div></form></div></div>");
+
     }else{
         // Formulaire de déconnexion
         //t.append("<h3> Connected as " + idConnexion + "</h3>");

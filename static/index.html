@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Le carré</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"/>
+
     <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/lib/bootstrap.bundle.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/lib/jquery/jquery_min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/lib/jquery/jquery_min3_5_1.js')}}"></script>
     <script src="{{ url_for('static', filename='js/lib/jquery/jquery-ui.js')}}"></script>
@@ -15,32 +21,37 @@
     <script src="{{ url_for('static', filename='js/options/Option.js')  }}"></script>
     <script src="{{ url_for('static', filename='js/options/menuOptions.js')}}"></script>
 </head>
-<body>
+<body class="container-fluid d-flex flex-row align-items-stretch align-content-stretch g-0">
+  <div class="row flex-fill g-0 ">
 
-    <div id="menu">
-        <img src="{{ url_for('static', filename='images/lqdn.svg') }}">
-        <h1> Le carré </h1>
+    <div class="col-2">
+      <header class=" flex-fill">
+        <img class="" src="{{ url_for('static', filename='images/lqdn.svg') }}">
+        <h1 class="float-right"> Le carré </h1>
+        <hr>
+        <nav class="">
+          <div id="options"></div>
+          <div id="test">
+          </div>
+
+          </div>
+          <div id="dialog"></div>
+        </nav>
+      </header>
+
+      <section class="flex-fill">
+        <noscript>
+          Le Carré nécessite l'activation du JavaScript dans votre navigateur. Nous l'utilison pour rendre interactif cette page, et nous nous basons sur des systèmes d'éiditon en temps réel qui nécessitent également le Javascript. Si vous ne savez pas comment faire, vous pouvez consulter les pages d'aide de votre navigateur.
+        </noscript>
         <div id="liste">
-            <ul>
-            </ul>
+          <ul>
+          </ul>
         </div>
+      </section>
     </div>
 
-    <div id="pad">
+    <section class="col-10" id="pad"></section>
 
-    </div>
-
-    <div id="options">
-
-    </div>
-
-    <div id="dialog">
-
-    </div>
-
-    <div id="test">
-        
-    </div>
-
+  </div>
 </body>
 </html>
