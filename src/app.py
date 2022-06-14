@@ -35,7 +35,7 @@ from src.conflicts import Errors, conflicts
 #####
 pathFlaskFolder = '../static'
 # Fichier de configuration
-ficIni = "config.ini"
+ficIni = "../config.ini"
 #Queue d'évènements
 queueEvent = queue.Queue()
 
