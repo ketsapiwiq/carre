@@ -18,7 +18,7 @@ def test_ajout_renommage_suppression_pads():
     assert verificationPad(newName)
     assert not verificationPad(name)
 
-    #suppression 
+    #suppression
     response = app.test_client().post("/api/remove/pad", json={'name': newName, 'parent': parent, 'idCo': idCo})
     assert response.status_code == 204
     assert not verificationPad(newName)
@@ -36,7 +36,6 @@ def test_ajout_suppression_connecte():
     response = app.test_client().post("/api/add/pad",json={'name': name, 'parent': parent, 'idCo':idCo})
     assert response.status_code == 204
     assert verificationPad(name)
-
     response = app.test_client().post("/api/remove/pad", json={'name' : name, 'parent': parent, 'idCo': idCo})
     assert response.status_code == 204
     assert not verificationPad(name)
