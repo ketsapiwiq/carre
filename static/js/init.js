@@ -57,7 +57,6 @@ function init(){
     socket.on('error', function(data){
         alert(data);
     })
-
 }
 
 function updateIFrame(e){
