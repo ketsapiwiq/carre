@@ -1,3 +1,6 @@
+import sys,os
+sys.path.append(os.path.join(os.path.dirname(__file__),os.pardir,"../"))
+
 from src.app import app
 import json
 

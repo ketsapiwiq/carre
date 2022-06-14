@@ -1,5 +1,6 @@
 # Ne pas commit les fichiers utilisé pour stocker les hiérarchies
 server/*.json
+src/users.db
 
 # Fichier de logs
 nohup.out
