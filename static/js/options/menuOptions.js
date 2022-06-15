@@ -7,19 +7,18 @@ class menuOptions{
 
     afficherMenu(posx, posy, options) {
         let m = $("#options");
-        // Possible de factoriser les lignes liées au style
         m.css("margin-left", posx);
-        m.css("margin-top", posy);
+        //m.css("margin-top", posy);
 
         m.onmouseover = function () {
             this.style.cursor = 'pointer';
         }
-
+        m.append("<ul class='dropdown-menu'>");
         for (var i = 0; i < options.length; ++i) {
-            m.append("<p>" + options[i].getName() + "</p>");
+            m.append("<p class='dropdown-item'>" + options[i].getName() + "</p>");
         }
-        // Pas optimisé
-        // @nono : À optimiser alors ;)
+        m.append("</ul>");
+
         $("#options p").click(function() {
             let optionName = $(this).html();
             for(let i = 0; i < options.length;++i){

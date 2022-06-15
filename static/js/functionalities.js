@@ -112,7 +112,9 @@ function createDialog(param){
 
         d.append("<h2>"+param[0]+"</h2>");
 
-        d.append("<form method='POST' onsubmit='return " + param[2] + "(this,\"" + param[1] + "\")'><input type='text'name='name' autofocus><button type='submit'>OK</button><button type='button' id='cancel'> Annuler </button></form>");
+        d.append("<form method='POST' onsubmit='return " + param[2] + "(this,\"" + param[1] + "\")'><input type='text'name='name' autofocus><button type='submit' type='button' class='btn btn-primary'>OK</button><button type='button' id='cancel' type='button' class='btn btn-danger'> Annuler </button></form>");
+
+        //d.append("<div class='modal fade' id='inscription' data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><h5 class='modal-title' id='staticBackdropLabel'>"+ param[0] +"</h5><button type='button' class='btn-close' data-bs-dismiss='modal' aria label='Close'></button> </div><form method='POST' onsubmit='return " + param[2] + "(this,\"" + param[1] + "\")'> <div class='modal-body'> <div class='mb-3'> <input type='text'name='name' autofocus></div><div class='mb-3'><label for='pseudo' class='col-form-label'>Pseudo: </label><input type='text' class='form-control' id='pseudo'></div></div><div class='modal-footer'><button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Close</button><button type='submit' class='btn btn-primary' data-bs-dismiss='modal'>Understood</button></div></form></div></div></div>");
 
         $("#cancel").click(function(){
             deleteDialog("#dialog");
@@ -270,7 +272,7 @@ function deconnect(){
 
 function updateForms(){
     let t = $("#test");
-    //t.children().slice().remove();
+    t.children().slice().remove();
     if(idConnexion == -1){
         // Formulaire de connexion
         //t.append("<form method='POST' onsubmit='return logInOrSignUp(\""+'Inscription'+"\",\""+ '/api/signup' +"\")'><button type='submit'>Inscription</button></form>");
