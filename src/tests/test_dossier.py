@@ -54,7 +54,7 @@ def test_ajout_suppression_connecte():
     assert verificationInMenu(name)
 
     #Connexion
-    response = app.test_client().post("/api/login", json={'pseudo': 'Erolf', 'password': 'erolf'})
+    response = app.test_client().post("/api/signup", json={'pseudo': 'Erolf', 'password': 'erolf'})
     idCo = response.json["data"]
 
     #Ajout des pads
@@ -72,6 +72,8 @@ def test_ajout_suppression_connecte():
     assert not verificationInMenu(nameP2)
     assert not verificationInMenu(nameP3)
 
+    app.test_client().post("/api/deleteAccount", json={'idConnexion': idCo})
+
 def test_ajout_connecte_suppression_pas_connecte():
     app.test_client().post("/")
     #Ajout du répertoire
@@ -80,7 +82,7 @@ def test_ajout_connecte_suppression_pas_connecte():
     assert response.status_code == 204
     assert verificationInMenu(name)
     #Connexion
-    response = app.test_client().post("/api/login", json={'pseudo': 'Erolf', 'password': 'erolf'})
+    response = app.test_client().post("/api/signup", json={'pseudo': 'Erolf', 'password': 'erolf'})
     idCo = response.json["data"]
     #Ajout des pads
     nameP1 = "Pad3_1"
@@ -103,6 +105,8 @@ def test_ajout_connecte_suppression_pas_connecte():
     assert not verificationInMenu(nameP1)
     assert not verificationInMenu(nameP2)
     assert not verificationInMenu(nameP3)
+
+    app.test_client().post("/api/deleteAccount", json={'idConnexion': idCo})
 
 
 def verificationInMenu(name):

@@ -4,6 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__),os.pardir,"../"))
 from src.app import app
 
 def test_inscription_basic():
+    app.test_client().post("/")
     pseudo = "UnPseudo"
     password = "UnMotDePasse"
     response = app.test_client().post("/api/signup", json={'pseudo': pseudo, 'password': password})
@@ -21,6 +22,7 @@ def test_inscription_basic():
 
 
 def test_inscription_blank():
+    app.test_client().post("/")
     pseudo = "      "
     password = "        "
     response = app.test_client().post("/api/signup", json={'pseudo': pseudo, 'password': password})
@@ -29,6 +31,7 @@ def test_inscription_blank():
     assert id == -1
 
 def test_inscription_none():
+    app.test_client().post("/")
     pseudo = ""
     password = ""
     response = app.test_client().post("/api/signup", json={'pseudo': pseudo, 'password': password})
@@ -37,6 +40,7 @@ def test_inscription_none():
     assert id == -1
 
 def test_inscription_pseudo_emoji():
+    app.test_client().post("/")
     pseudo = "👾👽​👻​"
     password = "boooooouh"
     response = app.test_client().post("/api/signup", json={'pseudo': pseudo, 'password': password})
@@ -46,6 +50,7 @@ def test_inscription_pseudo_emoji():
     assert id != -1
 
 def test_inscription_password_emoji():
+    app.test_client().post("/")
     pseudo = "bouh"
     password = "👾👽​👻"
     response = app.test_client().post("/api/signup", json={'pseudo': pseudo, 'password': password})
@@ -56,6 +61,7 @@ def test_inscription_password_emoji():
 
 
 def test_inscription_japonais():
+    app.test_client().post("/")
     pseudo = "わる"
     password = "しょうなり"
     response = app.test_client().post("/api/signup", json={'pseudo': pseudo, 'password': password})
@@ -66,6 +72,7 @@ def test_inscription_japonais():
 
 
 def test_inscription_russe():
+    app.test_client().post("/")
     pseudo = "Живая"
     password = "культура"
     response = app.test_client().post("/api/signup", json={'pseudo': pseudo, 'password': password})

@@ -27,12 +27,11 @@ def test_ajout_renommage_suppression_pads():
     assert not verificationPad(newName)
 
 
-
 ##
 # Ajout et suppression d'un pad en étant connecté
 ##
 def test_ajout_suppression_connecte():
-    response = app.test_client().post("/api/login", json={'pseudo': 'Erolf', 'password': 'erolf'})
+    response = app.test_client().post("/api/signup", json={'pseudo': 'Erolf', 'password': 'erolf'})
     name = "Coucou je suis un pad"
     parent = "Documentation"
     idCo = response.json["data"]
@@ -43,12 +42,14 @@ def test_ajout_suppression_connecte():
     assert response.status_code == 204
     assert not verificationPad(name)
 
+    app.test_client().post("/api/deleteAccount", json={'idConnexion': idCo})
+
 ##
 #  Ajout d'un pad en étant connecté et suppression avec une déconnexion entre temps
 ##
 def test_ajout_connecte_suppression_non_connecte():
     # Ajout du pad en étant connecté
-    response = app.test_client().post("/api/login", json={'pseudo': 'Erolf', 'password': 'erolf'})
+    response = app.test_client().post("/api/signup", json={'pseudo': 'Erolf', 'password': 'erolf'})
     name = "Coucou je suis un pad"
     parent = "Documentation"
     idCo = response.json["data"]
@@ -66,12 +67,14 @@ def test_ajout_connecte_suppression_non_connecte():
     assert response.status_code == 204
     assert not verificationPad(name)
 
+    app.test_client().post("/api/deleteAccount", json={'idConnexion': idCo})
+
 ##
 # Ajouter un pad avec un compte puis essayer de le supprimer avec un compte différent
 ##
 def test_ajout_suppression_comptes_differents():
     # Ajout du pad en étant connecté
-    response = app.test_client().post("/api/login", json={'pseudo': 'Erolf', 'password': 'erolf'})
+    response = app.test_client().post("/api/signup", json={'pseudo': 'Erolf', 'password': 'erolf'})
     name = "Pad_test4"
     parent = "Documentation"
     idCo1 = response.json["data"]
@@ -80,7 +83,7 @@ def test_ajout_suppression_comptes_differents():
     assert verificationPad(name)
 
     #Suppresion du pad en étant connecté avec un compte différent
-    response = app.test_client().post("/api/login", json={'pseudo': 'Santa Klaus', 'password': 'hohoho'})
+    response = app.test_client().post("/api/signup", json={'pseudo': 'Santa Klaus', 'password': 'hohoho'})
     idCo2 = response.json["data"]
     response = app.test_client().post("/api/remove/pad", json={'name' : name, 'parent': parent, 'idCo': idCo2})
     assert response.status_code == 204
@@ -90,6 +93,9 @@ def test_ajout_suppression_comptes_differents():
     response = app.test_client().post("/api/remove/pad", json={'name': name, 'parent': parent, 'idCo': idCo1})
     assert response.status_code == 204
     assert not verificationPad(name)
+
+    app.test_client().post("/api/deleteAccount", json={'idConnexion': idCo1})
+    app.test_client().post("/api/deleteAccount", json={'idConnexion': idCo2})
 
 
 def verificationPad(name):
