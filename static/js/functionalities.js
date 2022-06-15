@@ -272,7 +272,7 @@ function deconnect(){
 
 function updateForms(){
     let t = $("#test");
-    //t.children().slice().remove();
+    t.children().slice().remove();
     if(idConnexion == -1){
         // Formulaire de connexion
         //t.append("<form method='POST' onsubmit='return logInOrSignUp(\""+'Inscription'+"\",\""+ '/api/signup' +"\")'><button type='submit'>Inscription</button></form>");
