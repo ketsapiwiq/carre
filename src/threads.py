@@ -1,6 +1,6 @@
-
-import threading,time
+import threading, time
 from src import menu
+
 
 class ThreadFunctionalities(threading.Thread):
 
@@ -21,18 +21,18 @@ class ThreadFunctionalities(threading.Thread):
 
     def run(self):
         lock = threading.Lock()
-        match self.fonction :
-            case "recupMenu" :
-                with lock :
+        match self.fonction:
+            case "recupMenu":
+                with lock:
                     self.stock = self.menuCarre.loadData()
                     return self.stock
-            case "ajoutPadFunc" :
-                with lock :
+            case "ajoutPadFunc":
+                with lock:
                     self.menuCarre.add(self.stock)
                     self.menuCarre.writeData()
                     return 0
             case "renamePad":
-                with lock :
+                with lock:
                     self.menuCarre.rename(self.stock[0], self.stock[1], self.stock[2])
                     self.menuCarre.writeData()
                     return 0
@@ -41,7 +41,7 @@ class ThreadFunctionalities(threading.Thread):
                     self.menuCarre.rename(self.stock[0], self.stock[1], None)
                     self.menuCarre.writeData()
             case "removePad":
-                with lock :
+                with lock:
                     self.menuCarre.delete(self.stock[0], self.stock[1], self.stock[2])
                     self.menuCarre.writeData()
                     return 0
@@ -51,7 +51,7 @@ class ThreadFunctionalities(threading.Thread):
                     self.menuCarre.writeData()
                     return 0
             case "addDirectory":
-                with lock :
+                with lock:
                     self.menuCarre.addDirectory(self.stock[0])
                     self.menuCarre.writeData()
                     return 0
