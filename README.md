@@ -23,7 +23,7 @@ Pour faire votre développement, il vous suffit d'éxécuter le fichier `install
 
 ### ⬛ Production
 
-Pour la mise en production, vous aurez besoin de suivre [les instructions relative à la mise en production d'un serveur Flask](https://flask.palletsprojects.com/en/2.1.x/tutorial/deploy/). 
+Pour la mise en production, vous aurez besoin de suivre [les instructions relative à la mise en production d'un serveur Flask](https://flask.palletsprojects.com/en/2.1.x/tutorial/deploy/).
 
 Vous aurez également besoin de modifier le fichier `config.ini`.
 
@@ -41,13 +41,13 @@ Pour mettre à jour votre installation, vous devrez :
 - Éxecuter les commandes suivante :
 	- `git fetch origin`
 		- Récupérer toutes les références des modifications
-	- `git checkout 0.0.2` 
+	- `git checkout 0.0.2`
 		- Appliquer les modifications pour la version 0.0.2
 - La mise à jour est faite, vous pouvez relancer votre serveur
 
 ## 🧑‍💻 Développement
 
-Toute aide est la bienvenue ! Pour le moment, le but est de garder le code et les fonctionnalitées aussi simples que possible. Il serait donc bienvenue d'avoir des retours, afin de simplifier encore les usages que l'on peut avoir de ce service.
+Toute aide est la bienvenue ! Pour le moment, le but est de garder le code et les fonctionnalités aussi simples que possible. Il serait donc bienvenue d'avoir des retours, afin de simplifier encore les usages que l'on peut avoir de ce service.
 
 Si vous avez des propositions, n'hésitez pas à le faire savoir, par mail ou en ouvrant un ticket.
 
@@ -60,7 +60,19 @@ Le carré est construit autour des fichiers suivants ;
 - static/ - Dossier avec les fichiers pour l'interface web
 - config.ini - Le fichier de configuration
 - README.md - Ce fichier
-- install.sh - Le script bash qui permet de lancer l'installation et le serveur de développement 
+- install.sh - Le script bash qui permet de lancer l'installation et le serveur de développement
+
+### ⚗️ Tests
+
+Après avoir fait des modifications, vous pouvez lancer les tests unitaires pour vérifier que toutes les fonctionnalités fonctionnent correctement et qu'il n'y a pas eu de régression.
+Pour cela, placez-vous dans le fichier "src/" et exécutez en ligne de commande :
+- ```pytest``` pour lancer tous les tests.
+- ```pytest -s ``` pour voir la trace des logs.
+- ```pytest tests/"nom_du_fichier"``` pour exécuter individuellement un fichier de test.
+
+Vous pouvez également rajouter des tests pour une nouvelle fonctionnalité en créant un nouveau fichier dans "src/tests/" ! Pour le bon fonctionnement de pytest, le nom du fichier de test doit obligatoirement commencer par "test_".
+
+Have fun ! :)
 
 ## 🎖️ Licence
 
@@ -68,7 +80,7 @@ Le carré est construit autour des fichiers suivants ;
  DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
                     Version 2, December 2004
 
- Copyright (C) 2022 Oncela <am@laquadrature.net>, Nono <np@laquadrature.net>, Erolf
+ Copyright (C) 2022 Oncela <am@laquadrature.net>, Nono <np@laquadrature.net>, Erolf <erolf@laquadrature.net>
 
  Everyone is permitted to copy and distribute verbatim or modified
  copies of this license document, and changing it is allowed as long
