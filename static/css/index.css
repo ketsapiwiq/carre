@@ -60,3 +60,15 @@ li {
     padding-left: .2em;
     border-left: 1px #aaa solid;
 }
+
+#options, #dialog{
+    position: absolute;
+    border: 1px black solid;
+    border-radius: 20px;
+    background-color: #FFFFFF;
+}
+
+#options p:hover{
+    background-color : #0D6EFD;
+    color : #FFFFFF;
+}

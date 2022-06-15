@@ -4,7 +4,7 @@ from src import pad, directory
 from treelib import Node, Tree
 import json
 
-ficIni = 'config.ini'
+ficIni = '../config.ini'
 
 class Menu:
 

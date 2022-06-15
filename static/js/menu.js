@@ -7,7 +7,18 @@ function createMenu(indice){
             sousListe.setAttribute("class", "parent");
             sousListe.setAttribute("id", menu[i]['name']);
             let titre = document.createElement("h2");
-            titre.innerText = menu[i]['name'];
+
+            let link = document.createElement("a");
+            link.setAttribute("class", "btn btn-secondary dropdown-toggle");
+            link.setAttribute("href", "#");
+            link.setAttribute("role", "button");
+            link.setAttribute("id", "dropdownMenuLink");
+            link.setAttribute("data-toggle", "dropdown");
+            link.setAttribute("aria-expanded", "false");
+            link.innerText = menu[i]['name'];
+            titre.append(link);
+
+            //titre.innerText = menu[i]['name'];
             sousListe.appendChild(titre);
             liste.appendChild(sousListe);
             //console.log("Création de : " + menu[i]['name']);
