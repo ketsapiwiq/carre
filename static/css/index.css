@@ -1,0 +1,74 @@
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+img {
+    width: 2em;
+    margin: 1em;
+}
+
+iframe {
+    width: 100%;;
+    height: 100%;
+}
+
+#liste ul,ol {
+    padding-left: 0;
+}
+
+h1 {
+    font-size: 2em;
+    display: inline;
+}
+
+h2 {
+    list-style-type: none;
+	margin-left: 1.2em;
+    font-size: 1em;
+}
+
+h2:before
+{
+	content: "\25C7";
+	position: absolute;
+	margin-left: -1em;
+    padding-left: 0.2em;
+}
+
+li::before {
+    content: "\25B6";
+    position: absolute;
+    margin-left: -1.1em;
+}
+
+li {
+    list-style-type: none;
+    font-size: 0.9em;
+    list-style-position: inside;
+    margin-left: 1em;
+    padding-left: 0.2em;
+}
+
+#Root {
+    margin-left: 0.3em;
+}
+
+#Root ul {
+    margin-bottom: .5em;
+    margin-left: .3em;
+    padding-left: .2em;
+    border-left: 1px #aaa solid;
+}
+
+#options, #dialog{
+    position: absolute;
+    border: 1px black solid;
+    border-radius: 20px;
+    background-color: #FFFFFF;
+}
+
+#options p:hover{
+    background-color : #0D6EFD;
+    color : #FFFFFF;
+}
